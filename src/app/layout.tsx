@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Header from "./_components/common/Header";
 import KakaoChatButton from "./_components/common/KakaoChatButton";
+import Footer from "./_components/common/Footer";
 
 const pretendard = localFont({
   src: "./fonts/PretendardVariable.woff2",
@@ -28,6 +29,7 @@ export default function RootLayout({
         <Header />
         {children}
         <KakaoChatButton />
+        <Footer />
       </body>
     </html>
   );

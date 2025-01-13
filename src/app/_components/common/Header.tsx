@@ -34,49 +34,48 @@ const Header = () => {
             </Link>
           </div>
         </div>
-        <div className="flex items-center gap-8">
+        <div className="absolute left-4">
           <Link href="/" className="w-[119px] h-[32px] relative">
-            <span className="absolute -bottom-6 left-0 text-[10px] font-medium whitespace-nowrap">
-              Plaworld Korea Official Forum (Quality Assurance)
+            <span className="absolute -bottom-6 left-2 text-[10px] font-medium whitespace-nowrap">
+              Palworld official community
             </span>
-            <div className="w-[125px] h-[34px] absolute -top-1 left-0">
+            <div className="w-[140px] h-[38px] absolute -top-7 left-0">
               <Image src="/images/logo-palworld.webp" alt="logo" fill />
             </div>
           </Link>
-          <div className="text-[19px] font-semibold mr-8">팰월드 한국포럼</div>
-          <nav className="flex items-center gap-12 text-[19px] font-medium">
-            <Link
-              href="/"
-              className="text-white hover:text-gray-300 transition-colors duration-200"
-            >
-              Home
-            </Link>
-            <Link
-              href="/kofiqa"
-              className="text-white hover:text-gray-300 transition-colors duration-200"
-            >
-              KOFIQA 서버
-            </Link>
-            <Link
-              href="/community"
-              className="text-white hover:text-gray-300 transition-colors duration-200"
-            >
-              통합게시판
-            </Link>
-            <Link
-              href="/support"
-              className="text-white hover:text-gray-300 transition-colors duration-200"
-            >
-              1:1문의/신고
-            </Link>
-            <Link
-              href="/company"
-              className="text-white hover:text-gray-300 transition-colors duration-200"
-            >
-              제휴업체
-            </Link>
-          </nav>
         </div>
+        <nav className="flex items-center gap-12 text-[19px] font-medium w-full justify-center">
+          <Link
+            href="/"
+            className="text-white hover:text-gray-300 transition-colors duration-200"
+          >
+            Home
+          </Link>
+          <Link
+            href="/kofiqa"
+            className="text-white hover:text-gray-300 transition-colors duration-200"
+          >
+            KOFIQA 서버
+          </Link>
+          <Link
+            href="/community"
+            className="text-white hover:text-gray-300 transition-colors duration-200"
+          >
+            통합게시판
+          </Link>
+          <Link
+            href="/support"
+            className="text-white hover:text-gray-300 transition-colors duration-200"
+          >
+            1:1문의/신고
+          </Link>
+          <Link
+            href="/company"
+            className="text-white hover:text-gray-300 transition-colors duration-200"
+          >
+            제휴업체
+          </Link>
+        </nav>
       </div>
     </header>
   );

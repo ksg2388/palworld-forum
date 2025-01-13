@@ -130,9 +130,9 @@ const KofiqaPage = () => {
                   href="https://open.kakao.com/o/KOFIQA"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-4 py-2 bg-yellow-400 text-black font-medium rounded hover:bg-yellow-500 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-white font-medium rounded hover:bg-gray-900 transition-colors"
                 >
-                  카카오톡 오픈채팅방 바로가기
+                  입주 신청하러 가기
                 </a>
                 <span className="text-sm text-gray-500">
                   * 운영시간: 평일 10:00 ~ 18:00

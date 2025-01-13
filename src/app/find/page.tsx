@@ -20,7 +20,7 @@ const FindPage = () => {
             비밀번호 찾기
           </h4>
           <p className="text-gray-600 text-sm">
-            가입하신 이메일로 임시 비밀번호를 발송해드립니다.
+            가입하신 이메일을 입력해주세요.
           </p>
         </div>
 

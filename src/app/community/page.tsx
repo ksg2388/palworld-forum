@@ -1,27 +1,28 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 
-const tabs = [
-  "공지사항",
-  "자유게시판",
-  "거래소",
-  "서버홍보",
-  "자료실",
-  "스크린샷/영상",
+const tabs = ["공지사항", "자유게시판", "공략/팁", "서버홍보", "통합자료실", "링크"];
+
+const linkItems = [
+  { name: "팔월드 공식 홈페이지", url: "https://www.pocketpair.jp/palworld" },
+  { name: "팔월드 스팀", url: "https://store.steampowered.com/app/1623730/Palworld/" },
+  { name: "팔월드 디스코드", url: "https://discord.gg/palworld" },
+  { name: "팔월드 위키", url: "https://palworld.wiki.gg/" },
+  { name: "팔월드 레딧", url: "https://www.reddit.com/r/Palworld/" },
 ];
 
 const dummyPosts = Array.from({ length: 105 }, (_, i) => ({
   id: 105 - i,
-  category: ["스크린샷", "자료", "홍보", "거래", "질문", "자유"][
-    Math.floor(Math.random() * 6)
-  ],
+  // category: ["스크린샷", "자료", "홍보", "거래", "질문", "자유"][
+  //   Math.floor(Math.random() * 6)
+  // ],
   title: `게시글 제목 ${105 - i}`,
   author: `작성자${105 - i}`,
   date: "2024.01.20",
-  views: Math.floor(Math.random() * 1000),
-  comments: Math.floor(Math.random() * 50),
+  views: 123,
+  comments: 11,
 }));
 
 const POSTS_PER_PAGE = 10;
@@ -30,10 +31,25 @@ const CommunityPage = () => {
   const totalPages = Math.ceil(dummyPosts.length / POSTS_PER_PAGE);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentTab, setCurrentTab] = useState(0);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const indexOfLastPost = currentPage * POSTS_PER_PAGE;
   const indexOfFirstPost = indexOfLastPost - POSTS_PER_PAGE;
   const currentPosts = dummyPosts.slice(indexOfFirstPost, indexOfLastPost);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   // 페이지네이션 로직
   const pageGroupSize = 10;
@@ -57,23 +73,48 @@ const CommunityPage = () => {
     }
   };
 
+  const handleTabClick = (index: number) => {
+    if (index === tabs.length - 1) {
+      setShowDropdown(!showDropdown);
+    } else {
+      setCurrentTab(index);
+      setShowDropdown(false);
+    }
+  };
+
   return (
     <div className="w-full">
       <div className="fixed top-[110px] left-0 right-0 bg-white z-10 border-b">
         <div className="max-w-[1200px] mx-auto">
-          <div className="flex items-center gap-0 font-semibold text-[20px]">
+          <div className="flex items-center gap-0 font-semibold text-[20px] relative">
             {tabs.map((tab, index) => (
-              <button
-                key={tab}
-                onClick={() => setCurrentTab(index)}
-                className={`px-6 py-3 text-gray-700 hover:text-gray-900 transition-all duration-200 ${
-                  currentTab === index
-                    ? "text-gray-900 border-b-2 border-gray-900"
-                    : ""
-                }`}
-              >
-                {tab}
-              </button>
+              <div key={tab} className="relative" ref={index === tabs.length - 1 ? dropdownRef : null}>
+                <button
+                  onClick={() => handleTabClick(index)}
+                  className={`px-6 py-3 text-gray-700 hover:text-gray-900 transition-all duration-200 ${
+                    currentTab === index && index !== tabs.length - 1
+                      ? "text-gray-900 border-b-2 border-gray-900"
+                      : ""
+                  }`}
+                >
+                  {tab}
+                </button>
+                {index === tabs.length - 1 && showDropdown && (
+                  <div className="absolute top-full left-0 w-[200px] bg-white border border-gray-200 rounded-lg shadow-lg z-20">
+                    {linkItems.map((item) => (
+                      <a
+                        key={item.name}
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block px-4 py-2 hover:bg-gray-100 text-[16px] text-gray-700"
+                      >
+                        {item.name}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
           </div>
         </div>

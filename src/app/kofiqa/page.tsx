@@ -127,9 +127,7 @@ const KofiqaPage = () => {
               </ol>
               <div className="mt-6 flex items-center gap-4">
                 <a
-                  href="https://open.kakao.com/o/KOFIQA"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="/kofiqa/apply"
                   className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-white font-medium rounded hover:bg-gray-900 transition-colors"
                 >
                   입주 신청하러 가기

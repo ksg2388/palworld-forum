@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "./_components/common/Header";
 import KakaoChatButton from "./_components/common/KakaoChatButton";
 import DiscordButton from "./_components/common/DiscordButton";
+import Footer from "./_components/common/Footer";
 
 const pretendard = localFont({
   src: "./fonts/PretendardVariable.woff2",
@@ -30,6 +31,7 @@ export default function RootLayout({
         {children}
         <DiscordButton />
         <KakaoChatButton />
+        <Footer />
       </body>
     </html>
   );

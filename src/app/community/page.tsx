@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 
@@ -17,10 +17,21 @@ interface Post {
 const tabs = [
   "공지사항",
   "자유게시판",
-  "거래소",
+  "공략/팁",
   "서버홍보",
-  "자료실",
-  "스크린샷/영상",
+  "통합자료실",
+  "링크",
+];
+
+const linkItems = [
+  { name: "팔월드 공식 홈페이지", url: "https://www.pocketpair.jp/palworld" },
+  {
+    name: "팔월드 스팀",
+    url: "https://store.steampowered.com/app/1623730/Palworld/",
+  },
+  { name: "팔월드 디스코드", url: "https://discord.gg/palworld" },
+  { name: "팔월드 위키", url: "https://palworld.wiki.gg/" },
+  { name: "팔월드 레딧", url: "https://www.reddit.com/r/Palworld/" },
 ];
 
 const generateDummyPosts = () => {
@@ -41,6 +52,8 @@ const CommunityPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [dummyPosts, setDummyPosts] = useState<Post[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setDummyPosts(generateDummyPosts());
@@ -53,6 +66,22 @@ const CommunityPage = () => {
   const indexOfLastPost = currentPage * POSTS_PER_PAGE;
   const indexOfFirstPost = indexOfLastPost - POSTS_PER_PAGE;
   const currentPosts = dummyPosts.slice(indexOfFirstPost, indexOfLastPost);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // 페이지네이션 로직
   const pageGroupSize = 10;
@@ -80,8 +109,13 @@ const CommunityPage = () => {
     }
   };
 
-  const handleTabChange = (index: number) => {
-    router.push(`/community?tab=${index}&page=1`);
+  const handleTabClick = (index: number) => {
+    if (index === tabs.length - 1) {
+      setShowDropdown(!showDropdown);
+    } else {
+      router.push(`/community?tab=${index}&page=1`);
+      setShowDropdown(false);
+    }
   };
 
   const handlePageChange = (page: number) => {
@@ -92,19 +126,39 @@ const CommunityPage = () => {
     <div className="w-full">
       <div className="fixed top-[110px] left-0 right-0 bg-white z-10 border-b">
         <div className="max-w-[1200px] mx-auto">
-          <div className="flex items-center gap-0 font-semibold text-[20px]">
+          <div className="flex items-center gap-0 font-semibold text-[20px] relative">
             {tabs.map((tab, index) => (
-              <button
+              <div
                 key={tab}
-                onClick={() => handleTabChange(index)}
-                className={`px-6 py-3 text-gray-700 hover:text-gray-900 transition-all duration-200 ${
-                  currentTab === index
-                    ? "text-gray-900 border-b-2 border-gray-900"
-                    : ""
-                }`}
+                className="relative"
+                ref={index === tabs.length - 1 ? dropdownRef : null}
               >
-                {tab}
-              </button>
+                <button
+                  onClick={() => handleTabClick(index)}
+                  className={`px-6 py-3 text-gray-700 hover:text-gray-900 transition-all duration-200 ${
+                    currentTab === index && index !== tabs.length - 1
+                      ? "text-gray-900 border-b-2 border-gray-900"
+                      : ""
+                  }`}
+                >
+                  {tab}
+                </button>
+                {index === tabs.length - 1 && showDropdown && (
+                  <div className="absolute top-full left-0 w-[200px] bg-white border border-gray-200 rounded-lg shadow-lg z-20">
+                    {linkItems.map((item) => (
+                      <a
+                        key={item.name}
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block px-4 py-2 hover:bg-gray-100 text-[16px] text-gray-700"
+                      >
+                        {item.name}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
           </div>
         </div>

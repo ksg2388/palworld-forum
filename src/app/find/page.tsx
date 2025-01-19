@@ -10,7 +10,7 @@ const FindPage = () => {
       <div className="w-[400px] bg-white p-8 rounded-lg shadow-md">
         <div className="flex flex-col items-center mb-8">
           <Image
-            src="/images/logo-palworld.webp"
+            src="/images/logo-palworld-black.png"
             width={125}
             height={34}
             alt="logo"

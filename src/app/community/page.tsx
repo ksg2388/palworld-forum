@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 
@@ -48,7 +48,7 @@ const generateDummyPosts = () => {
 
 const POSTS_PER_PAGE = 10;
 
-const CommunityPage = () => {
+const CommunityContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [dummyPosts, setDummyPosts] = useState<Post[]>([]);
@@ -250,6 +250,22 @@ const CommunityPage = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const LoadingFallback = () => {
+  return (
+    <div className="w-full h-screen flex items-center justify-center">
+      <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+    </div>
+  );
+};
+
+const CommunityPage = () => {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <CommunityContent />
+    </Suspense>
   );
 };
 

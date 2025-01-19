@@ -1,14 +1,20 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { Editor } from "@toast-ui/react-editor";
-import "@toast-ui/editor/dist/toastui-editor.css";
+import dynamic from "next/dynamic";
+import { useRef, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import "@toast-ui/editor/dist/toastui-editor.css";
+import { Editor as EditorType } from '@toast-ui/react-editor';
 
-const WritePage = () => {
+const Editor = dynamic(
+  () => import("@toast-ui/react-editor").then((mod) => mod.Editor),
+  { ssr: false }
+);
+
+const WriteContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const editorRef = useRef<Editor>(null);
+  const editorRef = useRef<EditorType>(null);
   const [title, setTitle] = useState("");
   const currentTab = Number(searchParams.get("tab")) || 0;
 
@@ -73,6 +79,22 @@ const WritePage = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const LoadingFallback = () => {
+  return (
+    <div className="w-full h-screen flex items-center justify-center">
+      <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+    </div>
+  );
+};
+
+const WritePage = () => {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <WriteContent />
+    </Suspense>
   );
 };
 

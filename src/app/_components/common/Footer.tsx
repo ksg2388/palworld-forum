@@ -39,7 +39,7 @@ const Footer = () => {
         <div className="border-t border-gray-700 pt-4 flex justify-between items-center">
           <div className="flex gap-4">
             {[1, 2, 3, 4].map((num) => (
-              <div key={num} className="w-[160px] h-[80px] relative">
+              <div key={num} className="w-[200px] h-[120px] relative">
                 <Image 
                   src={`/images/test-image.png`} 
                   alt={`footer image ${num}`}

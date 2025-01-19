@@ -15,7 +15,7 @@ const Footer = () => {
             </Link>
           </div>
 
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 flex-[2]">
             <p className="text-gray-400 text-sm">
               팔월드 공식 커뮤니티
             </p>
@@ -24,7 +24,7 @@ const Footer = () => {
             </p>
           </div>
 
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 flex-[1]">
             <div>
               <h3 className="font-bold mb-2">관계자</h3>
               <ul className="space-y-1">
@@ -36,8 +36,20 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-gray-700 pt-4">
-          <p className="text-gray-400 text-sm text-center">
+        <div className="border-t border-gray-700 pt-4 flex justify-between items-center">
+          <div className="flex gap-4">
+            {[1, 2, 3, 4].map((num) => (
+              <div key={num} className="w-[160px] h-[80px] relative">
+                <Image 
+                  src={`/images/test-image.png`} 
+                  alt={`footer image ${num}`}
+                  fill 
+                  className="object-contain"
+                />
+              </div>
+            ))}
+          </div>
+          <p className="text-gray-400 text-sm">
             © 2024 Palworld Community. All rights reserved.
           </p>
         </div>

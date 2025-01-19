@@ -2,52 +2,84 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useSearchParams, useRouter } from "next/navigation";
 
-const tabs = ["공지사항", "자유게시판", "공략/팁", "서버홍보", "통합자료실", "링크"];
+interface Post {
+  id: number;
+  category: string;
+  title: string;
+  author: string;
+  date: string;
+  views: number;
+  comments: number;
+}
+
+const tabs = [
+  "공지사항",
+  "자유게시판",
+  "공략/팁",
+  "서버홍보",
+  "통합자료실",
+  "링크",
+];
 
 const linkItems = [
   { name: "팔월드 공식 홈페이지", url: "https://www.pocketpair.jp/palworld" },
-  { name: "팔월드 스팀", url: "https://store.steampowered.com/app/1623730/Palworld/" },
+  {
+    name: "팔월드 스팀",
+    url: "https://store.steampowered.com/app/1623730/Palworld/",
+  },
   { name: "팔월드 디스코드", url: "https://discord.gg/palworld" },
   { name: "팔월드 위키", url: "https://palworld.wiki.gg/" },
   { name: "팔월드 레딧", url: "https://www.reddit.com/r/Palworld/" },
 ];
 
-const dummyPosts = Array.from({ length: 105 }, (_, i) => ({
-  id: 105 - i,
-  // category: ["스크린샷", "자료", "홍보", "거래", "질문", "자유"][
-  //   Math.floor(Math.random() * 6)
-  // ],
-  title: `게시글 제목 ${105 - i}`,
-  author: `작성자${105 - i}`,
-  date: "2024.01.20",
-  views: 123,
-  comments: 11,
-}));
+const generateDummyPosts = () => {
+  return Array.from({ length: 105 }, (_, i) => ({
+    id: 105 - i,
+    category: ["스크린샷", "자료", "홍보", "거래", "질문", "자유"][i % 6],
+    title: `게시글 제목 ${105 - i}`,
+    author: `작성자${105 - i}`,
+    date: "2024.01.20",
+    views: 100 + i,
+    comments: 10 + (i % 20),
+  }));
+};
 
 const POSTS_PER_PAGE = 10;
 
 const CommunityPage = () => {
-  const totalPages = Math.ceil(dummyPosts.length / POSTS_PER_PAGE);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [currentTab, setCurrentTab] = useState(0);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [dummyPosts, setDummyPosts] = useState<Post[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    setDummyPosts(generateDummyPosts());
+  }, []);
+
+  const currentPage = Number(searchParams.get("page")) || 1;
+  const currentTab = Number(searchParams.get("tab")) || 0;
+
+  const totalPages = Math.ceil(dummyPosts.length / POSTS_PER_PAGE);
   const indexOfLastPost = currentPage * POSTS_PER_PAGE;
   const indexOfFirstPost = indexOfLastPost - POSTS_PER_PAGE;
   const currentPosts = dummyPosts.slice(indexOfFirstPost, indexOfLastPost);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setShowDropdown(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -63,13 +95,17 @@ const CommunityPage = () => {
 
   const handlePrevGroup = () => {
     if (startPage > 1) {
-      setCurrentPage(startPage - pageGroupSize);
+      router.push(
+        `/community?tab=${currentTab}&page=${startPage - pageGroupSize}`
+      );
     }
   };
 
   const handleNextGroup = () => {
     if (endPage < totalPages) {
-      setCurrentPage(startPage + pageGroupSize);
+      router.push(
+        `/community?tab=${currentTab}&page=${startPage + pageGroupSize}`
+      );
     }
   };
 
@@ -77,9 +113,13 @@ const CommunityPage = () => {
     if (index === tabs.length - 1) {
       setShowDropdown(!showDropdown);
     } else {
-      setCurrentTab(index);
+      router.push(`/community?tab=${index}&page=1`);
       setShowDropdown(false);
     }
+  };
+
+  const handlePageChange = (page: number) => {
+    router.push(`/community?tab=${currentTab}&page=${page}`);
   };
 
   return (
@@ -88,7 +128,11 @@ const CommunityPage = () => {
         <div className="max-w-[1200px] mx-auto">
           <div className="flex items-center gap-0 font-semibold text-[20px] relative">
             {tabs.map((tab, index) => (
-              <div key={tab} className="relative" ref={index === tabs.length - 1 ? dropdownRef : null}>
+              <div
+                key={tab}
+                className="relative"
+                ref={index === tabs.length - 1 ? dropdownRef : null}
+              >
                 <button
                   onClick={() => handleTabClick(index)}
                   className={`px-6 py-3 text-gray-700 hover:text-gray-900 transition-all duration-200 ${
@@ -123,9 +167,12 @@ const CommunityPage = () => {
       <div className="w-full max-w-[1200px] mx-auto pt-[200px] pb-[50px]">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold">{tabs[currentTab]}</h1>
-          <button className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700">
+          <Link
+            href={`/community/write?tab=${currentTab}`}
+            className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700"
+          >
             글쓰기
-          </button>
+          </Link>
         </div>
 
         <div className="bg-white border border-gray-200 rounded-lg">
@@ -144,7 +191,7 @@ const CommunityPage = () => {
 
           {currentPosts.map((post) => (
             <Link
-              href={`/community/${post.id}`}
+              href={`/community/${post.id}?tab=${currentTab}&page=${currentPage}`}
               key={post.id}
               className="flex items-center justify-between p-4 border-b border-gray-200 hover:bg-gray-50"
             >
@@ -179,7 +226,7 @@ const CommunityPage = () => {
           {pageNumbers.map((number) => (
             <button
               key={number}
-              onClick={() => setCurrentPage(number)}
+              onClick={() => handlePageChange(number)}
               className={`px-3 py-1 rounded ${
                 currentPage === number
                   ? "bg-gray-800 text-white"

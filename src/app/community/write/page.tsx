@@ -3,13 +3,11 @@
 import dynamic from "next/dynamic";
 import { useRef, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import "@toast-ui/editor/dist/toastui-editor.css";
-import { Editor as EditorType } from '@toast-ui/react-editor';
+import { Editor as EditorType } from "@toast-ui/react-editor";
 
-const Editor = dynamic(
-  () => import("@toast-ui/react-editor").then((mod) => mod.Editor),
-  { ssr: false }
-);
+const TuiEditor = dynamic(() => import("@/app/_components/editor/TuiEditor"), {
+  ssr: false,
+});
 
 const WriteContent = () => {
   const router = useRouter();
@@ -52,15 +50,7 @@ const WriteContent = () => {
         </div>
 
         <div className="min-h-[500px]">
-          <Editor
-            ref={editorRef}
-            initialValue=""
-            previewStyle="vertical"
-            height="500px"
-            initialEditType="wysiwyg"
-            useCommandShortcut={true}
-            hideModeSwitch={true}
-          />
+          <TuiEditor ref={editorRef} />
         </div>
 
         <div className="flex justify-end gap-2 mt-4">

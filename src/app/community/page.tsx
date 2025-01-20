@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
+import SearchBar from "../_components/community/SearchBar";
 
 interface Post {
   id: number;
@@ -167,12 +168,15 @@ const CommunityContent = () => {
       <div className="w-full max-w-[1200px] mx-auto pt-[200px] pb-[50px]">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold">{tabs[currentTab]}</h1>
-          <Link
-            href={`/community/write?tab=${currentTab}`}
-            className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700"
-          >
-            글쓰기
-          </Link>
+          <div className="flex items-center gap-4">
+            <SearchBar currentTab={currentTab} />
+            <Link
+              href={`/community/write?tab=${currentTab}`}
+              className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700"
+            >
+              글쓰기
+            </Link>
+          </div>
         </div>
 
         <div className="bg-white border border-gray-200 rounded-lg">

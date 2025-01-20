@@ -32,27 +32,28 @@ const ApplyPage = () => {
 
         <div className="space-y-6 text-gray-700">
           <section className="space-y-4">
-            <h2 className="text-xl font-semibold">제 1조 (목적)</h2>
+            <h2 className="text-xl font-semibold">1. 입주 규칙</h2>
             <p>
-              {`본 약관은 KOFIQA 서버(이하 "서버")의 이용과 관련하여 서버와
-              이용자의 권리, 의무 및 책임사항을 규정함을 목적으로 합니다.`}
+              1-1. 서버 이용자는 서버 규칙을 반드시 숙지하고 서버를 이용해야
+              합니다.
             </p>
+            <p>1-2. 모든 유저에게 공정한 게임 환경을 제공하고자 합니다.</p>
+            <p>
+              1-3. 다른 유저를 존중하고 예의바른 태도로 게임을 즐겨주시기
+              바랍니다.
+            </p>
+            <p>1-4. 서버 내 채팅에서는 욕설이나 비하발언이 금지됩니다.</p>
+            <p>1-5. 버그 악용이나 서버 해킹 시도는 엄격히 금지됩니다.</p>
           </section>
 
           <section className="space-y-4">
-            <h2 className="text-xl font-semibold">제 2조 (약관의 효력)</h2>
-            <p>1. 본 약관은 서버 입주를 신청한 시점부터 효력이 발생합니다.</p>
+            <h2 className="text-xl font-semibold">2. 플레이어 규칙</h2>
             <p>
-              2. 서버는 필요한 경우 약관을 변경할 수 있으며, 변경된 약관은 서버
-              내 공지사항을 통해 고지합니다.
+              2-1. 타 플레이어의 건축물이나 시설을 무단으로 파괴하는 행위는
+              금지됩니다.
             </p>
-          </section>
-
-          <section className="space-y-4">
-            <h2 className="text-xl font-semibold">제 3조 (이용자의 의무)</h2>
-            <p>1. 이용자는 서버 규칙을 준수해야 합니다.</p>
-            <p>2. 이용자는 다른 이용자의 게임 진행을 방해해서는 안 됩니다.</p>
-            <p>3. 이용자는 서버 내 질서를 해치는 행위를 해서는 안 됩니다.</p>
+            <p>2-2. 서버 내 거래는 지정된 거래소에서만 이루어져야 합니다.</p>
+            <p>2-3. 게임 내 버그를 발견 시 즉시 관리자에게 보고해야 합니다.</p>
           </section>
         </div>
 

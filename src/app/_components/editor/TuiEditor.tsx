@@ -4,8 +4,8 @@ import dynamic from "next/dynamic";
 import { forwardRef } from "react";
 import "@toast-ui/editor/dist/toastui-editor.css";
 import { Editor as EditorType } from "@toast-ui/react-editor";
-import colorSyntax from "@toast-ui/editor-plugin-color-syntax";
-import "tui-color-picker/dist/tui-color-picker.css";
+// import colorSyntax from "@toast-ui/editor-plugin-color-syntax";
+// import "tui-color-picker/dist/tui-color-picker.css";
 import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css";
 
 const Editor = dynamic(
@@ -23,7 +23,7 @@ const TuiEditor = forwardRef<EditorType>((_, ref) => {
       initialEditType="wysiwyg"
       useCommandShortcut={true}
       hideModeSwitch={true}
-      plugins={[colorSyntax]}
+      // plugins={[colorSyntax]}
     />
   );
 });

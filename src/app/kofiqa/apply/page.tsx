@@ -24,7 +24,7 @@ const ApplyPage = () => {
     <div className="mt-[110px] max-w-[1200px] mx-auto p-8">
       <CustomAlert
         isOpen={showAlert}
-        message="서버 입주 신청이 완료되었습니다."
+        message="서버 입주 신청이 완료되었습니다.\nKOFIQA 서버로 바로가기.\n비밀번호:1111"
         onClose={handleAlertClose}
       />
       <div className="bg-white border border-gray-200 p-6 rounded-lg">

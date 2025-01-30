@@ -3,26 +3,106 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const SignupPage = () => {
+  const router = useRouter();
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [nickname, setNickname] = useState("");
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
   const [showVerification, setShowVerification] = useState(false);
 
-  const handleSendVerification = (e: React.MouseEvent) => {
+  const handleSendVerification = async (e: React.MouseEvent) => {
     e.preventDefault();
     if (email) {
-      // 이메일 인증 코드 전송 로직
-      setShowVerification(true);
+      try {
+        const response = await fetch("http://localhost:8080/auth/send-verification-code", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        });
+
+        const data = await response.json();
+        
+        if (data.http_status === "CREATED") {
+          setShowVerification(true);
+          alert(data.message);
+        }
+      } catch (error) {
+        console.error("인증번호 발송 실패:", error);
+        alert("인증번호 발송에 실패했습니다. 다시 시도해주세요.");
+      }
     }
   };
 
-  const handleVerifyCode = (e: React.MouseEvent) => {
+  const handleVerifyCode = async (e: React.MouseEvent) => {
     e.preventDefault();
     if (verificationCode) {
-      // 인증 코드 확인 로직
-      setIsEmailVerified(true);
+      try {
+        const response = await fetch("http://localhost:8080/auth/verify-code", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ 
+            email,
+            verification_code: verificationCode 
+          }),
+        });
+
+        const data = await response.json();
+        
+        if (data.http_status === "ACCEPTED") {
+          setIsEmailVerified(true);
+          alert(data.message);
+        }
+      } catch (error) {
+        console.error("인증번호 확인 실패:", error);
+        alert("인증번호 확인에 실패했습니다. 다시 시도해주세요.");
+      }
+    }
+  };
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!isEmailVerified) {
+      alert("이메일 인증을 완료해주세요.");
+      return;
+    }
+
+    if (password !== passwordConfirm) {
+      alert("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:8080/members", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          nickname,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.http_status === "CREATED") {
+        alert(data.message);
+        router.push("/login");
+      }
+    } catch (error) {
+      console.error("회원가입 실패:", error);
+      alert("회원가입에 실패했습니다. 다시 시도해주세요.");
     }
   };
 
@@ -40,7 +120,7 @@ const SignupPage = () => {
           <h4 className="text-2xl font-bold text-gray-800">회원가입</h4>
         </div>
 
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSignup}>
           <div className="flex gap-2">
             <input
               type="email"
@@ -80,23 +160,28 @@ const SignupPage = () => {
           <input
             type="password"
             placeholder="비밀번호"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800"
           />
           <input
             type="password"
             placeholder="비밀번호 확인"
+            value={passwordConfirm}
+            onChange={(e) => setPasswordConfirm(e.target.value)}
             className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800"
           />
           <input
             type="text"
             placeholder="닉네임"
+            value={nickname}
+            onChange={(e) => setNickname(e.target.value)}
             className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800"
           />
 
           <button
             type="submit"
             className="w-full py-3 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors disabled:bg-gray-400"
-            onClick={(e) => e.preventDefault()}
             disabled={!isEmailVerified}
           >
             회원가입

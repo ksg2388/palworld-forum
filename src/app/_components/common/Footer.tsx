@@ -23,7 +23,7 @@ const Footer = () => {
           <div className="flex flex-col gap-8 flex-1">
             <div className="flex flex-col gap-2">
               <p className="text-gray-400 text-sm max-w-[600px]">
-                {`팔월드 공식 커뮤니티 | 팔월드 유저들을 위한 공식 커뮤니티 사이트입니다. 게임 정보와 유저들간의 소통을 위한 공간을 제공합니다. 관계자 | 운영진: 팔월드 코리아 | 개발: 웹 개발팀 | 디자인: UI/UX팀\n\n`}
+                {`팔월드 한국 포럼 | 팔월드 유저들을 위한 공식 커뮤니티 사이트입니다. 게임 정보와 유저들간의 소통을 위한 공간을 제공합니다. 관계자 | 운영진: 팔월드 코리아 | 개발: 웹 개발팀 | 디자인: UI/UX팀\n\n`}
               </p>
               <p className="text-gray-400 text-sm max-w-[600px]">
                 © 2024 Palworld Community. All rights reserved.

@@ -4,20 +4,11 @@ import React, { useState, useEffect, useRef, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import SearchBar from "../_components/community/SearchBar";
-
-interface Post {
-  id: number;
-  category: string;
-  title: string;
-  author: string;
-  date: string;
-  views: number;
-  comments: number;
-}
+import { TCommunity } from "../types/community/community.types";
 
 const tabs = [
   "공지사항",
-  "자유게시판",
+  "자유게시판", 
   "공략/팁",
   "서버홍보",
   "통합자료실",
@@ -35,38 +26,42 @@ const linkItems = [
   { name: "팔월드 레딧", url: "https://www.reddit.com/r/Palworld/" },
 ];
 
-const generateDummyPosts = () => {
-  return Array.from({ length: 105 }, (_, i) => ({
-    id: 105 - i,
-    category: ["스크린샷", "자료", "홍보", "거래", "질문", "자유"][i % 6],
-    title: `게시글 제목 ${105 - i}`,
-    author: `작성자${105 - i}`,
-    date: "2024.01.20",
-    views: 100 + i,
-    comments: 10 + (i % 20),
-  }));
-};
-
 const POSTS_PER_PAGE = 10;
 
 const CommunityContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [dummyPosts, setDummyPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<TCommunity[]>([]);
+  const [totalPages, setTotalPages] = useState(0);
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    setDummyPosts(generateDummyPosts());
-  }, []);
-
   const currentPage = Number(searchParams.get("page")) || 1;
   const currentTab = Number(searchParams.get("tab")) || 0;
+  const keyword = searchParams.get("keyword") || "";
+  const searchType = searchParams.get("searchType") || "TITLE";
+  const sort = searchParams.get("sort") || "RECENT";
 
-  const totalPages = Math.ceil(dummyPosts.length / POSTS_PER_PAGE);
-  const indexOfLastPost = currentPage * POSTS_PER_PAGE;
-  const indexOfFirstPost = indexOfLastPost - POSTS_PER_PAGE;
-  const currentPosts = dummyPosts.slice(indexOfFirstPost, indexOfLastPost);
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await fetch(
+          `/api/announcements?search-type=${searchType}&page=${currentPage}&limit=${POSTS_PER_PAGE}&keyword=${keyword}&sort=${sort}`
+        );
+        const result = await response.json();
+        
+        if (result.http_status === "OK") {
+          setPosts(result.data);
+          // 총 페이지 수 계산 로직 필요
+          setTotalPages(Math.ceil(result.data.length / POSTS_PER_PAGE));
+        }
+      } catch (error) {
+        console.error("게시글 조회 실패:", error);
+      }
+    };
+
+    fetchPosts();
+  }, [currentPage, currentTab, keyword, searchType, sort]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -97,7 +92,7 @@ const CommunityContent = () => {
   const handlePrevGroup = () => {
     if (startPage > 1) {
       router.push(
-        `/community?tab=${currentTab}&page=${startPage - pageGroupSize}`
+        `/community?tab=${currentTab}&page=${startPage - pageGroupSize}&keyword=${keyword}&searchType=${searchType}&sort=${sort}`
       );
     }
   };
@@ -105,7 +100,7 @@ const CommunityContent = () => {
   const handleNextGroup = () => {
     if (endPage < totalPages) {
       router.push(
-        `/community?tab=${currentTab}&page=${startPage + pageGroupSize}`
+        `/community?tab=${currentTab}&page=${startPage + pageGroupSize}&keyword=${keyword}&searchType=${searchType}&sort=${sort}`
       );
     }
   };
@@ -120,7 +115,7 @@ const CommunityContent = () => {
   };
 
   const handlePageChange = (page: number) => {
-    router.push(`/community?tab=${currentTab}&page=${page}`);
+    router.push(`/community?tab=${currentTab}&page=${page}&keyword=${keyword}&searchType=${searchType}&sort=${sort}`);
   };
 
   return (
@@ -193,7 +188,7 @@ const CommunityContent = () => {
             </div>
           </div>
 
-          {currentPosts.map((post) => (
+          {posts.map((post) => (
             <Link
               href={`/community/${post.id}?tab=${currentTab}&page=${currentPage}`}
               key={post.id}
@@ -207,9 +202,9 @@ const CommunityContent = () => {
               </div>
               <div className="flex items-center gap-4 text-sm text-gray-500">
                 <span className="w-[100px] text-center">{post.author}</span>
-                <span className="w-[100px] text-center">{post.date}</span>
-                <span className="w-[80px] text-center">{post.views}</span>
-                <span className="w-[80px] text-center">{post.comments}</span>
+                <span className="w-[100px] text-center">{new Date(post.created_at).toLocaleDateString()}</span>
+                <span className="w-[80px] text-center">{post.hits}</span>
+                <span className="w-[80px] text-center">{post.count_of_comments}</span>
               </div>
             </Link>
           ))}

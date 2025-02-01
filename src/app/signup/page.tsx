@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { API_BASE_URL } from "@/config/api";
+import { API_ENDPOINTS } from "@/config/api";
 
 const SignupPage = () => {
   const router = useRouter();
@@ -19,7 +21,7 @@ const SignupPage = () => {
     e.preventDefault();
     if (email) {
       try {
-        const response = await fetch("http://localhost:8080/auth/send-verification-code", {
+        const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.SEND_VERIFICATION}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -44,7 +46,7 @@ const SignupPage = () => {
     e.preventDefault();
     if (verificationCode) {
       try {
-        const response = await fetch("http://localhost:8080/auth/verify-code", {
+        const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.VERIFY_CODE}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -82,7 +84,7 @@ const SignupPage = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/members", {
+      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.SIGNUP}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

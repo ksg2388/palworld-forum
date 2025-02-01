@@ -4,9 +4,28 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { TUser } from "../types/common/common.types";
+import { API_ENDPOINTS } from "@/config/api";
+import { API_BASE_URL } from "@/config/api"; 
+import useUserStore from "../_store/userSotre";
+
+interface LoginResponse {
+  http_status: string;
+  message: string;
+  data: {
+    email: string;
+    nickname: string; 
+    member_role: string;
+    token: {
+      refresh_token: string;
+      access_token: string;
+    }
+  }
+}
 
 const LoginPage = () => {
   const router = useRouter();
+  const login = useUserStore((state) => state.login);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -26,7 +45,7 @@ const LoginPage = () => {
     setError("");
 
     try {
-      const response = await fetch("/auth/login", {
+      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.LOGIN}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -34,14 +53,19 @@ const LoginPage = () => {
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
+      const data: LoginResponse = await response.json();
 
       if (!response.ok) {
         throw new Error(data.message || "로그인에 실패했습니다.");
       }
 
-      // JWT 토큰을 로컬 스토리지에 저장
-      localStorage.setItem("token", data.token);
+      // Zustand store에 유저 정보와 토큰 저장
+      const user: TUser = {
+        email: data.data.email,
+        nickname: data.data.nickname,
+        member_role: data.data.member_role
+      };
+      login(user, data.data.token.access_token, data.data.token.refresh_token);
 
       // 홈페이지로 리다이렉트
       router.push("/");

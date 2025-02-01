@@ -3,6 +3,19 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import CustomAlert from "@/app/_components/common/CustomAlert";
+import { API_BASE_URL } from "@/config/api";
+import useUserStore from "../_store/userSotre";
+import { makeAuthorizedRequest } from "../_utils/api";
+
+interface UpdateResponse {
+  http_status: string;
+  message: string;
+  data: {
+    email: string;
+    nickname: string;
+    member_role: string;
+  }
+}
 
 const MyPage = () => {
   const router = useRouter();
@@ -14,6 +27,7 @@ const MyPage = () => {
   const [alertMessage, setAlertMessage] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 5;
+  const {  setUser, logout } = useUserStore();
 
   const dummyPosts = [
     { id: 1, title: "게시글 제목 1", date: "2024.01.20", views: 100 },
@@ -21,29 +35,94 @@ const MyPage = () => {
     { id: 3, title: "게시글 제목 3", date: "2024.01.18", views: 120 },
   ];
 
-  const handlePasswordChange = (e: React.FormEvent) => {
+  const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
       setAlertMessage("새 비밀번호가 일치하지 않습니다.");
       setShowAlert(true);
       return;
     }
-    // 비밀번호 변경 로직
-    setAlertMessage("비밀번호가 변경되었습니다.");
-    setShowAlert(true);
+
+    try {
+      const response = await makeAuthorizedRequest(`${API_BASE_URL}/members`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          password: newPassword,
+          nickname: ""
+        })
+      });
+
+      const data: UpdateResponse = await response.json();
+
+      setUser({
+        email: data.data.email,
+        nickname: data.data.nickname,
+        member_role: data.data.member_role
+      });
+
+      setAlertMessage("비밀번호가 변경되었습니다.");
+      setShowAlert(true);
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (err) {
+      setAlertMessage(err instanceof Error ? err.message : "비밀번호 변경에 실패했습니다.");
+      setShowAlert(true);
+    }
   };
 
-  const handleNicknameChange = (e: React.FormEvent) => {
+  const handleNicknameChange = async (e: React.FormEvent) => {
     e.preventDefault();
-    // 닉네임 변경 로직
-    setAlertMessage("닉네임이 변경되었습니다.");
-    setShowAlert(true);
+    
+    try {
+      const response = await makeAuthorizedRequest(`${API_BASE_URL}/members`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          password: "",
+          nickname: nickname
+        })
+      });
+
+      const data: UpdateResponse = await response.json();
+
+      setUser({
+        email: data.data.email,
+        nickname: data.data.nickname,
+        member_role: data.data.member_role
+      });
+
+      setAlertMessage("닉네임이 변경되었습니다.");
+      setShowAlert(true);
+    } catch (err) {
+      setAlertMessage(err instanceof Error ? err.message : "닉네임 변경에 실패했습니다.");
+      setShowAlert(true);
+    }
   };
 
-  const handleDeleteAccount = () => {
+  const handleDeleteAccount = async () => {
     if (window.confirm("정말로 탈퇴하시겠습니까?")) {
-      // 회원 탈퇴 로직
-      router.push("/");
+      try {
+        await makeAuthorizedRequest(`${API_BASE_URL}/members`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          }
+        });
+
+        setAlertMessage("회원 탈퇴가 완료되었습니다.");
+        setShowAlert(true);
+        logout();
+        router.push("/");
+      } catch (err) {
+        setAlertMessage(err instanceof Error ? err.message : "회원 탈퇴에 실패했습니다.");
+        setShowAlert(true);
+      }
     }
   };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -26,11 +26,18 @@ interface LoginResponse {
 const LoginPage = () => {
   const router = useRouter();
   const login = useUserStore((state) => state.login);
+  const { accessToken } = useUserStore();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (accessToken) {
+      router.push('/');
+    }
+  }, [accessToken, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

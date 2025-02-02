@@ -71,7 +71,8 @@ const WriteContent = () => {
       const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${accessToken}`
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'multipart/form-data'
         },
         body: formData
       });

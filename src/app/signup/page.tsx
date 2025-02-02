@@ -16,6 +16,18 @@ const SignupPage = () => {
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
   const [showVerification, setShowVerification] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+
+  const validatePassword = (password: string) => {
+    const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+    if (password.length < 8 || password.length > 16) {
+      return "비밀번호는 8~16자리여야 합니다.";
+    }
+    if (!specialCharRegex.test(password)) {
+      return "비밀번호는 최소 1개의 특수문자를 포함해야 합니다.";
+    }
+    return "";
+  };
 
   const handleSendVerification = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -78,6 +90,12 @@ const SignupPage = () => {
       return;
     }
 
+    const passwordValidationError = validatePassword(password);
+    if (passwordValidationError) {
+      alert(passwordValidationError);
+      return;
+    }
+
     if (password !== passwordConfirm) {
       alert("비밀번호가 일치하지 않습니다.");
       return;
@@ -106,6 +124,12 @@ const SignupPage = () => {
       console.error("회원가입 실패:", error);
       alert("회원가입에 실패했습니다. 다시 시도해주세요.");
     }
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPassword = e.target.value;
+    setPassword(newPassword);
+    setPasswordError(validatePassword(newPassword));
   };
 
   return (
@@ -159,13 +183,18 @@ const SignupPage = () => {
             </div>
           )}
 
-          <input
-            type="password"
-            placeholder="비밀번호"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800"
-          />
+          <div>
+            <input
+              type="password"
+              placeholder="비밀번호 (8~16자리, 특수문자 포함)"
+              value={password}
+              onChange={handlePasswordChange}
+              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800"
+            />
+            {passwordError && (
+              <p className="mt-1 text-sm text-red-500">{passwordError}</p>
+            )}
+          </div>
           <input
             type="password"
             placeholder="비밀번호 확인"
@@ -184,7 +213,7 @@ const SignupPage = () => {
           <button
             type="submit"
             className="w-full py-3 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors disabled:bg-gray-400"
-            disabled={!isEmailVerified}
+            disabled={!isEmailVerified || !!passwordError}
           >
             회원가입
           </button>

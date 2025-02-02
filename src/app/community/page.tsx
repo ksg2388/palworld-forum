@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import SearchBar from "../_components/community/SearchBar";
 import { TCommunity } from "../types/community/community.types";
+import { API_BASE_URL } from "@/config/api";
 
 const tabs = [
   "공지사항",
@@ -42,11 +43,29 @@ const CommunityContent = () => {
   const searchType = searchParams.get("searchType") || "TITLE";
   const sort = searchParams.get("sort") || "RECENT";
 
+  const getEndpoint = (tab: number) => {
+    switch(tab) {
+      case 0:
+        return 'announcements';
+      case 1:
+        return 'frees';
+      case 2:
+        return 'guides';
+      case 3:
+        return 'promotions';
+      case 4:
+        return 'datas';
+      default:
+        return 'announcements';
+    }
+  };
+
   useEffect(() => {
     const fetchPosts = async () => {
       try {
+        const endpoint = getEndpoint(currentTab);
         const response = await fetch(
-          `/api/announcements?search-type=${searchType}&page=${currentPage}&limit=${POSTS_PER_PAGE}&keyword=${keyword}&sort=${sort}`
+          `${API_BASE_URL}/${endpoint}?page=${currentPage}&limit=${POSTS_PER_PAGE}&keyword=${keyword}&sort=${sort}`
         );
         const result = await response.json();
         

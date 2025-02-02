@@ -13,8 +13,8 @@ const pretendard = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "팰월드 공식포럼",
-  description: "팰월드 한국 공식 포럼입니다.",
+  title: "팰월드 한국 포럼",
+  description: "팰월드 한국 포럼입니다.",
 };
 
 export default function RootLayout({

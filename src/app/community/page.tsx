@@ -137,6 +137,17 @@ const CommunityContent = () => {
     router.push(`/community?tab=${currentTab}&page=${page}&keyword=${keyword}&searchType=${searchType}&sort=${sort}`);
   };
 
+  const handleWriteClick = () => {
+    // 로그인 상태 체크 (예: localStorage나 상태 관리 도구에서 토큰 확인)
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert("로그인 후 이용해주세요.");
+      router.push('/login');
+      return;
+    }
+    router.push(`/community/write?tab=${currentTab}`);
+  };
+
   return (
     <div className="w-full">
       <div className="fixed top-[110px] left-0 right-0 bg-white z-10 border-b">
@@ -184,12 +195,12 @@ const CommunityContent = () => {
           <h1 className="text-2xl font-bold">{tabs[currentTab]}</h1>
           <div className="flex items-center gap-4">
             <SearchBar currentTab={currentTab} />
-            <Link
-              href={`/community/write?tab=${currentTab}`}
+            <button
+              onClick={handleWriteClick}
               className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700"
             >
               글쓰기
-            </Link>
+            </button>
           </div>
         </div>
 

@@ -1,9 +1,10 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useRef, useState, Suspense } from "react";
+import { useRef, useState, Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Editor as EditorType } from "@toast-ui/react-editor";
+import { API_BASE_URL } from "@/config/api";
 
 const TuiEditor = dynamic(() => import("@/app/_components/editor/TuiEditor"), {
   ssr: false,
@@ -14,9 +15,33 @@ const WriteContent = () => {
   const searchParams = useSearchParams();
   const editorRef = useRef<EditorType>(null);
   const [title, setTitle] = useState("");
+  const [attachments, setAttachments] = useState<string[]>([]);
   const currentTab = Number(searchParams.get("tab")) || 0;
 
-  const handleSubmit = () => {
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert("로그인 후 이용해주세요.");
+      router.push('/login');
+    }
+  }, [router]);
+
+  const getEndpoint = (tab: number) => {
+    switch(tab) {
+      case 0:
+        return 'announcements';
+      case 1:
+        return 'frees';
+      case 2:
+        return 'guides';
+      case 3:
+        return 'promotions';
+      case 4:
+        return 'datas';
+    }
+  };
+
+  const handleSubmit = async () => {
     const content = editorRef.current?.getInstance().getMarkdown();
 
     if (!title.trim()) {
@@ -29,12 +54,48 @@ const WriteContent = () => {
       return;
     }
 
-    // TODO: API 연동
-    console.log({ title, content });
+    try {
+      const token = localStorage.getItem('token');
+      const endpoint = getEndpoint(currentTab);
 
-    // 임시로 목록으로 돌아가기
-    router.push(`/community?tab=${currentTab}&page=1`);
+      const formData = new FormData();
+      formData.append('data', JSON.stringify({
+        title: title,
+        content: content
+      }));
+      
+      attachments.forEach((attachment) => {
+        formData.append('attachments', attachment);
+      });
+
+      const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (data.http_status === "CREATED") {
+        alert("게시글이 등록되었습니다.");
+        router.push(`/community?tab=${currentTab}&page=1`);
+      } else {
+        alert("게시글 등록에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("게시글 등록 실패:", error);
+      alert("게시글 등록에 실패했습니다. 다시 시도해주세요.");
+    }
   };
+
+  // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const files = e.target.files;
+  //   if (files) {
+  //     setAttachments(Array.from(files));
+  //   }
+  // };
 
   return (
     <div className="w-full max-w-[1200px] mx-auto pt-[150px] pb-[50px]">

@@ -5,6 +5,7 @@ import { useRef, useState, Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Editor as EditorType } from "@toast-ui/react-editor";
 import { API_BASE_URL } from "@/config/api";
+import useUserStore from "@/app/_store/userSotre";
 
 const TuiEditor = dynamic(() => import("@/app/_components/editor/TuiEditor"), {
   ssr: false,
@@ -17,14 +18,14 @@ const WriteContent = () => {
   const [title, setTitle] = useState("");
   const [attachments, setAttachments] = useState<string[]>([]);
   const currentTab = Number(searchParams.get("tab")) || 0;
+  const { accessToken } = useUserStore();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
+    if (!accessToken) {
       alert("로그인 후 이용해주세요.");
       router.push('/login');
     }
-  }, [router]);
+  }, [router, accessToken]);
 
   const getEndpoint = (tab: number) => {
     switch(tab) {
@@ -55,7 +56,6 @@ const WriteContent = () => {
     }
 
     try {
-      const token = localStorage.getItem('token');
       const endpoint = getEndpoint(currentTab);
 
       const formData = new FormData();
@@ -71,7 +71,7 @@ const WriteContent = () => {
       const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${accessToken}`
         },
         body: formData
       });

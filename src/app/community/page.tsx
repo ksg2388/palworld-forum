@@ -6,6 +6,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import SearchBar from "../_components/community/SearchBar";
 import { TCommunity } from "../types/community/community.types";
 import { API_BASE_URL } from "@/config/api";
+import useUserStore from "../_store/userSotre";
 
 const tabs = [
   "공지사항",
@@ -36,6 +37,7 @@ const CommunityContent = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { accessToken } = useUserStore();
 
   const currentPage = Number(searchParams.get("page")) || 1;
   const currentTab = Number(searchParams.get("tab")) || 0;
@@ -138,9 +140,7 @@ const CommunityContent = () => {
   };
 
   const handleWriteClick = () => {
-    // 로그인 상태 체크 (예: localStorage나 상태 관리 도구에서 토큰 확인)
-    const token = localStorage.getItem('token');
-    if (!token) {
+    if (!accessToken) {
       alert("로그인 후 이용해주세요.");
       router.push('/login');
       return;

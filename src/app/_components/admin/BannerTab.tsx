@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useState } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
+import { makeAuthorizedRequest } from "@/app/_utils/api";
+import { API_BASE_URL } from "@/config/api";
 
 const BannerTab = () => {
   const [bannerImages, setBannerImages] = useState<string[]>([]);
@@ -52,9 +54,36 @@ const BannerTab = () => {
     setBannerImages(items);
   };
 
+  const handleSave = async () => {
+    try {
+      const response = await makeAuthorizedRequest(`${API_BASE_URL}/admin/banners`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ bannerImages }),
+      });
+
+      if (response.ok) {
+        alert("배너 이미지가 성공적으로 저장되었습니다.");
+      }
+    } catch (error) {
+      console.error("배너 이미지 저장 실패:", error);
+      alert("배너 이미지 저장에 실패했습니다.");
+    }
+  };
+
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold mb-4">배너 이미지 관리</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-bold">배너 이미지 관리</h2>
+        <button
+          onClick={handleSave}
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+        >
+          저장
+        </button>
+      </div>
       <div 
         className={`mb-4 p-8 border-2 border-dashed rounded-lg text-center ${
           isDragging ? 'border-gray-800 bg-gray-100' : 'border-gray-300'
@@ -118,4 +147,4 @@ const BannerTab = () => {
   );
 };
 
-export default BannerTab; 
+export default BannerTab;

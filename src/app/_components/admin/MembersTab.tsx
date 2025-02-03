@@ -4,9 +4,35 @@ import { makeAuthorizedRequest } from "@/app/_utils/api";
 import { API_BASE_URL } from "@/config/api";
 import { useEffect, useState } from "react";
 
+type TMember = {
+  email: string;
+  nickname: string;
+  member_role: "ADMIN" | "PARTNER" | "NORMAL" | "LEGENDARY" | "HEROIC" | "RARE" | "EXTRA_ORDINARY";
+};
 
 const MembersTab = () => {
-  const [members, setMembers] = useState([]);
+  const [members, setMembers] = useState<TMember[]>([]);
+
+  const getMemberRoleText = (role: TMember["member_role"]) => {
+    switch (role) {
+      case "ADMIN":
+        return "운영자";
+      case "PARTNER":
+        return "파트너";
+      case "LEGENDARY":
+        return "전설";
+      case "HEROIC":
+        return "영웅";
+      case "RARE":
+        return "희귀";
+      case "EXTRA_ORDINARY":
+        return "비범";
+      case "NORMAL":
+        return "일반";
+      default:
+        return role;
+    }
+  };
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -15,7 +41,7 @@ const MembersTab = () => {
           method: "GET"
         });
         const data = await response.json();
-        console.log("회원 목록 조회 결과:", data);
+        setMembers(data.data);
       } catch (error) {
         console.error("회원 목록 조회 실패:", error);
       }
@@ -33,12 +59,21 @@ const MembersTab = () => {
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">이메일</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">닉네임</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">가입일</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">등급</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">관리</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {/* 회원 목록이 여기에 들어갑니다 */}
+            {members.map((member) => (
+              <tr key={member.email}>
+                <td>{member.email}</td>
+                <td>{member.nickname}</td>
+                <td>{getMemberRoleText(member.member_role)}</td>
+                <td>
+                  <button>삭제</button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

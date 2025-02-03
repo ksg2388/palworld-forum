@@ -1,7 +1,8 @@
 "use client";
 
+import { makeAuthorizedRequest } from "@/app/_utils/api";
 import { useEffect, useState } from "react";
-import { makeAuthorizedRequest } from "@/app/_utils/makeAuthorizedRequest";
+
 
 const MembersTab = () => {
   const [members, setMembers] = useState([]);

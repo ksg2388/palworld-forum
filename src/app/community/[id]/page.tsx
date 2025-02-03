@@ -50,6 +50,8 @@ const CommunityDetail = () => {
         
         if (result.http_status === "OK") {
           setPost(result.data[0]);
+          console.log(result.data[0]);
+          
         } else {
           console.error("게시글 조회 실패:", result.message);
         }

@@ -43,7 +43,7 @@ const WriteContent = () => {
   };
 
   const handleSubmit = async () => {
-    const content = editorRef.current?.getInstance().getMarkdown();
+    const content = editorRef.current?.getInstance().getHTML();
 
     if (!title.trim()) {
       alert("제목을 입력해주세요.");
@@ -72,6 +72,7 @@ const WriteContent = () => {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
         },
         body: formData
       });

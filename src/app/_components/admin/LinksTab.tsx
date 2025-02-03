@@ -35,7 +35,7 @@ const LinksTab = () => {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ id, title, url })
+        body: JSON.stringify({ title, url })
       });
     } catch (error) {
       console.error("통합게시판 링크 저장 실패:", error);
@@ -82,7 +82,7 @@ const LinksTab = () => {
       <h2 className="text-xl font-bold mb-4">링크 관리</h2>
       <div className="grid gap-4">
         {[
-          { label: "전체 오픈채팅 링크", type: "OPEN_CHAT_LINK" },
+          { label: "전체 오픈채팅 링크", type: "OPEN_CHATTING_LINK" },
           { label: "KOFIQA 서버 입주 메시지", type: "KOFIQA_SERVER_OCCUPANCY_MESSAGE" },
           { label: "KOFIQA 오픈채팅 링크", type: "KOFIQA_OPEN_CHATTING_LINK" },
           { label: "디스코드 링크", type: "DISCORD" },

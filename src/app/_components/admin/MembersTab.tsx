@@ -66,11 +66,13 @@ const MembersTab = () => {
           <tbody className="divide-y divide-gray-200">
             {members.map((member) => (
               <tr key={member.email}>
-                <td>{member.email}</td>
-                <td>{member.nickname}</td>
-                <td>{getMemberRoleText(member.member_role)}</td>
-                <td>
-                  <button>삭제</button>
+                <td className="px-6 py-4 text-sm text-gray-900">{member.email}</td>
+                <td className="px-6 py-4 text-sm text-gray-900">{member.nickname}</td>
+                <td className="px-6 py-4 text-sm text-gray-900">{getMemberRoleText(member.member_role)}</td>
+                <td className="px-6 py-4 text-sm">
+                  <button className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
+                    삭제
+                  </button>
                 </td>
               </tr>
             ))}

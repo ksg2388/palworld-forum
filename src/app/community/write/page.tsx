@@ -72,7 +72,6 @@ const WriteContent = () => {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'multipart/form-data'
         },
         body: formData
       });

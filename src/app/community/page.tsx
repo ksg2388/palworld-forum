@@ -259,6 +259,7 @@ const CommunityContent = () => {
                     alt={post.member_role}
                     width={16}
                     height={16}
+                    unoptimized
                   />
                   {post.nickname}
                 </span>

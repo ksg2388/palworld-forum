@@ -1,6 +1,27 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { makeAuthorizedRequest } from "@/app/_utils/makeAuthorizedRequest";
+
 const MembersTab = () => {
+  const [members, setMembers] = useState([]);
+
+  useEffect(() => {
+    const fetchMembers = async () => {
+      try {
+        const response = await makeAuthorizedRequest("/admin/members", {
+          method: "GET"
+        });
+        const data = await response.json();
+        console.log("회원 목록 조회 결과:", data);
+      } catch (error) {
+        console.error("회원 목록 조회 실패:", error);
+      }
+    };
+
+    fetchMembers();
+  }, []);
+
   return (
     <div className="space-y-4">
       <h2 className="text-xl font-bold mb-4">회원 관리</h2>
@@ -23,4 +44,4 @@ const MembersTab = () => {
   );
 };
 
-export default MembersTab; 
+export default MembersTab;

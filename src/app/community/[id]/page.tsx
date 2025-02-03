@@ -7,6 +7,7 @@ import { TCommunity } from "@/app/types/community/community.types";
 import Link from "next/link";
 import { API_BASE_URL } from "@/config/api";
 import { Viewer } from '@toast-ui/react-editor';
+import { formatDate } from "@/app/_utils/date";
 
 const CommunityDetail = () => {
   const { id } = useParams();
@@ -20,8 +21,6 @@ const CommunityDetail = () => {
 
   const communityTabs = [
     "전체",
-    "이벤트", 
-    "다음글"
   ];
 
   const getEndpoint = (tab: number) => {
@@ -85,7 +84,7 @@ const CommunityDetail = () => {
           {communityTabs.map((tab, index) => (
             <Link
               key={index} 
-              href={`/community?tab=${index}`}
+              href={`/community?tab=${currentTab}`}
               className="text-gray-600 hover:text-gray-900"
             >
               {tab}
@@ -112,7 +111,7 @@ const CommunityDetail = () => {
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-4">
           <span className="font-bold">{post.author}</span>
-          <span className="text-gray-500 text-sm">{post.created_at}</span>
+          <span className="text-gray-500 text-sm">{formatDate(post.created_at)}</span>
           <span className="text-gray-500 text-sm">조회 {post.hits}</span>
         </div>
         <h1 className="text-xl font-bold mb-4">{post.title}</h1>

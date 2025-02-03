@@ -59,10 +59,13 @@ const WriteContent = () => {
       const endpoint = getEndpoint(currentTab);
 
       const formData = new FormData();
-      formData.append('data', JSON.stringify({
+      const blob = new Blob([JSON.stringify({
         title: title,
         content: content
-      }));
+      })], {
+        type: 'application/json'
+      });
+      formData.append('data', blob);
       
       attachments.forEach((attachment) => {
         formData.append('attachments', attachment);

@@ -2,6 +2,8 @@ export type TCommunity =  {
     id: number,
     dtype: string,
     author: string,
+    nickname: string,
+    member_role: "ADMIN" | "PARTNER" | "NORMAL" | "LEGENDARY" | "HEROIC" | "RARE" | "EXTRA_ORDINARY";
     title: string,
     content: string,
     attachments: string[],

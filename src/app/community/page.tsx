@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, Suspense } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useSearchParams, useRouter } from "next/navigation";
 import SearchBar from "../_components/community/SearchBar";
 import { TCommunity } from "../types/community/community.types";
@@ -59,6 +60,27 @@ const CommunityContent = () => {
         return 'datas';
       default:
         return 'announcements';
+    }
+  };
+
+  const getRoleImage = (role: string) => {
+    switch(role) {
+      case "ADMIN":
+        return "/images/admin.gif";
+      case "PARTNER":
+        return "/images/partner.gif";
+      case "NORMAL":
+        return "/images/normal.png";
+      case "LEGENDARY":
+        return "/images/legend.gif";
+      case "HEROIC":
+        return "/images/hero.png";
+      case "RARE":
+        return "/images/rare.png";
+      case "EXTRA_ORDINARY":
+        return "/images/uncommon.png";
+      default:
+        return "/images/normal.png";
     }
   };
 
@@ -231,7 +253,15 @@ const CommunityContent = () => {
                 <span className="flex-1">{post.title}</span>
               </div>
               <div className="flex items-center gap-4 text-sm text-gray-500">
-                <span className="w-[100px] text-center">{post.author}</span>
+                <span className="w-[100px] text-center flex items-center justify-center gap-1">
+                  <Image 
+                    src={getRoleImage(post.member_role)}
+                    alt={post.member_role}
+                    width={16}
+                    height={16}
+                  />
+                  {post.nickname}
+                </span>
                 <span className="w-[100px] text-center">{new Date(post.created_at).toLocaleDateString()}</span>
                 <span className="w-[80px] text-center">{post.hits}</span>
                 <span className="w-[80px] text-center">{post.count_of_comments}</span>

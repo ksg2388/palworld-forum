@@ -9,6 +9,8 @@ export type TPost = {
   id: number;
   dtype: "announcement" | "data" | "free" | "guide" | "promotion";
   author: string;
+  nickname: string;
+  member_role: "ADMIN" | "PARTNER" | "NORMAL" | "LEGENDARY" | "HEROIC" | "RARE" | "EXTRA_ORDINARY";
   title: string;
   content: string;
   attachments: string[];

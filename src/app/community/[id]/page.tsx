@@ -1,13 +1,17 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import useUserStore from "@/app/_store/userSotre";
 import { TCommunity } from "@/app/types/community/community.types";
 import Link from "next/link";
+import { API_BASE_URL } from "@/config/api";
+import { Viewer } from '@toast-ui/react-editor';
 
 const CommunityDetail = () => {
   const { id } = useParams();
+  const searchParams = useSearchParams();
+  const currentTab = Number(searchParams.get("tab")) || 0;
   const [post, setPost] = useState<TCommunity | null>(null);
   const { user } = useUserStore();
   const [commentText, setCommentText] = useState("");
@@ -20,35 +24,42 @@ const CommunityDetail = () => {
     "다음글"
   ];
 
+  const getEndpoint = (tab: number) => {
+    switch(tab) {
+      case 0:
+        return 'announcements';
+      case 1:
+        return 'frees';
+      case 2:
+        return 'guides';
+      case 3:
+        return 'promotions';
+      case 4:
+        return 'datas';
+      default:
+        return 'announcements';
+    }
+  };
+
   useEffect(() => {
-    const dummyPost: TCommunity = {
-      id: Number(id),
-      dtype: "자유게시판",
-      author: "작성자",
-      title: "포용여간 밸패 메일올듯이 비싸지?",
-      content: "스커지 밸패 50000\n니브루 밸패 20000\n\n도시락 마다해 이 되어 버리면..",
-      attachments: [],
-      hits: 100,
-      count_of_comments: 2,
-      comments: [
-        {
-          id: 1,
-          author: "리브로",
-          content: "도시락 마다와 다이어리 하실..?",
-          child_comments: []
-        },
-        {
-          id: 2,
-          author: "블루",
-          content: "제소 고마워 잘먹겠음",
-          child_comments: []
+    const fetchPost = async () => {
+      try {
+        const endpoint = getEndpoint(currentTab);
+        const response = await fetch(`${API_BASE_URL}/${endpoint}/${id}`);
+        const result = await response.json();
+        
+        if (result.http_status === "OK") {
+          setPost(result.data[0]);
+        } else {
+          console.error("게시글 조회 실패:", result.message);
         }
-      ],
-      created_at: "2024.01.31 17:15",
-      modified_at: "2024.01.31 17:15"
+      } catch (error) {
+        console.error("게시글 조회 중 오류 발생:", error);
+      }
     };
-    setPost(dummyPost);
-  }, [id]);
+
+    fetchPost();
+  }, [id, currentTab]);
 
   const handleCommentSubmit = () => {
     if (!commentText.trim()) return;
@@ -105,7 +116,7 @@ const CommunityDetail = () => {
         </div>
         <h1 className="text-xl font-bold mb-4">{post.title}</h1>
         <div className="whitespace-pre-line mb-4">
-          {post.content}
+          <Viewer initialValue={post.content} />
         </div>
       </div>
 

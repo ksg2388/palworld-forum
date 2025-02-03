@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import CustomAlert from "@/app/_components/common/CustomAlert";
 import { API_BASE_URL } from "@/config/api";
 import useUserStore from "../_store/userSotre";
 import { makeAuthorizedRequest } from "../_utils/api";
@@ -23,11 +22,9 @@ const MyPage = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [nickname, setNickname] = useState("현재닉네임");
-  const [showAlert, setShowAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 5;
-  const {  setUser, logout } = useUserStore();
+  const {  user, setUser, logout } = useUserStore();
 
   const dummyPosts = [
     { id: 1, title: "게시글 제목 1", date: "2024.01.20", views: 100 },
@@ -38,8 +35,7 @@ const MyPage = () => {
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
-      setAlertMessage("새 비밀번호가 일치하지 않습니다.");
-      setShowAlert(true);
+      alert("새 비밀번호가 일치하지 않습니다.");
       return;
     }
 
@@ -63,14 +59,12 @@ const MyPage = () => {
         member_role: data.data.member_role
       });
 
-      setAlertMessage("비밀번호가 변경되었습니다.");
-      setShowAlert(true);
+      alert("비밀번호가 변경되었습니다.");
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
     } catch (err) {
-      setAlertMessage(err instanceof Error ? err.message : "비밀번호 변경에 실패했습니다.");
-      setShowAlert(true);
+      alert(err instanceof Error ? err.message : "비밀번호 변경에 실패했습니다.");
     }
   };
 
@@ -97,11 +91,9 @@ const MyPage = () => {
         member_role: data.data.member_role
       });
 
-      setAlertMessage("닉네임이 변경되었습니다.");
-      setShowAlert(true);
+      alert("닉네임이 변경되었습니다.");
     } catch (err) {
-      setAlertMessage(err instanceof Error ? err.message : "닉네임 변경에 실패했습니다.");
-      setShowAlert(true);
+      alert(err instanceof Error ? err.message : "닉네임 변경에 실패했습니다.");
     }
   };
 
@@ -115,16 +107,18 @@ const MyPage = () => {
           }
         });
 
-        setAlertMessage("회원 탈퇴가 완료되었습니다.");
-        setShowAlert(true);
+        alert("회원 탈퇴가 완료되었습니다.");
         logout();
         router.push("/");
       } catch (err) {
-        setAlertMessage(err instanceof Error ? err.message : "회원 탈퇴에 실패했습니다.");
-        setShowAlert(true);
+        alert(err instanceof Error ? err.message : "회원 탈퇴에 실패했습니다.");
       }
     }
   };
+
+  useEffect(() => {
+    setNickname(user?.nickname || "");
+  }, [user]);
 
   // 페이지네이션 계산
   const indexOfLastPost = currentPage * postsPerPage;
@@ -134,12 +128,6 @@ const MyPage = () => {
 
   return (
     <div className="min-h-[calc(100vh-262px)] mt-[110px] max-w-[1200px] mx-auto p-8">
-      <CustomAlert
-        isOpen={showAlert}
-        message={alertMessage}
-        onClose={() => setShowAlert(false)}
-      />
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="space-y-6">
           <div className="bg-white p-6 rounded-lg shadow">

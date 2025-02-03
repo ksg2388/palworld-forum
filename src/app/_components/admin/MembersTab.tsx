@@ -1,6 +1,7 @@
 "use client";
 
 import { makeAuthorizedRequest } from "@/app/_utils/api";
+import { API_BASE_URL } from "@/config/api";
 import { useEffect, useState } from "react";
 
 
@@ -10,7 +11,7 @@ const MembersTab = () => {
   useEffect(() => {
     const fetchMembers = async () => {
       try {
-        const response = await makeAuthorizedRequest("/admin/members", {
+        const response = await makeAuthorizedRequest(`${API_BASE_URL}/admin/members`, {
           method: "GET"
         });
         const data = await response.json();

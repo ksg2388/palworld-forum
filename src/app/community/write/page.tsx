@@ -27,53 +27,6 @@ const WriteContent = () => {
     }
   }, [router, accessToken]);
 
-  const compressImage = async (file: File): Promise<string> => {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = (event) => {
-        const img = new Image();
-        img.src = event.target?.result as string;
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const MAX_WIDTH = 800;
-          const MAX_HEIGHT = 600;
-          let width = img.width;
-          let height = img.height;
-
-          if (width > height) {
-            if (width > MAX_WIDTH) {
-              height *= MAX_WIDTH / width;
-              width = MAX_WIDTH;
-            }
-          } else {
-            if (height > MAX_HEIGHT) {
-              width *= MAX_HEIGHT / height;
-              height = MAX_HEIGHT;
-            }
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx?.drawImage(img, 0, 0, width, height);
-          const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
-          resolve(compressedBase64);
-        };
-      };
-    });
-  };
-
-  const handleImageUpload = async (file: File): Promise<string> => {
-    try {
-      const compressedImage = await compressImage(file);
-      return compressedImage;
-    } catch (error) {
-      console.error('이미지 압축 실패:', error);
-      throw error;
-    }
-  };
-
   const getEndpoint = (tab: number) => {
     switch(tab) {
       case 0:
@@ -154,7 +107,7 @@ const WriteContent = () => {
         </div>
 
         <div className="min-h-[500px]">
-          <TuiEditor ref={editorRef} onImageUpload={handleImageUpload} />
+          <TuiEditor ref={editorRef} />
         </div>
 
         <div className="flex justify-end gap-2 mt-4">

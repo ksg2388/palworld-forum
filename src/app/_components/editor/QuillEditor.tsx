@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useState } from "react";
+import { forwardRef, useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import 'react-quill-new/dist/quill.snow.css';
 
@@ -29,10 +29,11 @@ const formats = [
 ];
 
 const QuillEditor = forwardRef(({ initialValue = "" }: { initialValue?: string }, ref: any) => {
-  const [value, setValue] = useState<string>(initialValue);
+  const [value, setValue] = useState<string>("");
 
-  console.log("초기값 : ", initialValue);
-  console.log("현재값 : ", value);
+  useEffect(() => {
+    setValue(initialValue);
+  }, [initialValue]);
 
   // ref를 통해 외부에서 value에 접근할 수 있도록 설정
   if (ref) {

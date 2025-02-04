@@ -27,7 +27,6 @@ export const makeAuthorizedRequest = async (
         });
       } catch (error) {
         // 토큰 재발급 실패 시 로그아웃
-        alert("토큰이 만료되었습니다. 다시 로그인해주세요.");
         useUserStore.getState().logout();
         throw new Error("토큰이 만료되었습니다. 다시 로그인해주세요." + error);
       }

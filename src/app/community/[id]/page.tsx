@@ -1,15 +1,17 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useSearchParams, useRouter } from "next/navigation";
 import useUserStore from "@/app/_store/userSotre";
 import { TCommunity } from "@/app/types/community/community.types";
 import Link from "next/link";
 import { API_BASE_URL } from "@/config/api";
 import { Viewer } from '@toast-ui/react-editor';
 import { formatDate } from "@/app/_utils/date";
+import { makeAuthorizedRequest } from "@/app/_utils/api";
 
 const CommunityDetail = () => {
+  const router = useRouter();
   const { id } = useParams();
   const searchParams = useSearchParams();
   const currentTab = Number(searchParams.get("tab")) || 0;
@@ -18,6 +20,7 @@ const CommunityDetail = () => {
   const [commentText, setCommentText] = useState("");
   const [replyText, setReplyText] = useState("");
   const [selectedCommentId, setSelectedCommentId] = useState<number | null>(null);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const communityTabs = [
     "전체",
@@ -61,17 +64,55 @@ const CommunityDetail = () => {
     fetchPost();
   }, [id, currentTab]);
 
-  const handleCommentSubmit = () => {
+  const handleCommentSubmit = async () => {
     if (!commentText.trim()) return;
-    // 댓글 등록 로직 구현
-    setCommentText("");
+    
+    try {
+      const endpoint = getEndpoint(currentTab);
+      const response = await makeAuthorizedRequest(
+        `${API_BASE_URL}/${endpoint}/${id}/comments`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            content: commentText
+          }),
+        }
+      );
+      
+      const result = await response.json();
+      if (result.http_status === "OK") {
+        // 댓글 작성 성공 시 게시글 새로고침
+        const endpoint = getEndpoint(currentTab);
+        const postResponse = await fetch(`${API_BASE_URL}/${endpoint}/${id}`);
+        const postResult = await postResponse.json();
+        
+        if (postResult.http_status === "OK") {
+          setPost(postResult.data);
+        }
+        setCommentText("");
+      }
+    } catch (error) {
+      console.error("댓글 작성 중 오류 발생:", error);
+    }
   };
 
-  const handleReplySubmit = (commentId: number) => {
-    if (!replyText.trim()) return;
-    // 답글 등록 로직 구현
-    setReplyText("");
-    setSelectedCommentId(null);
+  const handleDelete = async () => {
+    try {
+      const endpoint = getEndpoint(currentTab);
+      await makeAuthorizedRequest(`${API_BASE_URL}/${endpoint}/${id}`, {
+        method: 'DELETE'
+      });
+      router.push('/community');
+    } catch (error) {
+      console.error("게시글 삭제 중 오류 발생:", error);
+    }
+  };
+
+  const handleEdit = () => {
+    router.push(`/community/edit/${id}?tab=${currentTab}`);
   };
 
   if (!post) return <div>로딩중...</div>;
@@ -100,10 +141,33 @@ const CommunityDetail = () => {
             <span className="sr-only">공유</span>
             🔗
           </button>
-          <button className="p-2">
-            <span className="sr-only">더보기</span>
-            ⋮
-          </button>
+          {user && user.email === post.author && (
+            <div className="relative">
+              <button 
+                className="p-2"
+                onClick={() => setShowDropdown(!showDropdown)}
+              >
+                <span className="sr-only">더보기</span>
+                ⋮
+              </button>
+              {showDropdown && (
+                <div className="absolute right-0 mt-2 w-24 bg-white rounded-md shadow-lg z-10">
+                  <button 
+                    onClick={handleEdit}
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                  >
+                    수정
+                  </button>
+                  <button 
+                    onClick={handleDelete}
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-500"
+                  >
+                    삭제
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
@@ -162,7 +226,7 @@ const CommunityDetail = () => {
                     취소
                   </button>
                   <button 
-                    onClick={() => handleReplySubmit(comment.id)}
+                    // onClick={() => handleReplySubmit(comment.id)}
                     className="px-3 py-1 bg-red-500 text-white rounded"
                   >
                     등록

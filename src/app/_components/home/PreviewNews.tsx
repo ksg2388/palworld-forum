@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { API_BASE_URL } from "@/config/api";
-import { makeAuthorizedRequest } from "@/app/_utils/api";
 
 interface News {
   id: number;
@@ -19,7 +18,7 @@ const PreviewNews = () => {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await makeAuthorizedRequest(`${API_BASE_URL}/announcements?page=1&size=4`, {
+        const response = await fetch(`${API_BASE_URL}/announcements?page=1&size=4`, {
           method: "GET",
         });
         const data = await response.json();

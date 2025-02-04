@@ -44,7 +44,7 @@ const PreviewNews = () => {
 
   return (
     <div className="border-t-2 border-gray-800">
-      {news.map((item) => (
+      {news.length > 0 && news.map((item) => (
         <Link
           href={`/community/${item.id}`}
           key={item.id}

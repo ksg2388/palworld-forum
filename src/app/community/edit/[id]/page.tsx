@@ -1,16 +1,14 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { API_BASE_URL } from "@/config/api";
 import { makeAuthorizedRequest } from "@/app/_utils/api";
 import dynamic from "next/dynamic";
-import '@toast-ui/editor/dist/toastui-editor.css';
-import { Editor as EditorType } from '@toast-ui/react-editor';
 import useUserStore from "@/app/_store/userSotre";
 
-const Editor = dynamic(() => import("@toast-ui/react-editor").then((mod) => mod.Editor), {
-  ssr: false
+const QuillEditor = dynamic(() => import("@/app/_components/editor/QuillEditor"), {
+  ssr: false,
 });
 
 const CommunityEditPage = () => {
@@ -20,7 +18,7 @@ const CommunityEditPage = () => {
   const currentTab = Number(searchParams.get("tab")) || 0;
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const editorRef = React.useRef<EditorType>(null);
+  const editorRef = useRef<any>(null);
   const { user } = useUserStore();
 
   const getEndpoint = (tab: number) => {
@@ -59,9 +57,6 @@ const CommunityEditPage = () => {
           }
           setTitle(result.data.title);
           setContent(result.data.content);
-          if (editorRef.current) {
-            editorRef.current.getInstance().setMarkdown(result.data.content);
-          }
         }
       } catch (error) {
         console.error("게시글 조회 중 오류 발생:", error);
@@ -74,23 +69,30 @@ const CommunityEditPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!editorRef.current) return;
+    const content = editorRef.current?.value;
+
+    if (!content?.trim()) {
+      alert("내용을 입력해주세요.");
+      return;
+    }
     
     try {
       const endpoint = getEndpoint(currentTab);
-      const markdownContent = editorRef.current.getInstance().getMarkdown();
       
+      const formData = new FormData();
+      const blob = new Blob([JSON.stringify({
+        title: title,
+        content: content
+      })], {
+        type: 'application/json'
+      });
+      formData.append('data', blob);
+
       const response = await makeAuthorizedRequest(
         `${API_BASE_URL}/${endpoint}/${id}`,
         {
           method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            title,
-            content: markdownContent
-          }),
+          body: formData
         }
       );
 
@@ -114,14 +116,9 @@ const CommunityEditPage = () => {
           className="w-full p-2 mb-4 border rounded"
         />
         
-        <Editor
-          ref={editorRef}
-          initialValue={content}
-          previewStyle="vertical"
-          height="600px"
-          initialEditType="markdown"
-          useCommandShortcut={true}
-        />
+        <div className="min-h-[500px]">
+          <QuillEditor ref={editorRef} initialValue={content} />
+        </div>
 
         <div className="flex justify-end gap-2 mt-4">
           <button

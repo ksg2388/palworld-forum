@@ -57,6 +57,8 @@ const CommunityEditPage = () => {
           }
           setTitle(result.data.title);
           setContent(result.data.content);
+          console.log("콘텐츠 : ",result.data.content);
+          
         }
       } catch (error) {
         console.error("게시글 조회 중 오류 발생:", error);

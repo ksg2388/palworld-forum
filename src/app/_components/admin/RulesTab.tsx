@@ -1,46 +1,80 @@
 "use client";
 
-import { useState, useRef } from 'react';
-import { Editor, Viewer } from '@toast-ui/react-editor';
-import '@toast-ui/editor/dist/toastui-editor.css';
-
-interface Rule {
-  id: number;
-  content: string;
-}
+import { useState, useRef, useEffect } from 'react';
+import QuillView from '../editor/QuillView';
+import QuillEditor from '../editor/QuillEditor';
+import { API_BASE_URL } from '@/config/api';
+import { makeAuthorizedRequest } from '@/app/_utils/api';
 
 const RulesTab = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const [rules, setRules] = useState<Rule[]>([
-    {
-      id: 1,
-      content: '<h3>1. 기본 규칙</h3><p>서버 내에서는 서로 존중하고 예의를 지켜주세요.</p>'
-    },
-    {
-      id: 2,
-      content: '<h3>2. 채팅 규칙</h3><p>욕설과 비하 발언은 금지됩니다.</p>'
-    },
-    {
-      id: 3,
-      content: '<h3>3. 게임 규칙</h3><p>다른 플레이어의 게임 플레이를 방해하지 마세요.</p>'
-    }
-  ]);
-  const editorRef = useRef<Editor>(null);
+  const [content, setContent] = useState('');
+  const editorRef = useRef<any>(null);
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const response = await makeAuthorizedRequest(
+          `${API_BASE_URL}/admin/rule`,
+          {
+            method: 'GET'
+          }
+        );
+        const data = await response.json();
+        if (data.http_status === "OK") {
+          setContent(data.data.content);
+        }
+      } catch (error) {
+        console.error("서버 규칙 조회 실패:", error);
+      }
+    };
+
+    fetchContent();
+  }, []);
 
   const handleEdit = () => {
     setIsEditing(true);
   };
 
   const handleSave = async () => {
-    const editorInstance = editorRef.current?.getInstance();
-    if (editorInstance) {
-      const content = editorInstance.getHTML();
-      // 여기서 전체 규칙 내용을 저장하는 로직 구현
-      setIsEditing(false);
+    const content = editorRef.current?.value;
+
+    if (!content?.trim()) {
+      alert("내용을 입력해주세요.");
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      const blob = new Blob([JSON.stringify({
+        content: content
+      })], {
+        type: 'application/json'
+      });
+      formData.append('data', blob);
+
+      const response = await makeAuthorizedRequest(
+        `${API_BASE_URL}/admin/rule`,
+        {
+          method: 'PATCH',
+          body: formData
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.http_status === "OK") {
+        alert("서버 규칙이 수정되었습니다.");
+        setIsEditing(false);
+        setContent(content);
+      } else {
+        alert("서버 규칙 수정에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("서버 규칙 수정 실패:", error);
+      alert("서버 규칙 수정에 실패했습니다. 다시 시도해주세요.");
     }
   };
-
-  const combinedContent = rules.map(rule => rule.content).join('\n');
 
   return (
     <div className="space-y-6">
@@ -59,13 +93,7 @@ const RulesTab = () => {
       <div className="border rounded-lg p-4 bg-white shadow-sm">
         {isEditing ? (
           <div className="space-y-4">
-            <Editor
-              initialValue={combinedContent}
-              height="500px"
-              initialEditType="wysiwyg"
-              useCommandShortcut={true}
-              ref={editorRef}
-            />
+            <QuillEditor ref={editorRef} />
             <div className="flex justify-end gap-2">
               <button 
                 onClick={() => setIsEditing(false)}
@@ -82,7 +110,7 @@ const RulesTab = () => {
             </div>
           </div>
         ) : (
-          <Viewer initialValue={combinedContent} />
+          <QuillView content={content} />
         )}
       </div>
     </div>

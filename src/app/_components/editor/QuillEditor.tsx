@@ -28,7 +28,7 @@ const formats = [
   "script", "list", "indent", "align", "blockquote", "code-block", "link", "image", "video"
 ];
 
-const QuillEditor = forwardRef((props, ref: any) => {
+const QuillEditor = forwardRef((ref: any) => {
   const [value, setValue] = useState<string>("");
 
   // ref를 통해 외부에서 value에 접근할 수 있도록 설정

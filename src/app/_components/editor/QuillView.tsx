@@ -11,14 +11,24 @@ interface QuillViewProps {
 
 const QuillView = ({ content }: QuillViewProps) => {
   return (
-    <ReactQuillNew
-      value={content}
-      readOnly={true} 
-      theme="bubble"
-      modules={{
-        toolbar: false
-      }}
-    />
+    <>
+      <style>
+        {`
+          .ql-video {
+            width: 100%;
+            aspect-ratio: 16/9;
+          }
+        `}
+      </style>
+      <ReactQuillNew
+        value={content}
+        readOnly={true} 
+        theme="bubble"
+        modules={{
+          toolbar: false
+        }}
+      />
+    </>
   );
 };
 

@@ -3,10 +3,7 @@
 import { useRef } from "react";
 import { Editor, Viewer } from "@toast-ui/react-editor";
 import "@toast-ui/editor/dist/toastui-editor.css";
-// Color Syntax Plugin
-// import "tui-color-picker/dist/tui-color-picker.css";
 import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css";
-// import colorSyntax from "@toast-ui/editor-plugin-color-syntax";
 
 interface ContentEditorProps {
   isEditing: boolean;

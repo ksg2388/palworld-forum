@@ -1,46 +1,80 @@
 "use client";
 
-import { useState, useRef } from 'react';
-import { Editor, Viewer } from '@toast-ui/react-editor';
-import '@toast-ui/editor/dist/toastui-editor.css';
-
-interface Connection {
-  id: number;
-  content: string;
-}
+import { useState, useRef, useEffect } from 'react';
+import QuillView from '../editor/QuillView';
+import QuillEditor from '../editor/QuillEditor';
+import { API_BASE_URL } from '@/config/api';
+import { makeAuthorizedRequest } from '@/app/_utils/api';
 
 const ConnectionTab = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const [connections, setConnections] = useState<Connection[]>([
-    {
-      id: 1,
-      content: '<h3>서버 접속 방법</h3><p>다음 단계를 따라 서버에 접속하실 수 있습니다.</p>'
-    },
-    {
-      id: 2,
-      content: '<h3>서버 주소</h3><p>play.example.com</p>'
-    },
-    {
-      id: 3,
-      content: '<h3>필수 모드</h3><p>서버 접속에 필요한 모드 목록과 설치 방법입니다.</p>'
-    }
-  ]);
-  const editorRef = useRef<Editor>(null);
+  const [content, setContent] = useState('');
+  const editorRef = useRef<any>(null);
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const response = await makeAuthorizedRequest(
+          `${API_BASE_URL}/admin/connection`,
+          {
+            method: 'GET'
+          }
+        );
+        const data = await response.json();
+        if (data.http_status === "OK") {
+          setContent(data.data.content);
+        }
+      } catch (error) {
+        console.error("연결 방법 조회 실패:", error);
+      }
+    };
+
+    fetchContent();
+  }, []);
 
   const handleEdit = () => {
     setIsEditing(true);
   };
 
   const handleSave = async () => {
-    const editorInstance = editorRef.current?.getInstance();
-    if (editorInstance) {
-      const content = editorInstance.getHTML();
-      // 여기서 전체 연결 방법 내용을 저장하는 로직 구현
-      setIsEditing(false);
+    const content = editorRef.current?.value;
+
+    if (!content?.trim()) {
+      alert("내용을 입력해주세요.");
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      const blob = new Blob([JSON.stringify({
+        content: content
+      })], {
+        type: 'application/json'
+      });
+      formData.append('data', blob);
+
+      const response = await makeAuthorizedRequest(
+        `${API_BASE_URL}/admin/connection`,
+        {
+          method: 'PATCH',
+          body: formData
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.http_status === "OK") {
+        alert("연결 방법이 수정되었습니다.");
+        setIsEditing(false);
+        setContent(content);
+      } else {
+        alert("연결 방법 수정에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("연결 방법 수정 실패:", error);
+      alert("연결 방법 수정에 실패했습니다. 다시 시도해주세요.");
     }
   };
-
-  const combinedContent = connections.map(conn => conn.content).join('\n');
 
   return (
     <div className="space-y-6">
@@ -59,13 +93,7 @@ const ConnectionTab = () => {
       <div className="border rounded-lg p-4 bg-white shadow-sm">
         {isEditing ? (
           <div className="space-y-4">
-            <Editor
-              initialValue={combinedContent}
-              height="500px"
-              initialEditType="wysiwyg"
-              useCommandShortcut={true}
-              ref={editorRef}
-            />
+            <QuillEditor ref={editorRef} />
             <div className="flex justify-end gap-2">
               <button 
                 onClick={() => setIsEditing(false)}
@@ -82,11 +110,11 @@ const ConnectionTab = () => {
             </div>
           </div>
         ) : (
-          <Viewer initialValue={combinedContent} />
+          <QuillView content={content} />
         )}
       </div>
     </div>
   );
 };
 
-export default ConnectionTab; 
+export default ConnectionTab;

@@ -44,7 +44,12 @@ const CommunityEditPage = () => {
     const fetchPost = async () => {
       try {
         const endpoint = getEndpoint(currentTab);
-        const response = await fetch(`${API_BASE_URL}/${endpoint}/${id}`);
+        const response = await makeAuthorizedRequest(
+          `${API_BASE_URL}/${endpoint}/${id}`,
+          {
+            method: 'GET'
+          }
+        );
         const result = await response.json();
         
         if (result.http_status === "OK") {

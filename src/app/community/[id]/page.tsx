@@ -21,6 +21,7 @@ const CommunityDetail = () => {
   const [replyText, setReplyText] = useState("");
   const [selectedCommentId, setSelectedCommentId] = useState<number | null>(null);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const communityTabs = [
     "전체",
@@ -159,7 +160,10 @@ const CommunityDetail = () => {
                     수정
                   </button>
                   <button 
-                    onClick={handleDelete}
+                    onClick={() => {
+                      setShowDropdown(false);
+                      setShowDeleteConfirm(true);
+                    }}
                     className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-500"
                   >
                     삭제
@@ -170,6 +174,33 @@ const CommunityDetail = () => {
           )}
         </div>
       </div>
+
+      {/* 삭제 확인 모달 */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl">
+            <h3 className="text-lg font-bold mb-4">게시글 삭제</h3>
+            <p className="mb-4">정말로 이 게시글을 삭제하시겠습니까?</p>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="px-4 py-2 text-gray-600 rounded border"
+              >
+                취소
+              </button>
+              <button
+                onClick={() => {
+                  setShowDeleteConfirm(false);
+                  handleDelete();
+                }}
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                삭제
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 게시글 내용 */}
       <div className="mb-8">

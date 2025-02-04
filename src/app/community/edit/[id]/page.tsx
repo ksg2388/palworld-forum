@@ -57,7 +57,6 @@ const CommunityEditPage = () => {
           }
           setTitle(result.data.title);
           setContent(result.data.content);
-          console.log("콘텐츠 : ",result.data.content);
           
         }
       } catch (error) {

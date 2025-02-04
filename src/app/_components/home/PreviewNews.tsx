@@ -25,7 +25,7 @@ const PreviewNews = () => {
         const data = await response.json();
         
         if (data.http_status === "OK") {
-          setNews(data.data.content);
+          setNews(data.data);
         } else {
           console.error("공지사항 조회 실패:", data.message);
         }

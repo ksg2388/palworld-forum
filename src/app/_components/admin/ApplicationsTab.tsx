@@ -93,7 +93,7 @@ const ApplicationsTab = () => {
       <div className="border rounded-lg p-4 bg-white shadow-sm">
         {isEditing ? (
           <div className="space-y-4">
-            <QuillEditor ref={editorRef} />
+            <QuillEditor ref={editorRef} initialValue={content} />
             <div className="flex justify-end gap-2">
               <button 
                 onClick={() => setIsEditing(false)}

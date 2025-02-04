@@ -14,17 +14,23 @@ export const makeAuthorizedRequest = async (
       },
     });
 
-    // 401 에러 (토큰 만료) 발생 시
-    if (response.status === 401) {
-      await useUserStore.getState().refreshAccessToken();
-      // 토큰 재발급 후 다시 원래 요청 실행
-      response = await fetch(url, {
-        ...options,
-        headers: {
-          ...options.headers,
-          Authorization: `Bearer ${useUserStore.getState().accessToken}`,
-        },
-      });
+    if (response.status === 500) {
+      try {
+        await useUserStore.getState().refreshAccessToken();
+        // 토큰 재발급 후 다시 원래 요청 실행
+        response = await fetch(url, {
+          ...options,
+          headers: {
+            ...options.headers,
+            Authorization: `Bearer ${useUserStore.getState().accessToken}`,
+          },
+        });
+      } catch (error) {
+        // 토큰 재발급 실패 시 로그아웃
+        alert("토큰이 만료되었습니다. 다시 로그인해주세요.");
+        useUserStore.getState().logout();
+        throw new Error("토큰이 만료되었습니다. 다시 로그인해주세요." + error);
+      }
     }
 
     if (!response.ok) {

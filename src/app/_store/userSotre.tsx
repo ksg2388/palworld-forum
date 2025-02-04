@@ -30,13 +30,15 @@ const useUserStore = create<UserState>()(
       setTokens: (accessToken, refreshToken) => set({ accessToken, refreshToken }),
       login: (user, accessToken, refreshToken) =>
         set({ user, isLoggedIn: true, accessToken, refreshToken }),
-      logout: () =>
+      logout: () => {
         set({
           user: null,
           isLoggedIn: false,
           accessToken: null,
           refreshToken: null,
-        }),
+        });
+        window.location.href = '/login';
+      },
       updateAccessToken: (newAccessToken) => set({ accessToken: newAccessToken }),
       refreshAccessToken: async () => {
         try {

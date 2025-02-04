@@ -1,12 +1,19 @@
-import React from "react";
-import Banner from "../_components/home/Banner";
+'use client';
 
-const page = () => {
+import React from "react";
+import QuillEditor from "../_components/editor/QuillEditor";
+
+// const QuillEditor = dynamic(
+//   () => import("@/app/_components/editor/QuillEditor"),
+//   { ssr: false }
+// );
+
+const Page = () => {
   return (
-    <div className="mt-20">
-      <Banner />
+    <div className="mt-[140px] min-h-screen">
+      <QuillEditor />
     </div>
   );
 };
 
-export default page;
+export default Page;

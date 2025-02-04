@@ -3,29 +3,28 @@
 import dynamic from "next/dynamic";
 import { useRef, useState, Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Editor as EditorType } from "@toast-ui/react-editor";
 import { API_BASE_URL } from "@/config/api";
 import useUserStore from "@/app/_store/userSotre";
 
-const TuiEditor = dynamic(() => import("@/app/_components/editor/TuiEditor"), {
+const QuillEditor = dynamic(() => import("@/app/_components/editor/QuillEditor"), {
   ssr: false,
 });
 
 const WriteContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const editorRef = useRef<EditorType>(null);
+  const editorRef = useRef<any>(null);
   const [title, setTitle] = useState("");
   const [attachments, setAttachments] = useState<string[]>([]);
   const currentTab = Number(searchParams.get("tab")) || 0;
   const { accessToken } = useUserStore();
 
-  useEffect(() => {
-    if (!accessToken) {
-      alert("로그인 후 이용해주세요.");
-      router.push('/login');
-    }
-  }, [router, accessToken]);
+  // useEffect(() => {
+  //   if (!accessToken) {
+  //     alert("로그인 후 이용해주세요.");
+  //     router.push('/login');
+  //   }
+  // }, [router, accessToken]);
 
   const getEndpoint = (tab: number) => {
     switch(tab) {
@@ -43,7 +42,7 @@ const WriteContent = () => {
   };
 
   const handleSubmit = async () => {
-    const content = editorRef.current?.getInstance().getHTML();
+    const content = editorRef.current?.value;
 
     if (!title.trim()) {
       alert("제목을 입력해주세요.");
@@ -54,6 +53,9 @@ const WriteContent = () => {
       alert("내용을 입력해주세요.");
       return;
     }
+
+    console.log(content);
+    return;
 
     try {
       const endpoint = getEndpoint(currentTab);
@@ -107,7 +109,7 @@ const WriteContent = () => {
         </div>
 
         <div className="min-h-[500px]">
-          <TuiEditor ref={editorRef} />
+          <QuillEditor ref={editorRef} />
         </div>
 
         <div className="flex justify-end gap-2 mt-4">

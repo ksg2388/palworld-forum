@@ -53,7 +53,7 @@ const SignupPage = () => {
         
         if (data.http_status === "CREATED") {
           setShowVerification(true);
-          alert(data.message);
+          alert("인증번호가 발송되었습니다. 최대 30초 정도 소요될 수 있습니다.");
         } else {
           alert(data.message || "인증번호 발송에 실패했습니다.");
         }

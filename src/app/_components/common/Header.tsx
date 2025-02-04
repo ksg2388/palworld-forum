@@ -34,6 +34,17 @@ const Header = () => {
                 >
                   로그아웃
                 </button>
+                {user?.member_role === "ADMIN" && (
+                  <>
+                    <div className="w-[1px] h-3 bg-gray-600" />
+                    <Link
+                      href="/admin"
+                      className="text-[14px] font-medium text-gray-300 hover:text-white"
+                    >
+                      관리자
+                    </Link>
+                  </>
+                )}
               </>
             ) : (
               <>

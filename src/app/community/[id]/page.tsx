@@ -6,9 +6,9 @@ import useUserStore from "@/app/_store/userSotre";
 import { TCommunity } from "@/app/types/community/community.types";
 import Link from "next/link";
 import { API_BASE_URL } from "@/config/api";
-import { Viewer } from '@toast-ui/react-editor';
 import { formatDate } from "@/app/_utils/date";
 import { makeAuthorizedRequest } from "@/app/_utils/api";
+import QuillView from "@/app/_components/editor/QuillView";
 
 const CommunityDetail = () => {
   const router = useRouter();
@@ -211,7 +211,7 @@ const CommunityDetail = () => {
         </div>
         <h1 className="text-xl font-bold mb-4">{post.title}</h1>
         <div className="whitespace-pre-line mb-4">
-          <Viewer initialValue={post.content} />
+          <QuillView content={post.content} />
         </div>
       </div>
 

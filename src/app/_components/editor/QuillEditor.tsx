@@ -40,7 +40,7 @@ const QuillEditor = forwardRef((props, ref: any) => {
     <div className="">
       <style>
         {`
-          .ql-container.ql-snow {
+          .ql-editor {
             min-height: 500px;
           }
         `}

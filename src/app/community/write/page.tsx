@@ -54,9 +54,6 @@ const WriteContent = () => {
       return;
     }
 
-    console.log(content);
-    return;
-
     try {
       const endpoint = getEndpoint(currentTab);
 

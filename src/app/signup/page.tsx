@@ -17,6 +17,7 @@ const SignupPage = () => {
   const [verificationCode, setVerificationCode] = useState("");
   const [showVerification, setShowVerification] = useState(false);
   const [passwordError, setPasswordError] = useState("");
+  const [nicknameError, setNicknameError] = useState("");
 
   const validatePassword = (password: string) => {
     const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
@@ -25,6 +26,13 @@ const SignupPage = () => {
     }
     if (!specialCharRegex.test(password)) {
       return "비밀번호는 최소 1개의 특수문자를 포함해야 합니다.";
+    }
+    return "";
+  };
+
+  const validateNickname = (nickname: string) => {
+    if (nickname.length < 3 || nickname.length > 8) {
+      return "닉네임은 3자 이상 8자 이하여야 합니다.";
     }
     return "";
   };
@@ -46,6 +54,8 @@ const SignupPage = () => {
         if (data.http_status === "CREATED") {
           setShowVerification(true);
           alert(data.message);
+        } else {
+          alert(data.message || "인증번호 발송에 실패했습니다.");
         }
       } catch (error) {
         console.error("인증번호 발송 실패:", error);
@@ -74,6 +84,8 @@ const SignupPage = () => {
         if (data.http_status === "ACCEPTED") {
           setIsEmailVerified(true);
           alert(data.message);
+        } else {
+          alert(data.message || "인증번호 확인에 실패했습니다.");
         }
       } catch (error) {
         console.error("인증번호 확인 실패:", error);
@@ -101,6 +113,12 @@ const SignupPage = () => {
       return;
     }
 
+    const nicknameValidationError = validateNickname(nickname);
+    if (nicknameValidationError) {
+      alert(nicknameValidationError);
+      return;
+    }
+
     try {
       const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.SIGNUP}`, {
         method: "POST",
@@ -119,6 +137,8 @@ const SignupPage = () => {
       if (data.http_status === "CREATED") {
         alert(data.message);
         router.push("/login");
+      } else {
+        alert(data.message || "회원가입에 실패했습니다.");
       }
     } catch (error) {
       console.error("회원가입 실패:", error);
@@ -130,6 +150,12 @@ const SignupPage = () => {
     const newPassword = e.target.value;
     setPassword(newPassword);
     setPasswordError(validatePassword(newPassword));
+  };
+
+  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newNickname = e.target.value;
+    setNickname(newNickname);
+    setNicknameError(validateNickname(newNickname));
   };
 
   return (
@@ -202,18 +228,23 @@ const SignupPage = () => {
             onChange={(e) => setPasswordConfirm(e.target.value)}
             className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800"
           />
-          <input
-            type="text"
-            placeholder="닉네임"
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800"
-          />
+          <div>
+            <input
+              type="text"
+              placeholder="닉네임 (3~8자)"
+              value={nickname}
+              onChange={handleNicknameChange}
+              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800"
+            />
+            {nicknameError && (
+              <p className="mt-1 text-sm text-red-500">{nicknameError}</p>
+            )}
+          </div>
 
           <button
             type="submit"
             className="w-full py-3 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors disabled:bg-gray-400"
-            disabled={!isEmailVerified || !!passwordError}
+            disabled={!isEmailVerified || !!passwordError || !!nicknameError}
           >
             회원가입
           </button>

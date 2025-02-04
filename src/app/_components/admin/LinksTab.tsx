@@ -10,7 +10,7 @@ type TLink = {
 };
 
 type TBoardLink = {
-  id: number;
+  id: number | null;
   title: string;
   url: string;
 };
@@ -21,49 +21,79 @@ const LinksTab = () => {
 
   const addBoardLink = async () => {
     const newLink: TBoardLink = {
-      id: Date.now(), // 임시 ID로 타임스탬프 사용
+      id: null,
       title: "",
       url: ""
     };
     setBoardLinks([...boardLinks, newLink]);
   };
 
-  const saveBoardLink = async (id: number, title: string, url: string) => {
+  const updateLink = async (type: string, url: string) => {
     try {
+      await makeAuthorizedRequest(`${API_BASE_URL}/admin/links`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ link_type: type, url })
+      });
+
+      const newLinks = links.map(link => 
+        link.link_type === type ? { ...link, url } : link
+      );
+      setLinks(newLinks);
+      alert("링크가 성공적으로 수정되었습니다.");
+    } catch (error) {
+      console.error("링크 수정 실패:", error);
+      alert("링크 수정에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
+
+  const saveBoardLink = async (id: number | null, title: string, url: string) => {
+    try {
+      const requestBody = id ? { id, title, url } : { title, url };
+      
       await makeAuthorizedRequest(`${API_BASE_URL}/admin/integrated-links`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ title, url })
+        body: JSON.stringify(requestBody)
       });
+      alert("통합게시판 링크가 성공적으로 저장되었습니다.");
     } catch (error) {
       console.error("통합게시판 링크 저장 실패:", error);
+      alert("통합게시판 링크 저장에 실패했습니다. 다시 시도해주세요.");
     }
   };
 
-  const removeBoardLink = async (id: number) => {
+  const removeBoardLink = async (id: number | null) => {
+    if (!id) {
+      setBoardLinks(boardLinks.filter((link) => link.id !== id));
+      return;
+    }
+    
     try {
       await makeAuthorizedRequest(`${API_BASE_URL}/admin/integrated-links/${id}`, {
         method: "DELETE"
       });
       setBoardLinks(boardLinks.filter((link) => link.id !== id));
+      alert("통합게시판 링크가 성공적으로 삭제되었습니다.");
     } catch (error) {
       console.error("통합게시판 링크 삭제 실패:", error);
+      alert("통합게시판 링크 삭제에 실패했습니다. 다시 시도해주세요.");
     }
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 일반 링크 데이터 가져오기
         const linksResponse = await makeAuthorizedRequest(`${API_BASE_URL}/admin/links`, {
           method: "GET"
         });
         const linksData = await linksResponse.json();
         setLinks(linksData.data);
 
-        // 통합게시판 링크 데이터 가져오기
         const boardLinksResponse = await makeAuthorizedRequest(`${API_BASE_URL}/admin/integrated-links`, {
           method: "GET"
         });
@@ -87,20 +117,32 @@ const LinksTab = () => {
           { label: "KOFIQA 오픈채팅 링크", type: "KOFIQA_OPEN_CHATTING_LINK" },
           { label: "디스코드 링크", type: "DISCORD" },
           { label: "트레일러 비디오", type: "TRAILER_VIDEO" },
-        ].map(({ label, type }) => (
-          <div key={label} className="flex items-center gap-4">
-            <span className="min-w-[200px] text-sm font-medium">{label}</span>
-            <input
-              type="text"
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800"
-              placeholder={`${label} 입력`}
-              value={links.find(link => link.link_type === type)?.url || ""}
-            />
-            <button className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900">
-              저장
-            </button>
-          </div>
-        ))}
+        ].map(({ label, type }) => {
+          const link = links.find(link => link.link_type === type);
+          return (
+            <div key={label} className="flex items-center gap-4">
+              <span className="min-w-[200px] text-sm font-medium">{label}</span>
+              <input
+                type="text"
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800"
+                placeholder={`${label} 입력`}
+                value={link?.url || ""}
+                onChange={(e) => {
+                  const newLinks = links.map(l => 
+                    l.link_type === type ? { ...l, url: e.target.value } : l
+                  );
+                  setLinks(newLinks);
+                }}
+              />
+              <button 
+                onClick={() => updateLink(type, link?.url || "")}
+                className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900"
+              >
+                저장
+              </button>
+            </div>
+          );
+        })}
 
         <div className="mt-8">
           <div className="flex items-center justify-between mb-4">

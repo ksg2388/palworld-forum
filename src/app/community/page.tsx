@@ -18,16 +18,11 @@ const tabs = [
   "링크",
 ];
 
-const linkItems = [
-  { name: "팔월드 공식 홈페이지", url: "https://www.pocketpair.jp/palworld" },
-  {
-    name: "팔월드 스팀",
-    url: "https://store.steampowered.com/app/1623730/Palworld/",
-  },
-  { name: "팔월드 디스코드", url: "https://discord.gg/palworld" },
-  { name: "팔월드 위키", url: "https://palworld.wiki.gg/" },
-  { name: "팔월드 레딧", url: "https://www.reddit.com/r/Palworld/" },
-];
+interface LinkItem {
+  id: number;
+  name: string;
+  url: string;
+}
 
 const POSTS_PER_PAGE = 10;
 
@@ -37,6 +32,7 @@ const CommunityContent = () => {
   const [posts, setPosts] = useState<TCommunity[]>([]);
   const [totalPages, setTotalPages] = useState(0);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [linkItems, setLinkItems] = useState<LinkItem[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { accessToken } = useUserStore();
 
@@ -45,6 +41,23 @@ const CommunityContent = () => {
   const keyword = searchParams.get("keyword") || "";
   const searchType = searchParams.get("searchType") || "TITLE";
   const sort = searchParams.get("sort") || "RECENT";
+
+  useEffect(() => {
+    const fetchLinks = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/admin/links`);
+        const result = await response.json();
+        
+        if (result.http_status === "OK") {
+          setLinkItems(result.data);
+        }
+      } catch (error) {
+        console.error("링크 목록 조회 실패:", error);
+      }
+    };
+
+    fetchLinks();
+  }, []);
 
   const getEndpoint = (tab: number) => {
     switch(tab) {
@@ -195,7 +208,7 @@ const CommunityContent = () => {
                   <div className="absolute top-full left-0 w-[200px] bg-white border border-gray-200 rounded-lg shadow-lg z-20">
                     {linkItems.map((item) => (
                       <a
-                        key={item.name}
+                        key={item.id}
                         href={item.url}
                         target="_blank"
                         rel="noopener noreferrer"

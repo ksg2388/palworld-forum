@@ -5,6 +5,7 @@ import { useRef, useState, Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { API_BASE_URL } from "@/config/api";
 import useUserStore from "@/app/_store/userSotre";
+import { makeAuthorizedRequest } from "@/app/_utils/makeAuthorizedRequest";
 
 const QuillEditor = dynamic(
   () => import("@/app/_components/editor/QuillEditor"),
@@ -18,7 +19,6 @@ const WriteContent = () => {
   const searchParams = useSearchParams();
   const editorRef = useRef<any>(null);
   const [title, setTitle] = useState("");
-  const [attachments, setAttachments] = useState<string[]>([]);
   const currentTab = Number(searchParams.get("tab")) || 0;
   const { accessToken } = useUserStore();
 
@@ -60,31 +60,19 @@ const WriteContent = () => {
     try {
       const endpoint = getEndpoint(currentTab);
 
-      const formData = new FormData();
-      const blob = new Blob(
-        [
-          JSON.stringify({
+      const response = await makeAuthorizedRequest(
+        `${API_BASE_URL}/${endpoint}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
             title: title,
             content: content,
           }),
-        ],
-        {
-          type: "application/json",
         }
       );
-      formData.append("data", blob);
-
-      attachments.forEach((attachment) => {
-        formData.append("attachments", attachment);
-      });
-
-      const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: formData,
-      });
 
       const data = await response.json();
 

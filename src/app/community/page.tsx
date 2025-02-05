@@ -11,7 +11,7 @@ import useUserStore from "../_store/userSotre";
 
 const tabs = [
   "공지사항",
-  "자유게시판", 
+  "자유게시판",
   "공략/팁",
   "서버홍보",
   "통합자료실",
@@ -20,7 +20,7 @@ const tabs = [
 
 interface LinkItem {
   id: number;
-  name: string;
+  title: string;
   url: string;
 }
 
@@ -45,9 +45,9 @@ const CommunityContent = () => {
   useEffect(() => {
     const fetchLinks = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/admin/links`);
+        const response = await fetch(`${API_BASE_URL}/admin/integrated-links`);
         const result = await response.json();
-        
+
         if (result.http_status === "OK") {
           setLinkItems(result.data);
         }
@@ -60,24 +60,24 @@ const CommunityContent = () => {
   }, []);
 
   const getEndpoint = (tab: number) => {
-    switch(tab) {
+    switch (tab) {
       case 0:
-        return 'announcements';
+        return "announcements";
       case 1:
-        return 'frees';
+        return "frees";
       case 2:
-        return 'guides';
+        return "guides";
       case 3:
-        return 'promotions';
+        return "promotions";
       case 4:
-        return 'datas';
+        return "datas";
       default:
-        return 'announcements';
+        return "announcements";
     }
   };
 
   const getRoleImage = (role: string) => {
-    switch(role) {
+    switch (role) {
       case "ADMIN":
         return "/images/admin.gif";
       case "PARTNER":
@@ -105,7 +105,7 @@ const CommunityContent = () => {
           `${API_BASE_URL}/${endpoint}?page=${currentPage}&limit=${POSTS_PER_PAGE}&keyword=${keyword}&sort=${sort}`
         );
         const result = await response.json();
-        
+
         if (result.http_status === "OK") {
           setPosts(result.data);
           // 총 페이지 수 계산 로직 필요
@@ -148,7 +148,9 @@ const CommunityContent = () => {
   const handlePrevGroup = () => {
     if (startPage > 1) {
       router.push(
-        `/community?tab=${currentTab}&page=${startPage - pageGroupSize}&keyword=${keyword}&searchType=${searchType}&sort=${sort}`
+        `/community?tab=${currentTab}&page=${
+          startPage - pageGroupSize
+        }&keyword=${keyword}&searchType=${searchType}&sort=${sort}`
       );
     }
   };
@@ -156,7 +158,9 @@ const CommunityContent = () => {
   const handleNextGroup = () => {
     if (endPage < totalPages) {
       router.push(
-        `/community?tab=${currentTab}&page=${startPage + pageGroupSize}&keyword=${keyword}&searchType=${searchType}&sort=${sort}`
+        `/community?tab=${currentTab}&page=${
+          startPage + pageGroupSize
+        }&keyword=${keyword}&searchType=${searchType}&sort=${sort}`
       );
     }
   };
@@ -171,13 +175,15 @@ const CommunityContent = () => {
   };
 
   const handlePageChange = (page: number) => {
-    router.push(`/community?tab=${currentTab}&page=${page}&keyword=${keyword}&searchType=${searchType}&sort=${sort}`);
+    router.push(
+      `/community?tab=${currentTab}&page=${page}&keyword=${keyword}&searchType=${searchType}&sort=${sort}`
+    );
   };
 
   const handleWriteClick = () => {
     if (!accessToken) {
       alert("로그인 후 이용해주세요.");
-      router.push('/login');
+      router.push("/login");
       return;
     }
     router.push(`/community/write?tab=${currentTab}`);
@@ -214,7 +220,7 @@ const CommunityContent = () => {
                         rel="noopener noreferrer"
                         className="block px-4 py-2 hover:bg-gray-100 text-[16px] text-gray-700"
                       >
-                        {item.name}
+                        {item.title}
                       </a>
                     ))}
                   </div>
@@ -267,7 +273,7 @@ const CommunityContent = () => {
               </div>
               <div className="flex items-center gap-4 text-sm text-gray-500">
                 <span className="w-[100px] text-center flex items-center justify-center gap-1">
-                  <Image 
+                  <Image
                     src={getRoleImage(post.member_role)}
                     alt={post.member_role}
                     width={16}
@@ -276,9 +282,13 @@ const CommunityContent = () => {
                   />
                   {post.nickname}
                 </span>
-                <span className="w-[100px] text-center">{new Date(post.created_at).toLocaleDateString()}</span>
+                <span className="w-[100px] text-center">
+                  {new Date(post.created_at).toLocaleDateString()}
+                </span>
                 <span className="w-[80px] text-center">{post.hits}</span>
-                <span className="w-[80px] text-center">{post.count_of_comments}</span>
+                <span className="w-[80px] text-center">
+                  {post.count_of_comments}
+                </span>
               </div>
             </Link>
           ))}

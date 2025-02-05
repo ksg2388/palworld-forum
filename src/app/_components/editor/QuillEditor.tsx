@@ -36,7 +36,7 @@ const QuillEditor = forwardRef(
 
           const data = await response.json();
           if (data.http_status === "OK") {
-            const filePath = data.data.file_path;
+            const filePath = data.data.file_name;
             const editor = ref.current.getEditor();
             const range = editor.getSelection();
             editor.insertEmbed(

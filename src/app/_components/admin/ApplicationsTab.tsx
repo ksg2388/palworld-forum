@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useRef, useEffect } from 'react';
-import QuillView from '../editor/QuillView';
-import QuillEditor from '../editor/QuillEditor';
-import { API_BASE_URL } from '@/config/api';
-import { makeAuthorizedRequest } from '@/app/_utils/api';
+import { useState, useRef, useEffect } from "react";
+import QuillView from "../editor/QuillView";
+import QuillEditor from "../editor/QuillEditor";
+import { API_BASE_URL } from "@/config/api";
+import { makeAuthorizedRequest } from "@/app/_utils/api";
 
 const ApplicationsTab = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState("");
   const editorRef = useRef<any>(null);
 
   useEffect(() => {
@@ -17,7 +17,7 @@ const ApplicationsTab = () => {
         const response = await makeAuthorizedRequest(
           `${API_BASE_URL}/admin/occupancy`,
           {
-            method: 'GET'
+            method: "GET",
           }
         );
         const data = await response.json();
@@ -45,19 +45,16 @@ const ApplicationsTab = () => {
     }
 
     try {
-      const formData = new FormData();
-      const blob = new Blob([JSON.stringify({
-        content: content
-      })], {
-        type: 'application/json'
-      });
-      formData.append('data', blob);
-
       const response = await makeAuthorizedRequest(
         `${API_BASE_URL}/admin/occupancy`,
         {
-          method: 'PATCH',
-          body: formData
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            content: content,
+          }),
         }
       );
 
@@ -81,7 +78,7 @@ const ApplicationsTab = () => {
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-bold">서버 입주신청 관리</h2>
         {!isEditing && (
-          <button 
+          <button
             onClick={handleEdit}
             className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900"
           >
@@ -89,19 +86,19 @@ const ApplicationsTab = () => {
           </button>
         )}
       </div>
-      
+
       <div className="border rounded-lg p-4 bg-white shadow-sm">
         {isEditing ? (
           <div className="space-y-4">
             <QuillEditor ref={editorRef} initialValue={content} />
             <div className="flex justify-end gap-2">
-              <button 
+              <button
                 onClick={() => setIsEditing(false)}
                 className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
               >
                 취소
               </button>
-              <button 
+              <button
                 onClick={handleSave}
                 className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900"
               >

@@ -227,8 +227,10 @@ const CommunityDetail = () => {
           <div key={comment.id} className="border-t py-4">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <span className="font-bold">{comment.author}</span>
-                {/* <span className="text-gray-500 text-sm">방금 전</span> */}
+                <span className="font-bold">{comment.nickname}</span>
+                <span className="text-gray-500 text-sm">
+                  {formatDate(comment.modified_at)}
+                </span>
               </div>
             </div>
             <p className="mb-2">{comment.content}</p>
@@ -266,7 +268,9 @@ const CommunityDetail = () => {
               >
                 <div className="flex items-center gap-2 mb-2">
                   <span className="font-bold">{reply.author}</span>
-                  <span className="text-gray-500 text-sm">방금 전</span>
+                  <span className="text-gray-500 text-sm">
+                    {formatDate(reply.modified_at)}
+                  </span>
                 </div>
                 <p>{reply.content}</p>
               </div>

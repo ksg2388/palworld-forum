@@ -25,5 +25,15 @@ export type TComment = {
   id: number;
   author: string;
   content: string;
+  nickname: string;
+  modified_at: string;
+  member_role:
+    | "ADMIN"
+    | "PARTNER"
+    | "NORMAL"
+    | "LEGENDARY"
+    | "HEROIC"
+    | "RARE"
+    | "EXTRA_ORDINARY";
   child_comments: TComment[];
 };

@@ -12,39 +12,46 @@ const QuillEditor = forwardRef(
   ({ initialValue = "" }: { initialValue?: string }, ref: any) => {
     const [value, setValue] = useState<string>("");
 
-    const imageHandler = async (file: File) => {
+    const imageHandler = async () => {
       try {
-        const formData = new FormData();
-        formData.append("attachment", file);
+        const input = document.createElement("input");
+        input.setAttribute("type", "file");
+        input.setAttribute("accept", "image/*");
+        input.click();
 
-        const response = await makeAuthorizedRequest(
-          `${API_BASE_URL}/attachments`,
-          {
-            method: "POST",
-            body: formData,
-          }
-        );
+        input.onchange = async () => {
+          const file = input.files?.[0];
+          if (!file) return;
 
-        const data = await response.json();
-        if (data) {
-          const imageUrl = data.url;
+          const formData = new FormData();
+          formData.append("attachment", file);
 
-          // 에디터에 이미지를 삽입합니다. 이미지 URL을 절대 경로로 설정합니다.
-          const editor = ref.current.getEditor();
-          const range = editor.getSelection();
-          editor.insertEmbed(
-            range.index,
-            "image",
-            `${API_BASE_URL}${imageUrl}`
+          const response = await makeAuthorizedRequest(
+            `${API_BASE_URL}/attachments`,
+            {
+              method: "POST",
+              body: formData,
+            }
           );
-          editor.setSelection(range.index + 1);
-        } else {
-          throw new Error("이미지 업로드에 실패했습니다.");
-        }
+
+          const data = await response.json();
+          if (data.http_status === "OK") {
+            const filePath = data.data.file_path;
+            const editor = ref.current.getEditor();
+            const range = editor.getSelection();
+            editor.insertEmbed(
+              range.index,
+              "image",
+              `${API_BASE_URL}${filePath}`
+            );
+            editor.setSelection(range.index + 1);
+          } else {
+            throw new Error("이미지 업로드에 실패했습니다.");
+          }
+        };
       } catch (error) {
         console.error("이미지 업로드 실패:", error);
         alert("이미지 업로드에 실패했습니다. 다시 시도해주세요.");
-        return null;
       }
     };
 

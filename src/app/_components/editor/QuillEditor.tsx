@@ -42,7 +42,7 @@ const QuillEditor = forwardRef(
             editor.insertEmbed(
               range.index,
               "image",
-              `${API_BASE_URL}${filePath}`
+              `${API_BASE_URL}/${filePath}`
             );
             editor.setSelection(range.index + 1);
           } else {

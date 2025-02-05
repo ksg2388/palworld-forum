@@ -216,7 +216,7 @@ const CommunityContent = () => {
   return (
     <div className="w-full">
       <div className="fixed top-[110px] left-0 right-0 bg-white z-10 border-b">
-        <div className="max-w-[1200px] mx-auto">
+        <div className="max-w-[1200px] mx-auto min-h-[calc(100vh-152px)]">
           <div className="flex items-center gap-0 font-semibold text-[20px] relative">
             {tabs.map((tab, index) => (
               <div

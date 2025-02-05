@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useState, useEffect } from "react";
+import { forwardRef, useState, useEffect, useMemo } from "react";
 import dynamic from "next/dynamic";
 import "react-quill-new/dist/quill.snow.css";
 import { API_BASE_URL } from "@/config/api";
@@ -8,23 +8,11 @@ import { makeAuthorizedRequest } from "@/app/_utils/api";
 
 const ReactQuillNew = dynamic(() => import("react-quill-new"), { ssr: false });
 
-const modules = {
-  toolbar: [
-    [{ header: [1, 2, 3, 4, 5, false] }],
-    [{ font: [] }],
-    [{ size: ["small", "normal", "large", "huge"] }],
-    ["bold", "italic", "underline", "strike"],
-    [{ color: [] }, { background: [] }],
-    [{ script: "sub" }, { script: "super" }],
-    [{ list: "ordered" }, { list: "bullet" }],
-    [{ indent: "-1" }, { indent: "+1" }],
-    [{ align: [] }],
-    ["blockquote", "code-block"],
-    ["link", "image", "video"],
-    ["clean"],
-  ],
-  imageHandler: {
-    upload: async (file: File) => {
+const QuillEditor = forwardRef(
+  ({ initialValue = "" }: { initialValue?: string }, ref: any) => {
+    const [value, setValue] = useState<string>("");
+
+    const imageHandler = async (file: File) => {
       try {
         const formData = new FormData();
         formData.append("attachment", file);
@@ -39,7 +27,17 @@ const modules = {
 
         const data = await response.json();
         if (data) {
-          return data.url;
+          const imageUrl = data.url;
+
+          // 에디터에 이미지를 삽입합니다. 이미지 URL을 절대 경로로 설정합니다.
+          const editor = ref.current.getEditor();
+          const range = editor.getSelection();
+          editor.insertEmbed(
+            range.index,
+            "image",
+            `${API_BASE_URL}${imageUrl}`
+          );
+          editor.setSelection(range.index + 1);
         } else {
           throw new Error("이미지 업로드에 실패했습니다.");
         }
@@ -48,34 +46,53 @@ const modules = {
         alert("이미지 업로드에 실패했습니다. 다시 시도해주세요.");
         return null;
       }
-    },
-  },
-};
+    };
 
-const formats = [
-  "header",
-  "font",
-  "size",
-  "bold",
-  "italic",
-  "underline",
-  "strike",
-  "color",
-  "background",
-  "script",
-  "list",
-  "indent",
-  "align",
-  "blockquote",
-  "code-block",
-  "link",
-  "image",
-  "video",
-];
+    const modules = useMemo(
+      () => ({
+        toolbar: {
+          container: [
+            [{ header: [1, 2, 3, 4, 5, false] }],
+            [{ font: [] }],
+            [{ size: ["small", "normal", "large", "huge"] }],
+            ["bold", "italic", "underline", "strike"],
+            [{ color: [] }, { background: [] }],
+            [{ script: "sub" }, { script: "super" }],
+            [{ list: "ordered" }, { list: "bullet" }],
+            [{ indent: "-1" }, { indent: "+1" }],
+            [{ align: [] }],
+            ["blockquote", "code-block"],
+            ["link", "image", "video"],
+            ["clean"],
+          ],
+          handlers: {
+            image: imageHandler,
+          },
+        },
+      }),
+      []
+    );
 
-const QuillEditor = forwardRef(
-  ({ initialValue = "" }: { initialValue?: string }, ref: any) => {
-    const [value, setValue] = useState<string>("");
+    const formats = [
+      "header",
+      "font",
+      "size",
+      "bold",
+      "italic",
+      "underline",
+      "strike",
+      "color",
+      "background",
+      "script",
+      "list",
+      "indent",
+      "align",
+      "blockquote",
+      "code-block",
+      "link",
+      "image",
+      "video",
+    ];
 
     useEffect(() => {
       setValue(initialValue);

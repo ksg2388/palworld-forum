@@ -5,6 +5,7 @@ import Header from "./_components/common/Header";
 import KakaoChatButton from "./_components/common/KakaoChatButton";
 import DiscordButton from "./_components/common/DiscordButton";
 import Footer from "./_components/common/Footer";
+import Providers from "./providers";
 
 const pretendard = localFont({
   src: "./fonts/PretendardVariable.woff2",
@@ -19,19 +20,21 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
       <body
         className={`${pretendard.className} antialiased xl:overflow-x-auto overflow-y-scroll`}
       >
-        <Header />
-        {children}
-        <DiscordButton />
-        <KakaoChatButton />
-        <Footer />
+        <Providers>
+          <Header />
+          {children}
+          <DiscordButton />
+          <KakaoChatButton />
+          <Footer />
+        </Providers>
       </body>
     </html>
   );

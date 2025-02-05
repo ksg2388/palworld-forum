@@ -8,6 +8,11 @@ import SearchBar from "../_components/community/SearchBar";
 import { TCommunity } from "../types/community/community.types";
 import { API_BASE_URL } from "@/config/api";
 import useUserStore from "../_store/userSotre";
+import {
+  useQuery,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 
 const tabs = [
   "공지사항",
@@ -25,6 +30,22 @@ interface LinkItem {
 }
 
 const POSTS_PER_PAGE = 10;
+
+const queryClient = new QueryClient();
+
+// API 호출 함수 분리
+const fetchPosts = async (
+  endpoint: string,
+  page: number,
+  limit: number,
+  keyword: string,
+  sort: string
+) => {
+  const response = await fetch(
+    `${API_BASE_URL}/${endpoint}?page=${page}&limit=${limit}&keyword=${keyword}&sort=${sort}`
+  );
+  return response.json();
+};
 
 const CommunityContent = () => {
   const router = useRouter();
@@ -97,27 +118,22 @@ const CommunityContent = () => {
     }
   };
 
+  const endpoint = getEndpoint(currentTab);
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["posts", endpoint, currentPage, keyword, sort],
+    queryFn: () =>
+      fetchPosts(endpoint, currentPage, POSTS_PER_PAGE, keyword, sort),
+    staleTime: 5000, // 5초 동안 데이터를 "신선"하다고 간주
+    gcTime: 5 * 60 * 1000, // 5분 동안 캐시 유지
+    refetchOnWindowFocus: false, // 윈도우 포커스시 자동 재요청 비활성화
+  });
+
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const endpoint = getEndpoint(currentTab);
-        const response = await fetch(
-          `${API_BASE_URL}/${endpoint}?page=${currentPage}&limit=${POSTS_PER_PAGE}&keyword=${keyword}&sort=${sort}`
-        );
-        const result = await response.json();
-
-        if (result.http_status === "OK") {
-          setPosts(result.data);
-          // 총 페이지 수 계산 로직 필요
-          setTotalPages(Math.ceil(result.data.length / POSTS_PER_PAGE));
-        }
-      } catch (error) {
-        console.error("게시글 조회 실패:", error);
-      }
-    };
-
-    fetchPosts();
-  }, [currentPage, currentTab, keyword, searchType, sort]);
+    if (data?.http_status === "OK") {
+      setPosts(data.data);
+      setTotalPages(Math.ceil(data.data.length / POSTS_PER_PAGE));
+    }
+  }, [data]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -188,6 +204,14 @@ const CommunityContent = () => {
     }
     router.push(`/community/write?tab=${currentTab}`);
   };
+
+  if (isLoading) {
+    return <LoadingFallback />;
+  }
+
+  if (error) {
+    return <div>에러가 발생했습니다.</div>;
+  }
 
   return (
     <div className="w-full">
@@ -346,9 +370,11 @@ const LoadingFallback = () => {
 
 const CommunityPage = () => {
   return (
-    <Suspense fallback={<LoadingFallback />}>
-      <CommunityContent />
-    </Suspense>
+    <QueryClientProvider client={queryClient}>
+      <Suspense fallback={<LoadingFallback />}>
+        <CommunityContent />
+      </Suspense>
+    </QueryClientProvider>
   );
 };
 

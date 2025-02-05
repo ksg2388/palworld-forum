@@ -19,28 +19,28 @@ const CommunityDetail = () => {
   const { user } = useUserStore();
   const [commentText, setCommentText] = useState("");
   const [replyText, setReplyText] = useState("");
-  const [selectedCommentId, setSelectedCommentId] = useState<number | null>(null);
+  const [selectedCommentId, setSelectedCommentId] = useState<number | null>(
+    null
+  );
   const [showDropdown, setShowDropdown] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  const communityTabs = [
-    "전체",
-  ];
+  const communityTabs = ["전체"];
 
   const getEndpoint = (tab: number) => {
-    switch(tab) {
+    switch (tab) {
       case 0:
-        return 'announcements';
+        return "announcements";
       case 1:
-        return 'frees';
+        return "frees";
       case 2:
-        return 'guides';
+        return "guides";
       case 3:
-        return 'promotions';
+        return "promotions";
       case 4:
-        return 'datas';
+        return "datas";
       default:
-        return 'announcements';
+        return "announcements";
     }
   };
 
@@ -50,7 +50,7 @@ const CommunityDetail = () => {
         const endpoint = getEndpoint(currentTab);
         const response = await fetch(`${API_BASE_URL}/${endpoint}/${id}`);
         const result = await response.json();
-        
+
         if (result.http_status === "OK") {
           setPost(result.data);
           console.log(result.data);
@@ -67,29 +67,29 @@ const CommunityDetail = () => {
 
   const handleCommentSubmit = async () => {
     if (!commentText.trim()) return;
-    
+
     try {
       const endpoint = getEndpoint(currentTab);
       const response = await makeAuthorizedRequest(
         `${API_BASE_URL}/${endpoint}/${id}/comments`,
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            content: commentText
+            content: commentText,
           }),
         }
       );
-      
+
       const result = await response.json();
       if (result.http_status === "OK") {
         // 댓글 작성 성공 시 게시글 새로고침
         const endpoint = getEndpoint(currentTab);
         const postResponse = await fetch(`${API_BASE_URL}/${endpoint}/${id}`);
         const postResult = await postResponse.json();
-        
+
         if (postResult.http_status === "OK") {
           setPost(postResult.data);
         }
@@ -104,9 +104,9 @@ const CommunityDetail = () => {
     try {
       const endpoint = getEndpoint(currentTab);
       await makeAuthorizedRequest(`${API_BASE_URL}/${endpoint}/${id}`, {
-        method: 'DELETE'
+        method: "DELETE",
       });
-      router.push('/community');
+      router.push("/community");
     } catch (error) {
       console.error("게시글 삭제 중 오류 발생:", error);
     }
@@ -125,7 +125,7 @@ const CommunityDetail = () => {
         <div className="flex gap-4">
           {communityTabs.map((tab, index) => (
             <Link
-              key={index} 
+              key={index}
               href={`/community?tab=${currentTab}`}
               className="text-gray-600 hover:text-gray-900"
             >
@@ -144,22 +144,21 @@ const CommunityDetail = () => {
           </button>
           {user && user.email === post.author && (
             <div className="relative">
-              <button 
+              <button
                 className="p-2"
                 onClick={() => setShowDropdown(!showDropdown)}
               >
-                <span className="sr-only">더보기</span>
-                ⋮
+                <span className="sr-only">더보기</span>⋮
               </button>
               {showDropdown && (
                 <div className="absolute right-0 mt-2 w-24 bg-white rounded-md shadow-lg z-10">
-                  <button 
+                  <button
                     onClick={handleEdit}
                     className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                   >
                     수정
                   </button>
-                  <button 
+                  <button
                     onClick={() => {
                       setShowDropdown(false);
                       setShowDeleteConfirm(true);
@@ -206,7 +205,9 @@ const CommunityDetail = () => {
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-4">
           <span className="font-bold">{post.author}</span>
-          <span className="text-gray-500 text-sm">{formatDate(post.created_at)}</span>
+          <span className="text-gray-500 text-sm">
+            {formatDate(post.created_at)}
+          </span>
           <span className="text-gray-500 text-sm">조회 {post.hits}</span>
         </div>
         <h1 className="text-xl font-bold mb-4">{post.title}</h1>
@@ -221,16 +222,16 @@ const CommunityDetail = () => {
           <h2>댓글</h2>
           <span className="text-gray-500">{post.count_of_comments}</span>
         </div>
-        
+
         {post.comments.map((comment) => (
           <div key={comment.id} className="border-t py-4">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
                 <span className="font-bold">{comment.author}</span>
-                <span className="text-gray-500 text-sm">방금 전</span>
+                {/* <span className="text-gray-500 text-sm">방금 전</span> */}
               </div>
               {user && (
-                <button 
+                <button
                   onClick={() => setSelectedCommentId(comment.id)}
                   className="text-gray-500 text-sm hover:text-gray-700"
                 >
@@ -239,7 +240,7 @@ const CommunityDetail = () => {
               )}
             </div>
             <p className="mb-2">{comment.content}</p>
-            
+
             {selectedCommentId === comment.id && user && (
               <div className="ml-8 mt-4">
                 <textarea
@@ -250,13 +251,13 @@ const CommunityDetail = () => {
                   placeholder="답글을 입력하세요"
                 />
                 <div className="flex justify-end gap-2 mt-2">
-                  <button 
+                  <button
                     onClick={() => setSelectedCommentId(null)}
                     className="px-3 py-1 text-gray-600 rounded"
                   >
                     취소
                   </button>
-                  <button 
+                  <button
                     // onClick={() => handleReplySubmit(comment.id)}
                     className="px-3 py-1 bg-red-500 text-white rounded"
                   >
@@ -267,7 +268,10 @@ const CommunityDetail = () => {
             )}
 
             {comment.child_comments.map((reply) => (
-              <div key={reply.id} className="ml-8 mt-4 border-l-2 border-gray-200 pl-4">
+              <div
+                key={reply.id}
+                className="ml-8 mt-4 border-l-2 border-gray-200 pl-4"
+              >
                 <div className="flex items-center gap-2 mb-2">
                   <span className="font-bold">{reply.author}</span>
                   <span className="text-gray-500 text-sm">방금 전</span>
@@ -288,7 +292,7 @@ const CommunityDetail = () => {
               placeholder="댓글을 입력하세요"
             />
             <div className="flex justify-end mt-2">
-              <button 
+              <button
                 onClick={handleCommentSubmit}
                 className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
               >

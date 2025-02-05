@@ -6,38 +6,40 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { API_BASE_URL } from "@/config/api";
 import useUserStore from "@/app/_store/userSotre";
 
-const QuillEditor = dynamic(() => import("@/app/_components/editor/QuillEditor"), {
-  ssr: false,
-});
+const QuillEditor = dynamic(
+  () => import("@/app/_components/editor/QuillEditor"),
+  {
+    ssr: false,
+  }
+);
 
 const WriteContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const editorRef = useRef<any>(null);
   const [title, setTitle] = useState("");
-  const [attachments, setAttachments] = useState<string[]>([]);
   const currentTab = Number(searchParams.get("tab")) || 0;
   const { accessToken } = useUserStore();
 
-  // useEffect(() => {
-  //   if (!accessToken) {
-  //     alert("로그인 후 이용해주세요.");
-  //     router.push('/login');
-  //   }
-  // }, [router, accessToken]);
+  useEffect(() => {
+    if (!accessToken) {
+      alert("로그인 후 이용해주세요.");
+      router.push("/login");
+    }
+  }, [router, accessToken]);
 
   const getEndpoint = (tab: number) => {
-    switch(tab) {
+    switch (tab) {
       case 0:
-        return 'announcements';
+        return "announcements";
       case 1:
-        return 'frees';
+        return "frees";
       case 2:
-        return 'guides';
+        return "guides";
       case 3:
-        return 'promotions';
+        return "promotions";
       case 4:
-        return 'datas';
+        return "datas";
     }
   };
 
@@ -57,25 +59,16 @@ const WriteContent = () => {
     try {
       const endpoint = getEndpoint(currentTab);
 
-      const formData = new FormData();
-      const blob = new Blob([JSON.stringify({
-        title: title,
-        content: content
-      })], {
-        type: 'application/json'
-      });
-      formData.append('data', blob);
-      
-      attachments.forEach((attachment) => {
-        formData.append('attachments', attachment);
-      });
-
       const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Authorization': `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
         },
-        body: formData
+        body: JSON.stringify({
+          title: title,
+          content: content,
+        }),
       });
 
       const data = await response.json();

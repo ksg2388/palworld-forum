@@ -27,7 +27,8 @@ const useUserStore = create<UserState>()(
       accessToken: null,
       refreshToken: null,
       setUser: (user) => set({ user }),
-      setTokens: (accessToken, refreshToken) => set({ accessToken, refreshToken }),
+      setTokens: (accessToken, refreshToken) =>
+        set({ accessToken, refreshToken }),
       login: (user, accessToken, refreshToken) =>
         set({ user, isLoggedIn: true, accessToken, refreshToken }),
       logout: () => {
@@ -37,43 +38,44 @@ const useUserStore = create<UserState>()(
           accessToken: null,
           refreshToken: null,
         });
-        window.location.href = '/login';
+        window.location.href = "/login";
       },
-      updateAccessToken: (newAccessToken) => set({ accessToken: newAccessToken }),
+      updateAccessToken: (newAccessToken) =>
+        set({ accessToken: newAccessToken }),
       refreshAccessToken: async () => {
         try {
           const refreshToken = get().refreshToken;
-          if (!refreshToken) throw new Error('리프레시 토큰이 없습니다');
+          if (!refreshToken) throw new Error("리프레시 토큰이 없습니다");
 
-          const response = await fetch('/auth/refresh-token', {
-            method: 'POST',
+          const response = await fetch("/auth/refresh-token", {
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              'refresh-token': refreshToken
-            })
+              refresh_token: refreshToken,
+            }),
           });
 
           const data = await response.json();
-          
-          if (data.http_status === 'OK') {
-            set({ 
+
+          if (data.http_status === "OK") {
+            set({
               accessToken: data.data.access_token,
-              refreshToken: data.data.refresh_token 
+              refreshToken: data.data.refresh_token,
             });
           } else {
-            throw new Error('토큰 갱신에 실패했습니다');
+            throw new Error("토큰 갱신에 실패했습니다");
           }
         } catch (error) {
-          console.error('토큰 갱신 중 오류 발생:', error);
+          console.error("토큰 갱신 중 오류 발생:", error);
           // 토큰 갱신 실패 시 로그아웃 처리
           get().logout();
         }
       },
     }),
     {
-      name: 'user-storage',
+      name: "user-storage",
     }
   )
 );

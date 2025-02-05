@@ -5,7 +5,7 @@ import { useRef, useState, Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { API_BASE_URL } from "@/config/api";
 import useUserStore from "@/app/_store/userSotre";
-import { makeAuthorizedRequest } from "@/app/_utils/makeAuthorizedRequest";
+import { makeAuthorizedRequest } from "@/app/_utils/api";
 
 const QuillEditor = dynamic(
   () => import("@/app/_components/editor/QuillEditor"),

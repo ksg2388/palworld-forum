@@ -2,7 +2,9 @@
 
 import { forwardRef, useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import 'react-quill-new/dist/quill.snow.css';
+import "react-quill-new/dist/quill.snow.css";
+import { API_BASE_URL } from "@/config/api";
+import { makeAuthorizedRequest } from "@/app/_utils/api";
 
 const ReactQuillNew = dynamic(() => import("react-quill-new"), { ssr: false });
 
@@ -10,8 +12,8 @@ const modules = {
   toolbar: [
     [{ header: [1, 2, 3, 4, 5, false] }],
     [{ font: [] }],
-    [{ size: ["small", "normal", "large", "huge"] }], // 기본 사이즈 옵션으로 변경
-    ["bold", "italic", "underline", "strike"], 
+    [{ size: ["small", "normal", "large", "huge"] }],
+    ["bold", "italic", "underline", "strike"],
     [{ color: [] }, { background: [] }],
     [{ script: "sub" }, { script: "super" }],
     [{ list: "ordered" }, { list: "bullet" }],
@@ -21,45 +23,90 @@ const modules = {
     ["link", "image", "video"],
     ["clean"],
   ],
+  imageHandler: {
+    upload: async (file: File) => {
+      try {
+        const formData = new FormData();
+        formData.append("attachment", file);
+
+        const response = await makeAuthorizedRequest(
+          `${API_BASE_URL}/attachments`,
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+
+        const data = await response.json();
+        if (data) {
+          return data.url;
+        } else {
+          throw new Error("이미지 업로드에 실패했습니다.");
+        }
+      } catch (error) {
+        console.error("이미지 업로드 실패:", error);
+        alert("이미지 업로드에 실패했습니다. 다시 시도해주세요.");
+        return null;
+      }
+    },
+  },
 };
 
 const formats = [
-  "header", "font", "size", "bold", "italic", "underline", "strike", "color", "background",
-  "script", "list", "indent", "align", "blockquote", "code-block", "link", "image", "video"
+  "header",
+  "font",
+  "size",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "color",
+  "background",
+  "script",
+  "list",
+  "indent",
+  "align",
+  "blockquote",
+  "code-block",
+  "link",
+  "image",
+  "video",
 ];
 
-const QuillEditor = forwardRef(({ initialValue = "" }: { initialValue?: string }, ref: any) => {
-  const [value, setValue] = useState<string>("");
+const QuillEditor = forwardRef(
+  ({ initialValue = "" }: { initialValue?: string }, ref: any) => {
+    const [value, setValue] = useState<string>("");
 
-  useEffect(() => {
-    setValue(initialValue);
-  }, [initialValue]);
+    useEffect(() => {
+      setValue(initialValue);
+    }, [initialValue]);
 
-  // ref를 통해 외부에서 value에 접근할 수 있도록 설정
-  if (ref) {
-    ref.current = { value };
-  }
+    // ref를 통해 외부에서 value에 접근할 수 있도록 설정
+    if (ref) {
+      ref.current = { value };
+    }
 
-  return (
-    <div className="">
-      <style>
-        {`
+    return (
+      <div className="">
+        <style>
+          {`
           .ql-editor {
             min-height: 500px;
           }
         `}
-      </style>
-      <ReactQuillNew
-        value={value}
-        onChange={setValue}
-        modules={modules}
-        formats={formats}
-        theme="snow"
-      />
-    </div>
-  );
-});
+        </style>
+        <ReactQuillNew
+          value={value}
+          onChange={setValue}
+          modules={modules}
+          formats={formats}
+          theme="snow"
+        />
+      </div>
+    );
+  }
+);
 
-QuillEditor.displayName = 'QuillEditor';
+QuillEditor.displayName = "QuillEditor";
 
 export default QuillEditor;

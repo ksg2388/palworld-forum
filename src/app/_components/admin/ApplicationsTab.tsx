@@ -60,7 +60,7 @@ const ApplicationsTab = () => {
 
       const data = await response.json();
 
-      if (data.http_status === "OK") {
+      if (data.http_status === "ACCEPTED") {
         alert("입주신청 내용이 수정되었습니다.");
         setIsEditing(false);
         setContent(content);

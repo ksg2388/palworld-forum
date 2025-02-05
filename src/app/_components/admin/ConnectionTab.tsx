@@ -60,7 +60,7 @@ const ConnectionTab = () => {
 
       const data = await response.json();
 
-      if (data.http_status === "OK") {
+      if (data.http_status === "ACCEPTED") {
         alert("연결 방법이 수정되었습니다.");
         setIsEditing(false);
         setContent(content);

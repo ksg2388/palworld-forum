@@ -45,25 +45,22 @@ const RulesTab = () => {
     }
 
     try {
-      const formData = new FormData();
-      const blob = new Blob([JSON.stringify({
-        content: content
-      })], {
-        type: 'application/json'
-      });
-      formData.append('data', blob);
-
       const response = await makeAuthorizedRequest(
         `${API_BASE_URL}/admin/rule`,
         {
           method: 'PATCH',
-          body: formData
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            content: content
+          })
         }
       );
 
       const data = await response.json();
 
-      if (data.http_status === "OK") {
+      if (data.http_status === "ACCEPTED") {
         alert("서버 규칙이 수정되었습니다.");
         setIsEditing(false);
         setContent(content);

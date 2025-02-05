@@ -8,7 +8,11 @@ import SearchBar from "../_components/community/SearchBar";
 import { TCommunity } from "../types/community/community.types";
 import { API_BASE_URL } from "@/config/api";
 import useUserStore from "../_store/userSotre";
-import { useQuery } from "@tanstack/react-query";
+import {
+  useQuery,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 
 const tabs = [
   "공지사항",
@@ -27,6 +31,8 @@ interface LinkItem {
 
 const POSTS_PER_PAGE = 10;
 
+const queryClient = new QueryClient();
+
 // API 호출 함수 분리
 const fetchPosts = async (
   endpoint: string,
@@ -39,67 +45,6 @@ const fetchPosts = async (
     `${API_BASE_URL}/${endpoint}?page=${page}&limit=${limit}&keyword=${keyword}&sort=${sort}`
   );
   return response.json();
-};
-
-const PostList = ({ posts, currentTab, currentPage, getRoleImage }: any) => {
-  return (
-    <div className="bg-white border border-gray-200 rounded-lg">
-      <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50 text-sm text-gray-600">
-        <div className="flex items-center gap-4 flex-1">
-          <span className="w-[80px] text-center">번호</span>
-          <span className="flex-1">제목</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <span className="w-[100px] text-center">작성자</span>
-          <span className="w-[100px] text-center">작성일</span>
-          <span className="w-[80px] text-center">조회</span>
-          <span className="w-[80px] text-center">댓글</span>
-        </div>
-      </div>
-
-      {posts.map((post: TCommunity) => (
-        <Link
-          href={`/community/${post.id}?tab=${currentTab}&page=${currentPage}`}
-          key={post.id}
-          className="flex items-center justify-between p-4 border-b border-gray-200 hover:bg-gray-50"
-        >
-          <div className="flex items-center gap-4 flex-1">
-            <span className="w-[80px] text-center text-sm text-gray-500">
-              {post.id}
-            </span>
-            <span className="flex-1">{post.title}</span>
-          </div>
-          <div className="flex items-center gap-4 text-sm text-gray-500">
-            <span className="w-[100px] text-center flex items-center justify-center gap-1">
-              <Image
-                src={getRoleImage(post.member_role)}
-                alt={post.member_role}
-                width={16}
-                height={16}
-                unoptimized
-              />
-              {post.nickname}
-            </span>
-            <span className="w-[100px] text-center">
-              {new Date(post.created_at).toLocaleDateString()}
-            </span>
-            <span className="w-[80px] text-center">{post.hits}</span>
-            <span className="w-[80px] text-center">
-              {post.count_of_comments}
-            </span>
-          </div>
-        </Link>
-      ))}
-    </div>
-  );
-};
-
-const LoadingFallback = () => {
-  return (
-    <div className="w-full flex items-center justify-center py-20">
-      <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
-    </div>
-  );
 };
 
 const CommunityContent = () => {
@@ -178,9 +123,9 @@ const CommunityContent = () => {
     queryKey: ["posts", endpoint, currentPage, keyword, sort],
     queryFn: () =>
       fetchPosts(endpoint, currentPage, POSTS_PER_PAGE, keyword, sort),
-    staleTime: 5000,
-    gcTime: 5 * 60 * 1000,
-    refetchOnWindowFocus: false,
+    staleTime: 5000, // 5초 동안 데이터를 "신선"하다고 간주
+    gcTime: 5 * 60 * 1000, // 5분 동안 캐시 유지
+    refetchOnWindowFocus: false, // 윈도우 포커스시 자동 재요청 비활성화
   });
 
   useEffect(() => {
@@ -260,6 +205,10 @@ const CommunityContent = () => {
     router.push(`/community/write?tab=${currentTab}`);
   };
 
+  if (isLoading) {
+    return <LoadingFallback />;
+  }
+
   if (error) {
     return <div>에러가 발생했습니다.</div>;
   }
@@ -267,7 +216,7 @@ const CommunityContent = () => {
   return (
     <div className="w-full">
       <div className="fixed top-[110px] left-0 right-0 bg-white z-10 border-b">
-        <div className="max-w-[1200px] mx-auto min-h-[calc(100vh-152px)]">
+        <div className="max-w-[1200px] mx-auto">
           <div className="flex items-center gap-0 font-semibold text-[20px] relative">
             {tabs.map((tab, index) => (
               <div
@@ -320,18 +269,54 @@ const CommunityContent = () => {
           </div>
         </div>
 
-        <Suspense fallback={<LoadingFallback />}>
-          {isLoading ? (
-            <LoadingFallback />
-          ) : (
-            <PostList
-              posts={posts}
-              currentTab={currentTab}
-              currentPage={currentPage}
-              getRoleImage={getRoleImage}
-            />
-          )}
-        </Suspense>
+        <div className="bg-white border border-gray-200 rounded-lg">
+          <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50 text-sm text-gray-600">
+            <div className="flex items-center gap-4 flex-1">
+              <span className="w-[80px] text-center">번호</span>
+              <span className="flex-1">제목</span>
+            </div>
+            <div className="flex items-center gap-4">
+              <span className="w-[100px] text-center">작성자</span>
+              <span className="w-[100px] text-center">작성일</span>
+              <span className="w-[80px] text-center">조회</span>
+              <span className="w-[80px] text-center">댓글</span>
+            </div>
+          </div>
+
+          {posts.map((post) => (
+            <Link
+              href={`/community/${post.id}?tab=${currentTab}&page=${currentPage}`}
+              key={post.id}
+              className="flex items-center justify-between p-4 border-b border-gray-200 hover:bg-gray-50"
+            >
+              <div className="flex items-center gap-4 flex-1">
+                <span className="w-[80px] text-center text-sm text-gray-500">
+                  {post.id}
+                </span>
+                <span className="flex-1">{post.title}</span>
+              </div>
+              <div className="flex items-center gap-4 text-sm text-gray-500">
+                <span className="w-[100px] text-center flex items-center justify-center gap-1">
+                  <Image
+                    src={getRoleImage(post.member_role)}
+                    alt={post.member_role}
+                    width={16}
+                    height={16}
+                    unoptimized
+                  />
+                  {post.nickname}
+                </span>
+                <span className="w-[100px] text-center">
+                  {new Date(post.created_at).toLocaleDateString()}
+                </span>
+                <span className="w-[80px] text-center">{post.hits}</span>
+                <span className="w-[80px] text-center">
+                  {post.count_of_comments}
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
 
         <div className="flex justify-center mt-4 gap-1 items-center">
           <button
@@ -375,11 +360,21 @@ const CommunityContent = () => {
   );
 };
 
+const LoadingFallback = () => {
+  return (
+    <div className="w-full h-screen flex items-center justify-center">
+      <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+    </div>
+  );
+};
+
 const CommunityPage = () => {
   return (
-    <Suspense fallback={<LoadingFallback />}>
-      <CommunityContent />
-    </Suspense>
+    <QueryClientProvider client={queryClient}>
+      <Suspense fallback={<LoadingFallback />}>
+        <CommunityContent />
+      </Suspense>
+    </QueryClientProvider>
   );
 };
 

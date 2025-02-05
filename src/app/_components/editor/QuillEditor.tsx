@@ -1,16 +1,29 @@
 "use client";
 
-import { forwardRef, useState, useEffect, useMemo } from "react";
+import { forwardRef, useState, useEffect, useMemo, useImperativeHandle, useRef } from "react";
 import dynamic from "next/dynamic";
 import "react-quill-new/dist/quill.snow.css";
 import { API_BASE_URL } from "@/config/api";
 import { makeAuthorizedRequest } from "@/app/_utils/api";
 
-const ReactQuillNew = dynamic(() => import("react-quill-new"), { ssr: false });
+const ReactQuillNew = dynamic(() => 
+  import("react-quill-new").then((mod) => {
+    const Component = mod.default;
+    const ForwardedComponent = forwardRef((props: any, ref: any) => <Component {...props} forwardedRef={ref} />);
+    ForwardedComponent.displayName = 'ForwardedReactQuill';
+    return ForwardedComponent;
+  }), 
+  { ssr: false }
+);
 
 const QuillEditor = forwardRef(
-  ({ initialValue = "" }: { initialValue?: string }, ref: any) => {
-    const [value, setValue] = useState<string>("");
+  ({ initialValue = "" }: { initialValue?: string }, ref) => {
+    const [value, setValue] = useState<string>(initialValue);
+    const quillRef = useRef<any>(null); // Quill 인스턴스를 위한 ref
+
+    useImperativeHandle(ref, () => ({
+      getEditor: () => quillRef.current?.getEditor(),
+    }));
 
     const imageHandler = async () => {
       try {
@@ -37,7 +50,9 @@ const QuillEditor = forwardRef(
           const data = await response.json();
           if (data.http_status === "OK") {
             const filePath = data.data.file_name;
-            const editor = ref.current.getEditor();
+            const editor = quillRef.current?.getEditor();
+            if (!editor) return;
+
             const range = editor.getSelection();
             editor.insertEmbed(
               range.index,
@@ -45,7 +60,7 @@ const QuillEditor = forwardRef(
               `${API_BASE_URL}/${filePath}`
             );
             console.log("이미지 경로 : ", `${API_BASE_URL}/${filePath}`);
-            
+
             editor.setSelection(range.index + 1);
           } else {
             throw new Error("이미지 업로드에 실패했습니다.");
@@ -107,13 +122,8 @@ const QuillEditor = forwardRef(
       setValue(initialValue);
     }, [initialValue]);
 
-    // ref를 통해 외부에서 value에 접근할 수 있도록 설정
-    if (ref) {
-      ref.current = { value };
-    }
-
     return (
-      <div className="">
+      <div>
         <style>
           {`
           .ql-editor {
@@ -122,6 +132,7 @@ const QuillEditor = forwardRef(
         `}
         </style>
         <ReactQuillNew
+          ref={quillRef} // ReactQuillNew에 ref 전달
           value={value}
           onChange={setValue}
           modules={modules}

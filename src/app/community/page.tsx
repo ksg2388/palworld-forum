@@ -376,7 +376,11 @@ const CommunityContent = () => {
 };
 
 const CommunityPage = () => {
-  return <CommunityContent />;
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <CommunityContent />
+    </Suspense>
+  );
 };
 
 export default CommunityPage;

@@ -230,14 +230,6 @@ const CommunityDetail = () => {
                 <span className="font-bold">{comment.author}</span>
                 {/* <span className="text-gray-500 text-sm">방금 전</span> */}
               </div>
-              {user && (
-                <button
-                  onClick={() => setSelectedCommentId(comment.id)}
-                  className="text-gray-500 text-sm hover:text-gray-700"
-                >
-                  답글달기
-                </button>
-              )}
             </div>
             <p className="mb-2">{comment.content}</p>
 

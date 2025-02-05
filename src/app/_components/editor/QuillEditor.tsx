@@ -44,6 +44,8 @@ const QuillEditor = forwardRef(
               "image",
               `${API_BASE_URL}/${filePath}`
             );
+            console.log("이미지 경로 : ", `${API_BASE_URL}/${filePath}`);
+            
             editor.setSelection(range.index + 1);
           } else {
             throw new Error("이미지 업로드에 실패했습니다.");

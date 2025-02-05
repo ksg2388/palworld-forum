@@ -18,6 +18,7 @@ const WriteContent = () => {
   const searchParams = useSearchParams();
   const editorRef = useRef<any>(null);
   const [title, setTitle] = useState("");
+  const [attachments, setAttachments] = useState<string[]>([]);
   const currentTab = Number(searchParams.get("tab")) || 0;
   const { accessToken } = useUserStore();
 
@@ -59,16 +60,30 @@ const WriteContent = () => {
     try {
       const endpoint = getEndpoint(currentTab);
 
+      const formData = new FormData();
+      const blob = new Blob(
+        [
+          JSON.stringify({
+            title: title,
+            content: content,
+          }),
+        ],
+        {
+          type: "application/json",
+        }
+      );
+      formData.append("data", blob);
+
+      attachments.forEach((attachment) => {
+        formData.append("attachments", attachment);
+      });
+
       const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify({
-          title: title,
-          content: content,
-        }),
+        body: formData,
       });
 
       const data = await response.json();

@@ -111,19 +111,20 @@ const FindPage = () => {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/members`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          new_password: password,
-          new_password_confirm: passwordConfirm,
-          verification_code: verificationCode,
-          password: "",
-        }),
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/members/change-password-by-verification-code`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            new_password: password,
+            new_password_confirm: passwordConfirm,
+            verification_code: verificationCode,
+          }),
+        }
+      );
 
       const data = await response.json();
 

@@ -26,6 +26,9 @@ const CommunityDetail = () => {
   const [editCommentText, setEditCommentText] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showCommentDeleteConfirm, setShowCommentDeleteConfirm] = useState<
+    number | null
+  >(null);
 
   const communityTabs = ["전체"];
 
@@ -131,10 +134,12 @@ const CommunityDetail = () => {
           setEditingCommentId(null);
           setEditCommentText("");
           router.refresh();
+          alert("댓글이 수정되었습니다.");
         }
       }
     } catch (error) {
       console.error("댓글 수정 중 오류 발생:", error);
+      alert("댓글 수정에 실패했습니다. 다시 시도해주세요.");
     }
   };
 
@@ -154,11 +159,14 @@ const CommunityDetail = () => {
 
         if (postResult.http_status === "OK") {
           setPost(postResult.data);
+          setShowCommentDeleteConfirm(null);
           router.refresh();
+          alert("댓글이 삭제되었습니다.");
         }
       }
     } catch (error) {
       console.error("댓글 삭제 중 오류 발생:", error);
+      alert("댓글 삭제에 실패했습니다. 다시 시도해주세요.");
     }
   };
 
@@ -266,6 +274,30 @@ const CommunityDetail = () => {
         </div>
       )}
 
+      {/* 댓글 삭제 확인 모달 */}
+      {showCommentDeleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl">
+            <h3 className="text-lg font-bold mb-4">댓글 삭제</h3>
+            <p className="mb-4">정말로 이 댓글을 삭제하시겠습니까?</p>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setShowCommentDeleteConfirm(null)}
+                className="px-4 py-2 text-gray-600 rounded border"
+              >
+                취소
+              </button>
+              <button
+                onClick={() => handleCommentDelete(showCommentDeleteConfirm)}
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                삭제
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 게시글 내용 */}
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-4">
@@ -309,7 +341,7 @@ const CommunityDetail = () => {
                     수정
                   </button>
                   <button
-                    onClick={() => handleCommentDelete(comment.id)}
+                    onClick={() => setShowCommentDeleteConfirm(comment.id)}
                     className="text-red-500 hover:text-red-700"
                   >
                     삭제

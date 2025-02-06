@@ -9,7 +9,7 @@ interface Partner {
   name: string;
   image: File | null;
   imagePreview?: string;
-  link?: string;
+  url?: string;
   attachment?: {
     id: number;
     file_name: string;
@@ -34,7 +34,7 @@ const PartnersTab = () => {
             imagePreview: partner.attachment
               ? `${API_BASE_URL}/attachments/${partner.attachment.file_name}`
               : undefined,
-            link: partner.attachment?.file_path || "",
+            url: partner.attachment?.file_path || "",
             attachment: partner.attachment,
           }));
           setPartners(initialPartners);
@@ -48,7 +48,7 @@ const PartnersTab = () => {
   }, []);
 
   const addPartner = () => {
-    setPartners([...partners, { name: "", image: null, link: "" }]);
+    setPartners([...partners, { name: "", image: null, url: "" }]);
   };
 
   const removePartner = async (id: number) => {
@@ -94,9 +94,9 @@ const PartnersTab = () => {
     }
 
     const formData = new FormData();
-    const data: { name: string; id?: number; link?: string } = {
+    const data: { name: string; id?: number; url?: string } = {
       name: partner.name,
-      link: partner.link,
+      url: partner.url,
     };
 
     // 기존 업체 수정 시에만 id 포함
@@ -169,10 +169,10 @@ const PartnersTab = () => {
                 type="text"
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800"
                 placeholder="파워링크 URL 입력"
-                value={partner.link}
+                value={partner.url}
                 onChange={(e) => {
                   const newPartners = partners.map((p, i) =>
-                    i === index ? { ...p, link: e.target.value } : p
+                    i === index ? { ...p, url: e.target.value } : p
                   );
                   setPartners(newPartners);
                 }}

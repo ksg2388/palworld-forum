@@ -1,8 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from 'react';
-import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
+import { useState } from "react";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DropResult,
+} from "@hello-pangea/dnd";
 import { makeAuthorizedRequest } from "@/app/_utils/api";
 import { API_BASE_URL } from "@/config/api";
 
@@ -13,7 +18,9 @@ const BannerTab = () => {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
-      const newImages = Array.from(files).map(file => URL.createObjectURL(file));
+      const newImages = Array.from(files).map((file) =>
+        URL.createObjectURL(file)
+      );
       setBannerImages([...bannerImages, ...newImages]);
     }
   };
@@ -31,11 +38,13 @@ const BannerTab = () => {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    
+
     const files = e.dataTransfer.files;
     if (files) {
-      const imageFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
-      const newImages = imageFiles.map(file => URL.createObjectURL(file));
+      const imageFiles = Array.from(files).filter((file) =>
+        file.type.startsWith("image/")
+      );
+      const newImages = imageFiles.map((file) => URL.createObjectURL(file));
       setBannerImages([...bannerImages, ...newImages]);
     }
   };
@@ -56,13 +65,16 @@ const BannerTab = () => {
 
   const handleSave = async () => {
     try {
-      const response = await makeAuthorizedRequest(`${API_BASE_URL}/admin/banners`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ bannerImages }),
-      });
+      const response = await makeAuthorizedRequest(
+        `${API_BASE_URL}/admin/banners`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ bannerImages }),
+        }
+      );
 
       if (response.ok) {
         alert("배너 이미지가 성공적으로 저장되었습니다.");
@@ -84,9 +96,9 @@ const BannerTab = () => {
           저장
         </button>
       </div>
-      <div 
+      <div
         className={`mb-4 p-8 border-2 border-dashed rounded-lg text-center ${
-          isDragging ? 'border-gray-800 bg-gray-100' : 'border-gray-300'
+          isDragging ? "border-gray-800 bg-gray-100" : "border-gray-300"
         }`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -107,7 +119,7 @@ const BannerTab = () => {
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="bannerImages" direction="horizontal">
           {(provided) => (
-            <div 
+            <div
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
               {...provided.droppableProps}
               ref={provided.innerRef}
@@ -119,7 +131,9 @@ const BannerTab = () => {
                       ref={provided.innerRef}
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
-                      className={`relative group ${snapshot.isDragging ? 'opacity-50' : ''}`}
+                      className={`relative group ${
+                        snapshot.isDragging ? "opacity-50" : ""
+                      }`}
                     >
                       <Image
                         src={image}

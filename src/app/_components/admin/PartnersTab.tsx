@@ -1,19 +1,49 @@
 "use client";
 
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 import Image from "next/image";
+import { API_BASE_URL } from "@/config/api";
+import { makeAuthorizedRequest } from "@/utils/auth";
 
 interface Partner {
   id: number;
   name: string;
   image: File | null;
   imagePreview?: string;
+  attachment?: {
+    id: number;
+    file_name: string;
+  };
 }
 
 const PartnersTab = () => {
-  const [partners, setPartners] = useState<Partner[]>([
-    { id: 1, name: "", image: null },
-  ]);
+  const [partners, setPartners] = useState<Partner[]>([]);
+
+  useEffect(() => {
+    const fetchPartners = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/admin/coalitions`);
+        const data = await response.json();
+
+        if (data.http_status === "OK") {
+          const initialPartners = data.data.map((partner: Partner) => ({
+            id: partner.id,
+            name: partner.name,
+            image: null,
+            imagePreview: partner.attachment
+              ? `${API_BASE_URL}/attachments/${partner.attachment.file_name}`
+              : undefined,
+            attachment: partner.attachment,
+          }));
+          setPartners(initialPartners);
+        }
+      } catch (error) {
+        console.error("제휴 업체 목록을 불러오는데 실패했습니다:", error);
+      }
+    };
+
+    fetchPartners();
+  }, []);
 
   const addPartner = () => {
     setPartners([...partners, { id: Date.now(), name: "", image: null }]);
@@ -36,22 +66,41 @@ const PartnersTab = () => {
   };
 
   const handleSave = async (partner: Partner) => {
-    if (!partner.image || !partner.name) {
-      alert("업체명과 이미지를 모두 입력해주세요.");
+    if (!partner.name) {
+      alert("업체명을 입력해주세요.");
       return;
     }
 
-    // TODO: API 연동 - FormData를 사용하여 이미지와 데이터 전송
     const formData = new FormData();
-    formData.append("name", partner.name);
-    formData.append("image", partner.image);
+    const data = {
+      id: partner.id,
+      name: partner.name,
+    };
+
+    const blob = new Blob([JSON.stringify(data)], {
+      type: "application/json",
+    });
+
+    formData.append("data", blob);
+
+    if (partner.image) {
+      formData.append("attachment", partner.image);
+    }
 
     try {
-      // const response = await fetch("/api/partners", {
-      //   method: "POST",
-      //   body: formData,
-      // });
-      alert("저장되었습니다.");
+      const response = await makeAuthorizedRequest(
+        `${API_BASE_URL}/admin/coalitions`,
+        {
+          method: "PATCH",
+          body: formData,
+        }
+      );
+
+      if (response.ok) {
+        alert("저장되었습니다.");
+      } else {
+        throw new Error("저장에 실패했습니다.");
+      }
     } catch (error) {
       console.error("저장 중 오류가 발생했습니다:", error);
       alert("저장 중 오류가 발생했습니다.");

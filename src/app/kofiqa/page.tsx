@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import PreviewNews from "../_components/home/PreviewNews";
+import { API_BASE_URL } from "@/config/api";
 
 const tabs = ["공지사항", "서버규칙", "입주자신청", "서버접속방법"];
 
@@ -10,6 +11,54 @@ const KofiqaPage = () => {
   const noticeRef = useRef<HTMLDivElement>(null);
   const rulesRef = useRef<HTMLDivElement>(null);
   const applicationRef = useRef<HTMLDivElement>(null);
+  const [connectionContent, setConnectionContent] = useState<string>("");
+  const [ruleContent, setRuleContent] = useState<string>("");
+  const [occupancyContent, setOccupancyContent] = useState<string>("");
+
+  useEffect(() => {
+    const fetchConnectionInfo = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/admin/connection`);
+        const data = await response.json();
+
+        if (data.http_status === "OK") {
+          setConnectionContent(data.data.content);
+        }
+      } catch (error) {
+        console.error("서버 접속 정보를 불러오는데 실패했습니다:", error);
+      }
+    };
+
+    const fetchRuleInfo = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/admin/rule`);
+        const data = await response.json();
+
+        if (data.http_status === "OK") {
+          setRuleContent(data.data.content);
+        }
+      } catch (error) {
+        console.error("서버 규칙을 불러오는데 실패했습니다:", error);
+      }
+    };
+
+    const fetchOccupancyInfo = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/admin/occupancy`);
+        const data = await response.json();
+
+        if (data.http_status === "OK") {
+          setOccupancyContent(data.data.content);
+        }
+      } catch (error) {
+        console.error("입주자 신청 정보를 불러오는데 실패했습니다:", error);
+      }
+    };
+
+    fetchConnectionInfo();
+    fetchRuleInfo();
+    fetchOccupancyInfo();
+  }, []);
 
   const scrollToSection = (ref: React.RefObject<HTMLDivElement | null>) => {
     const headerOffset = 180;
@@ -70,45 +119,10 @@ const KofiqaPage = () => {
             className="bg-white border border-gray-200 p-6 rounded-lg scroll-mt-[160px]"
           >
             <h2 className="text-2xl font-bold mb-4">서버규칙</h2>
-            <div className="space-y-8">
-              <div>
-                <h3 className="text-lg font-bold mb-2">1. 입주 규칙</h3>
-                <ul className="pl-5 space-y-1 text-gray-700">
-                  <li>
-                    1-1. 서버 이용자는 서버 규칙을 반드시 숙지하고 서버를
-                    이용해야 합니다.
-                  </li>
-                  <li>
-                    1-2. 모든 유저에게 공정한 게임 환경을 제공하고자 합니다.
-                  </li>
-                  <li>
-                    1-3. 다른 유저를 존중하고 예의바른 태도로 게임을 즐겨주시기
-                    바랍니다.
-                  </li>
-                  <li>
-                    1-4. 서버 내 채팅에서는 욕설이나 비하발언이 금지됩니다.
-                  </li>
-                  <li>
-                    1-5. 버그 악용이나 서버 해킹 시도는 엄격히 금지됩니다.
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-lg font-bold mb-2">2. 플레이어 규칙</h3>
-                <ul className="pl-5 space-y-1 text-gray-700">
-                  <li>
-                    2-1. 타 플레이어의 건축물이나 시설을 무단으로 파괴하는
-                    행위는 금지됩니다.
-                  </li>
-                  <li>
-                    2-2. 서버 내 거래는 지정된 거래소에서만 이루어져야 합니다.
-                  </li>
-                  <li>
-                    2-3. 게임 내 버그를 발견 시 즉시 관리자에게 보고해야 합니다.
-                  </li>
-                </ul>
-              </div>
-            </div>
+            <div
+              className="text-gray-700"
+              dangerouslySetInnerHTML={{ __html: ruleContent }}
+            />
           </div>
 
           <div
@@ -116,27 +130,10 @@ const KofiqaPage = () => {
             className="bg-white border border-gray-200 p-6 rounded-lg scroll-mt-[160px]"
           >
             <h2 className="text-2xl font-bold mb-4">입주자 신청</h2>
-            <div className="space-y-4">
-              <p className="text-gray-700">
-                KOFIQA 서버의 입주자가 되기 위한 절차입니다:
-              </p>
-              <ol className="list-decimal pl-5 space-y-2 text-gray-700">
-                <li>아래 카카오톡 오픈채팅방에 입장합니다.</li>
-                <li>입주자 신청 양식을 작성하여 제출합니다.</li>
-                <li>관리자의 승인 후 서버에 입주할 수 있습니다.</li>
-              </ol>
-              <div className="mt-6 flex items-center gap-4">
-                <a
-                  href="/kofiqa/apply"
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-white font-medium rounded hover:bg-gray-900 transition-colors"
-                >
-                  입주 신청하러 가기
-                </a>
-                <span className="text-sm text-gray-500">
-                  * 운영시간: 평일 10:00 ~ 18:00
-                </span>
-              </div>
-            </div>
+            <div
+              className="text-gray-700"
+              dangerouslySetInnerHTML={{ __html: occupancyContent }}
+            />
           </div>
 
           <div
@@ -145,15 +142,10 @@ const KofiqaPage = () => {
           >
             <h2 className="text-2xl font-bold mb-4">서버 접속 방법</h2>
             <div className="space-y-4">
-              <p className="text-gray-700">
-                서버 접속을 위해 아래 절차를 따라주세요:
-              </p>
-              <ol className="list-decimal pl-5 space-y-2 text-gray-700">
-                <li>Steam에서 Palworld 게임을 실행합니다.</li>
-                <li>멀티플레이어 모드를 선택합니다.</li>
-                <li>{"서버 검색에서 'KOFIQA'를 검색합니다."}</li>
-                <li>서버에 접속하여 즐거운 시간 보내세요!</li>
-              </ol>
+              <div
+                className="text-gray-700"
+                dangerouslySetInnerHTML={{ __html: connectionContent }}
+              />
             </div>
           </div>
         </div>

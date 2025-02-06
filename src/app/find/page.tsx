@@ -122,6 +122,7 @@ const FindPage = () => {
             new_password: password,
             new_password_confirm: passwordConfirm,
             verification_code: verificationCode,
+            email: email,
           }),
         }
       );

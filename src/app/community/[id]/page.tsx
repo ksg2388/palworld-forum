@@ -106,6 +106,9 @@ const CommunityDetail = () => {
       await makeAuthorizedRequest(`${API_BASE_URL}/${endpoint}/${id}`, {
         method: "DELETE",
       });
+
+      // 캐시를 리프레시하고 커뮤니티 페이지로 이동
+      router.refresh();
       router.push("/community");
     } catch (error) {
       console.error("게시글 삭제 중 오류 발생:", error);

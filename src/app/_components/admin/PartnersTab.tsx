@@ -5,13 +5,15 @@ import Image from "next/image";
 import { API_BASE_URL } from "@/config/api";
 import { makeAuthorizedRequest } from "@/app/_utils/api";
 interface Partner {
-  id: number;
+  id?: number;
   name: string;
   image: File | null;
   imagePreview?: string;
+  link?: string;
   attachment?: {
     id: number;
     file_name: string;
+    file_path: string;
   };
 }
 
@@ -32,6 +34,7 @@ const PartnersTab = () => {
             imagePreview: partner.attachment
               ? `${API_BASE_URL}/attachments/${partner.attachment.file_name}`
               : undefined,
+            link: partner.attachment?.file_path || "",
             attachment: partner.attachment,
           }));
           setPartners(initialPartners);
@@ -45,20 +48,40 @@ const PartnersTab = () => {
   }, []);
 
   const addPartner = () => {
-    setPartners([...partners, { id: Date.now(), name: "", image: null }]);
+    setPartners([...partners, { name: "", image: null, link: "" }]);
   };
 
-  const removePartner = (id: number) => {
-    setPartners(partners.filter((partner) => partner.id !== id));
+  const removePartner = async (id: number) => {
+    try {
+      const response = await makeAuthorizedRequest(
+        `${API_BASE_URL}/admin/coalitions/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        setPartners(partners.filter((partner) => partner.id !== id));
+        alert("삭제되었습니다.");
+      } else {
+        throw new Error("삭제에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("삭제 중 오류가 발생했습니다:", error);
+      alert("삭제 중 오류가 발생했습니다.");
+    }
   };
 
-  const handleImageChange = (id: number, e: ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = (
+    index: number,
+    e: ChangeEvent<HTMLInputElement>
+  ) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       const imagePreview = URL.createObjectURL(file);
 
-      const newPartners = partners.map((p) =>
-        p.id === id ? { ...p, image: file, imagePreview } : p
+      const newPartners = partners.map((p, i) =>
+        i === index ? { ...p, image: file, imagePreview } : p
       );
       setPartners(newPartners);
     }
@@ -71,10 +94,15 @@ const PartnersTab = () => {
     }
 
     const formData = new FormData();
-    const data = {
-      id: partner.id,
+    const data: { name: string; id?: number; link?: string } = {
       name: partner.name,
+      link: partner.link,
     };
+
+    // 기존 업체 수정 시에만 id 포함
+    if (partner.id) {
+      data.id = partner.id;
+    }
 
     const blob = new Blob([JSON.stringify(data)], {
       type: "application/json",
@@ -119,9 +147,9 @@ const PartnersTab = () => {
       </div>
 
       <div className="grid gap-8">
-        {partners.map((partner) => (
+        {partners.map((partner, index) => (
           <div
-            key={partner.id}
+            key={partner.id || index}
             className="p-6 border border-gray-200 rounded-lg space-y-4"
           >
             <div className="flex items-center gap-4">
@@ -131,8 +159,20 @@ const PartnersTab = () => {
                 placeholder="업체명 입력"
                 value={partner.name}
                 onChange={(e) => {
-                  const newPartners = partners.map((p) =>
-                    p.id === partner.id ? { ...p, name: e.target.value } : p
+                  const newPartners = partners.map((p, i) =>
+                    i === index ? { ...p, name: e.target.value } : p
+                  );
+                  setPartners(newPartners);
+                }}
+              />
+              <input
+                type="text"
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800"
+                placeholder="파워링크 URL 입력"
+                value={partner.link}
+                onChange={(e) => {
+                  const newPartners = partners.map((p, i) =>
+                    i === index ? { ...p, link: e.target.value } : p
                   );
                   setPartners(newPartners);
                 }}
@@ -144,7 +184,7 @@ const PartnersTab = () => {
                     type="file"
                     className="hidden"
                     accept="image/*"
-                    onChange={(e) => handleImageChange(partner.id, e)}
+                    onChange={(e) => handleImageChange(index, e)}
                   />
                 </label>
               </div>
@@ -162,12 +202,14 @@ const PartnersTab = () => {
             )}
 
             <div className="flex justify-end gap-4">
-              <button
-                onClick={() => removePartner(partner.id)}
-                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
-              >
-                삭제
-              </button>
+              {partner.id && (
+                <button
+                  onClick={() => removePartner(partner.id!)}
+                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                >
+                  삭제
+                </button>
+              )}
               <button
                 onClick={() => handleSave(partner)}
                 className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900"

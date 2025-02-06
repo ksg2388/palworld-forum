@@ -74,9 +74,9 @@ const QuillEditor = forwardRef(
             ["link", "image", "video"],
             ["clean"],
           ],
-        //   handlers: {
-        //     image: imageHandler,
-        //   },
+          //   handlers: {
+          //     image: imageHandler,
+          //   },
         },
       }),
       []

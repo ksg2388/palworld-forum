@@ -86,7 +86,7 @@ const CommunityDetail = () => {
       );
 
       const result = await response.json();
-      if (result.http_status === "OK") {
+      if (result.http_status === "ACCEPTED") {
         // 댓글 작성 성공 시 게시글 새로고침
         const endpoint = getEndpoint(currentTab);
         const postResponse = await fetch(`${API_BASE_URL}/${endpoint}/${id}`);
@@ -109,7 +109,7 @@ const CommunityDetail = () => {
     try {
       const endpoint = getEndpoint(currentTab);
       const response = await makeAuthorizedRequest(
-        `${API_BASE_URL}/${id}/comments/${commentId}`,
+        `${API_BASE_URL}/${endpoint}/${id}/comments/${commentId}`,
         {
           method: "PATCH",
           headers: {
@@ -122,7 +122,7 @@ const CommunityDetail = () => {
       );
 
       const result = await response.json();
-      if (result.http_status === "OK") {
+      if (result.http_status === "ACCEPTED") {
         const postResponse = await fetch(`${API_BASE_URL}/${endpoint}/${id}`);
         const postResult = await postResponse.json();
 
@@ -142,7 +142,7 @@ const CommunityDetail = () => {
     try {
       const endpoint = getEndpoint(currentTab);
       const response = await makeAuthorizedRequest(
-        `${API_BASE_URL}/${id}/comments/${commentId}`,
+        `${API_BASE_URL}/${endpoint}/${id}/comments/${commentId}`,
         {
           method: "DELETE",
         }

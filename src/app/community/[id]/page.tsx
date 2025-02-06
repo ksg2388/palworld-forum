@@ -297,7 +297,7 @@ const CommunityDetail = () => {
                   {formatDate(comment.modified_at)}
                 </span>
               </div>
-              {user && user.email === comment.nickname && (
+              {user && user.nickname === comment.nickname && (
                 <div className="flex gap-2">
                   <button
                     onClick={() => {

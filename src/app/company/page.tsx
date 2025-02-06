@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { API_BASE_URL } from "@/config/api";
 
 interface Attachment {
@@ -56,10 +57,11 @@ const CompanyPage = () => {
               className="block p-6 bg-white border border-gray-200 rounded-lg hover:shadow-lg transition-shadow duration-300"
             >
               <div className="aspect-video relative mb-4">
-                <img
+                <Image
                   src={`${API_BASE_URL}/attachments/${partner.attachment.file_name}`}
                   alt={`${partner.name} 로고`}
-                  className="w-full h-full object-contain"
+                  fill
+                  className="object-contain"
                 />
               </div>
               <h2 className="text-xl font-semibold text-center">

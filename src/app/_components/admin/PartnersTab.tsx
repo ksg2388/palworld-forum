@@ -3,8 +3,7 @@
 import { useState, ChangeEvent, useEffect } from "react";
 import Image from "next/image";
 import { API_BASE_URL } from "@/config/api";
-import { makeAuthorizedRequest } from "@/utils/auth";
-
+import { makeAuthorizedRequest } from "@/app/_utils/api";
 interface Partner {
   id: number;
   name: string;

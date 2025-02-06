@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { API_BASE_URL } from "@/config/api";
 
 interface Attachment {
@@ -16,6 +17,7 @@ interface Attachment {
 interface Partner {
   id: number;
   name: string;
+  url: string;
   attachment: Attachment;
 }
 
@@ -52,8 +54,11 @@ const CompanyPage = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {partners.map((partner) => (
-            <div
+            <Link
               key={partner.id}
+              href={partner.url || "#"}
+              target="_blank"
+              rel="noopener noreferrer"
               className="block p-6 bg-white border border-gray-200 rounded-lg hover:shadow-lg transition-shadow duration-300"
             >
               <div className="aspect-video relative mb-4">
@@ -67,7 +72,7 @@ const CompanyPage = () => {
               <h2 className="text-xl font-semibold text-center">
                 {partner.name}
               </h2>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

@@ -88,6 +88,34 @@ const MembersTab = () => {
     }
   };
 
+  const handleDelete = async (member: TMember) => {
+    if (member.member_role === "ADMIN") {
+      alert("운영자는 삭제할 수 없습니다.");
+      return;
+    }
+
+    if (window.confirm("정말로 이 회원을 삭제하시겠습니까?")) {
+      try {
+        const response = await makeAuthorizedRequest(
+          `${API_BASE_URL}/admin/members/${member.id}`,
+          {
+            method: "DELETE",
+          }
+        );
+
+        if (response.ok) {
+          setMembers(members.filter((m) => m.id !== member.id));
+          alert("회원이 성공적으로 삭제되었습니다.");
+        } else {
+          alert("회원 삭제에 실패했습니다.");
+        }
+      } catch (error) {
+        console.error("회원 삭제 실패:", error);
+        alert("회원 삭제 중 오류가 발생했습니다.");
+      }
+    }
+  };
+
   useEffect(() => {
     const fetchMembers = async () => {
       try {
@@ -160,9 +188,14 @@ const MembersTab = () => {
                   )}
                 </td>
                 <td className="px-6 py-4 text-sm">
-                  <button className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
-                    삭제
-                  </button>
+                  {member.member_role !== "ADMIN" && (
+                    <button
+                      onClick={() => handleDelete(member)}
+                      className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+                    >
+                      삭제
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}

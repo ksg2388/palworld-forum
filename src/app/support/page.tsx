@@ -2,10 +2,13 @@
 
 import React, { useState, useRef } from "react";
 import Image from "next/image";
+import { toast } from "react-hot-toast";
 
 const SupportPage = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,6 +33,41 @@ const SupportPage = () => {
     setPreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const handleSubmit = async () => {
+    try {
+      const userEmail = "사용자 이메일"; // 실제 로그인된 사용자의 이메일을 가져오는 로직 필요
+
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("content", content);
+      formData.append("userEmail", userEmail);
+      selectedFiles.forEach((file) => {
+        formData.append("files", file);
+      });
+
+      // API 엔드포인트로 데이터 전송
+      const response = await fetch("/api/support", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        toast.success(
+          "문의가 정상적으로 접수되었습니다. 가입하신 이메일로 답변드리겠습니다."
+        );
+        // 폼 초기화
+        setTitle("");
+        setContent("");
+        setSelectedFiles([]);
+        setPreviews([]);
+      } else {
+        toast.error("문의 접수 중 오류가 발생했습니다. 다시 시도해주세요.");
+      }
+    } catch (error) {
+      toast.error("문의 접수 중 오류가 발생했습니다. 다시 시도해주세요.");
+    }
+  };
+
   console.log(selectedFiles);
 
   return (
@@ -47,6 +85,8 @@ const SupportPage = () => {
             <div className="mb-4">
               <input
                 type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
                 placeholder="제목을 입력해주세요."
                 className="w-full p-2 border border-gray-300"
               />
@@ -56,6 +96,8 @@ const SupportPage = () => {
             </div>
             <div className="mb-4">
               <textarea
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
                 placeholder={`1. 문의/신고 내용을 상세히 작성해주세요.
 2. 신고의 경우 신고 대상자의 닉네임과 신고 사유를 구체적으로 작성해주세요.
 3. 스크린샷이 있다면 첨부해주시면 더욱 빠른 처리가 가능합니다.
@@ -115,7 +157,10 @@ const SupportPage = () => {
               <button className="px-4 py-1 bg-white text-gray-800 border border-gray-300 ml-auto">
                 취소
               </button>
-              <button className="px-4 py-1 bg-gray-800 text-white ml-[4px]">
+              <button
+                onClick={handleSubmit}
+                className="px-4 py-1 bg-gray-800 text-white ml-[4px]"
+              >
                 등록
               </button>
             </div>

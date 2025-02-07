@@ -14,13 +14,12 @@ const SearchBar = ({ currentTab }: SearchBarProps) => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchTerm.trim()) {
-      router.push(
-        `/community?tab=${currentTab}&page=1&limit=10&search-type=${searchType}&keyword=${encodeURIComponent(
-          searchTerm
-        )}`
-      );
-    }
+    // 검색어 유무와 관계없이 항상 라우팅하도록 수정
+    router.push(
+      `/community?tab=${currentTab}&page=1&searchType=${searchType}&keyword=${encodeURIComponent(
+        searchTerm.trim()
+      )}`
+    );
   };
 
   return (

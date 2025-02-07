@@ -8,7 +8,14 @@ type TMember = {
   id: number;
   email: string;
   nickname: string;
-  member_role: "ADMIN" | "PARTNER" | "NORMAL" | "LEGENDARY" | "HEROIC" | "RARE" | "EXTRA_ORDINARY";
+  member_role:
+    | "ADMIN"
+    | "PARTNER"
+    | "NORMAL"
+    | "LEGENDARY"
+    | "HEROIC"
+    | "RARE"
+    | "EXTRA_ORDINARY";
 };
 
 const MembersTab = () => {
@@ -19,7 +26,9 @@ const MembersTab = () => {
     { value: "EXTRA_ORDINARY", label: "비범" },
     { value: "RARE", label: "희귀" },
     { value: "HEROIC", label: "영웅" },
-    { value: "LEGENDARY", label: "전설" }
+    { value: "LEGENDARY", label: "전설" },
+    { value: "PARTNER", label: "파트너" },
+    { value: "ADMIN", label: "운영자" },
   ];
 
   const getMemberRoleText = (role: TMember["member_role"]) => {
@@ -43,22 +52,32 @@ const MembersTab = () => {
     }
   };
 
-  const handleRoleChange = async (memberId: number, newRole: TMember["member_role"]) => {
+  const handleRoleChange = async (
+    memberId: number,
+    newRole: TMember["member_role"]
+  ) => {
     try {
-      const response = await makeAuthorizedRequest(`${API_BASE_URL}/admin/members/${memberId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          member_role: newRole
-        })
-      });
+      const response = await makeAuthorizedRequest(
+        `${API_BASE_URL}/admin/members/${memberId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            member_role: newRole,
+          }),
+        }
+      );
 
       if (response.ok) {
-        setMembers(members.map(member => 
-          member.id === memberId ? { ...member, member_role: newRole } : member
-        ));
+        setMembers(
+          members.map((member) =>
+            member.id === memberId
+              ? { ...member, member_role: newRole }
+              : member
+          )
+        );
         alert("등급이 성공적으로 변경되었습니다.");
       } else {
         alert("등급 변경에 실패했습니다.");
@@ -72,9 +91,12 @@ const MembersTab = () => {
   useEffect(() => {
     const fetchMembers = async () => {
       try {
-        const response = await makeAuthorizedRequest(`${API_BASE_URL}/admin/members`, {
-          method: "GET"
-        });
+        const response = await makeAuthorizedRequest(
+          `${API_BASE_URL}/admin/members`,
+          {
+            method: "GET",
+          }
+        );
         const data = await response.json();
         setMembers(data.data);
       } catch (error) {
@@ -92,27 +114,44 @@ const MembersTab = () => {
         <table className="min-w-full divide-y divide-gray-200">
           <thead>
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">이메일</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">닉네임</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">등급</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">관리</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                이메일
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                닉네임
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                등급
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                관리
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
             {members.map((member) => (
               <tr key={member.email}>
-                <td className="px-6 py-4 text-sm text-gray-900">{member.email}</td>
-                <td className="px-6 py-4 text-sm text-gray-900">{member.nickname}</td>
+                <td className="px-6 py-4 text-sm text-gray-900">
+                  {member.email}
+                </td>
+                <td className="px-6 py-4 text-sm text-gray-900">
+                  {member.nickname}
+                </td>
                 <td className="px-6 py-4 text-sm text-gray-900">
                   {member.member_role === "ADMIN" ? (
                     getMemberRoleText(member.member_role)
                   ) : (
-                    <select 
+                    <select
                       value={member.member_role}
-                      onChange={(e) => handleRoleChange(member.id, e.target.value as TMember["member_role"])}
+                      onChange={(e) =>
+                        handleRoleChange(
+                          member.id,
+                          e.target.value as TMember["member_role"]
+                        )
+                      }
                       className="border rounded px-2 py-1"
                     >
-                      {MEMBER_ROLES.map(role => (
+                      {MEMBER_ROLES.map((role) => (
                         <option key={role.value} value={role.value}>
                           {role.label}
                         </option>

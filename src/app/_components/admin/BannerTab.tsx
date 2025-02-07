@@ -11,17 +11,25 @@ import {
 import { makeAuthorizedRequest } from "@/app/_utils/api";
 import { API_BASE_URL } from "@/config/api";
 
+interface BannerImage {
+  imageUrl: string;
+  link: string;
+}
+
 const BannerTab = () => {
-  const [bannerImages, setBannerImages] = useState<string[]>([]);
+  const [bannerImages, setBannerImages] = useState<BannerImage[]>([]);
   const [isDragging, setIsDragging] = useState(false);
+  const [tempLink, setTempLink] = useState("");
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
-      const newImages = Array.from(files).map((file) =>
-        URL.createObjectURL(file)
-      );
+      const newImages = Array.from(files).map((file) => ({
+        imageUrl: URL.createObjectURL(file),
+        link: tempLink,
+      }));
       setBannerImages([...bannerImages, ...newImages]);
+      setTempLink("");
     }
   };
 
@@ -44,8 +52,12 @@ const BannerTab = () => {
       const imageFiles = Array.from(files).filter((file) =>
         file.type.startsWith("image/")
       );
-      const newImages = imageFiles.map((file) => URL.createObjectURL(file));
+      const newImages = imageFiles.map((file) => ({
+        imageUrl: URL.createObjectURL(file),
+        link: tempLink,
+      }));
       setBannerImages([...bannerImages, ...newImages]);
+      setTempLink("");
     }
   };
 
@@ -61,6 +73,15 @@ const BannerTab = () => {
     items.splice(result.destination.index, 0, reorderedItem);
 
     setBannerImages(items);
+  };
+
+  const updateBannerLink = (index: number, newLink: string) => {
+    const updatedBanners = [...bannerImages];
+    updatedBanners[index] = {
+      ...updatedBanners[index],
+      link: newLink,
+    };
+    setBannerImages(updatedBanners);
   };
 
   const handleSave = async () => {
@@ -105,6 +126,15 @@ const BannerTab = () => {
         onDrop={handleDrop}
       >
         <p className="text-gray-600 mb-4">이미지를 드래그하여 업로드하거나</p>
+        <div className="mb-4">
+          <input
+            type="text"
+            value={tempLink}
+            onChange={(e) => setTempLink(e.target.value)}
+            placeholder="배너 클릭시 이동할 링크를 입력하세요"
+            className="w-full max-w-md px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-500"
+          />
+        </div>
         <label className="inline-block px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 cursor-pointer">
           이미지 업로드
           <input
@@ -124,8 +154,12 @@ const BannerTab = () => {
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
-              {bannerImages.map((image, index) => (
-                <Draggable key={image} draggableId={image} index={index}>
+              {bannerImages.map((banner, index) => (
+                <Draggable
+                  key={banner.imageUrl}
+                  draggableId={banner.imageUrl}
+                  index={index}
+                >
                   {(provided, snapshot) => (
                     <div
                       ref={provided.innerRef}
@@ -136,12 +170,23 @@ const BannerTab = () => {
                       }`}
                     >
                       <Image
-                        src={image}
+                        src={banner.imageUrl}
                         alt={`배너 이미지 ${index + 1}`}
                         width={400}
                         height={192}
                         className="w-full h-48 object-cover rounded-lg cursor-move"
                       />
+                      <div className="mt-2">
+                        <input
+                          type="text"
+                          value={banner.link}
+                          onChange={(e) =>
+                            updateBannerLink(index, e.target.value)
+                          }
+                          placeholder="링크 입력"
+                          className="w-full px-2 py-1 text-sm border border-gray-300 rounded"
+                        />
+                      </div>
                       <button
                         onClick={() => removeBannerImage(index)}
                         className="absolute top-2 right-2 bg-red-600 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"

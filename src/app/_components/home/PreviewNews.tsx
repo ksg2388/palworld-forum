@@ -27,9 +27,11 @@ const PreviewNews = () => {
           setNews(data.data);
         } else {
           console.error("공지사항 조회 실패:", data.message);
+          setNews([]); // 실패시 빈 배열로 초기화
         }
       } catch (error) {
         console.error("공지사항 조회 중 오류 발생:", error);
+        setNews([]); // 에러 발생시 빈 배열로 초기화
       }
     };
 
@@ -41,9 +43,10 @@ const PreviewNews = () => {
     return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
   };
 
+  // news가 undefined일 경우를 대비해 기본값으로 빈 배열 사용
   return (
     <div className="border-t-2 border-gray-800">
-      {news.length > 0 && news.map((item) => (
+      {(news || []).map((item) => (
         <Link
           href={`/community/${item.id}`}
           key={item.id}

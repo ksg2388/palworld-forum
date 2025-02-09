@@ -49,7 +49,7 @@ const Banner = () => {
         {images.map((image) => (
           <div key={image.id} className="w-full h-full relative">
             <Image
-              src={`${API_BASE_URL}${image.file_name}`}
+              src={`${API_BASE_URL}/attachments/${image.file_name}`}
               alt={`banner-${image.id}`}
               fill
               className="object-cover"

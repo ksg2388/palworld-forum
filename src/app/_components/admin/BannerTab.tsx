@@ -7,9 +7,15 @@ import { makeAuthorizedRequest } from "@/app/_utils/api";
 import { API_BASE_URL } from "@/config/api";
 
 interface BannerImage {
+  id?: number;
   imageUrl: string;
   link: string;
   file?: File;
+  attachment?: {
+    id: number;
+    file_name: string;
+    file_path: string;
+  };
 }
 
 const BannerTab = () => {
@@ -28,9 +34,13 @@ const BannerTab = () => {
         );
         const data = await response.json();
         if (data.http_status === "OK") {
-          setBannerImages(data.data.content.map((banner: any) => ({
-            imageUrl: `${API_BASE_URL}/${banner.imageUrl}`,
-            link: banner.link
+          setBannerImages(data.data.map((banner: any) => ({
+            id: banner.id,
+            imageUrl: banner.attachment 
+              ? `${API_BASE_URL}/attachments/${banner.attachment.file_name}`
+              : "",
+            link: banner.url || "",
+            attachment: banner.attachment
           })));
         }
       } catch (error) {
@@ -106,32 +116,39 @@ const BannerTab = () => {
 
   const handleSave = async () => {
     try {
-      const formData = new FormData();
-      
-      const content = bannerImages.map(banner => ({
-        url: banner.link
-      }));
-      
-      formData.append('content', JSON.stringify(content));
-      
-      bannerImages.forEach((banner) => {
-        if (banner.file) {
-          formData.append('attachments', banner.file);
+      for (const banner of bannerImages) {
+        const formData = new FormData();
+        const data = {
+          url: banner.link,
+        };
+
+        if (banner.id) {
+          data.id = banner.id;
         }
-      });
 
-      const response = await makeAuthorizedRequest(`${API_BASE_URL}/admin/banner`, {
-        method: "PATCH",
-        body: formData,
-      });
+        const blob = new Blob([JSON.stringify(data)], {
+          type: "application/json",
+        });
 
-      const data = await response.json();
+        formData.append("data", blob);
 
-      if (data.http_status === "ACCEPTED") {
-        alert("배너 이미지가 성공적으로 저장되었습니다.");
-      } else {
-        alert("배너 이미지 저장에 실패했습니다.");
+        if (banner.file) {
+          formData.append("attachment", banner.file);
+        }
+
+        const response = await makeAuthorizedRequest(
+          `${API_BASE_URL}/admin/banner`,
+          {
+            method: "PATCH",
+            body: formData,
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("배너 저장에 실패했습니다.");
+        }
       }
+      alert("배너 이미지가 성공적으로 저장되었습니다.");
     } catch (error) {
       console.error("배너 이미지 저장 실패:", error);
       alert("배너 이미지 저장에 실패했습니다. 다시 시도해주세요.");

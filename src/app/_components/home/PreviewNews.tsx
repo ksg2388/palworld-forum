@@ -18,7 +18,7 @@ const PreviewNews = () => {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/announcements?page=1&size=4`, {
+        const response = await fetch(`${API_BASE_URL}/kofiqa_announcments/top5`, {
           method: "GET",
         });
         const data = await response.json();

@@ -9,7 +9,7 @@ import { API_BASE_URL } from "@/config/api";
 
 interface BannerImage {
   id: number;
-  file_path: string;
+  file_name: string;
 }
 
 const Banner = () => {
@@ -49,7 +49,7 @@ const Banner = () => {
         {images.map((image) => (
           <div key={image.id} className="w-full h-full relative">
             <Image
-              src={`${API_BASE_URL}${image.file_path}`}
+              src={`${API_BASE_URL}${image.file_name}`}
               alt={`banner-${image.id}`}
               fill
               className="object-cover"

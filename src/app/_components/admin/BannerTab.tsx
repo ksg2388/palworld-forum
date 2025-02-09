@@ -109,12 +109,12 @@ const BannerTab = () => {
       const formData = new FormData();
       
       const content = bannerImages.map(banner => ({
-        link: banner.link
+        url: banner.link
       }));
       
       formData.append('content', JSON.stringify(content));
       
-      bannerImages.forEach((banner, index) => {
+      bannerImages.forEach((banner) => {
         if (banner.file) {
           formData.append('attachments', banner.file);
         }

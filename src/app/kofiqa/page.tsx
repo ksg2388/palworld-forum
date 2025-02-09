@@ -3,6 +3,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import PreviewNews from "../_components/home/PreviewNews";
 import { API_BASE_URL } from "@/config/api";
+import Link from "next/link";
 
 const tabs = ["공지사항", "서버규칙", "입주자신청", "서버접속방법"];
 
@@ -110,7 +111,15 @@ const KofiqaPage = () => {
             ref={noticeRef}
             className="bg-white border border-gray-200 p-6 rounded-lg scroll-mt-[160px]"
           >
-            <h2 className="text-2xl font-bold mb-4">공지사항</h2>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold">공지사항</h2>
+              <Link 
+                href="/kofiqa/notices"
+                className="text-gray-600 hover:text-gray-900 text-sm"
+              >
+                더보기 &gt;
+              </Link>
+            </div>
             <PreviewNews />
           </div>
 

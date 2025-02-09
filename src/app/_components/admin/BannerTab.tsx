@@ -1,19 +1,53 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { makeAuthorizedRequest } from "@/app/_utils/api";
 import { API_BASE_URL } from "@/config/api";
 
+interface BannerImage {
+  imageUrl: string;
+  link: string;
+  file?: File;
+}
+
 const BannerTab = () => {
-  const [bannerImages, setBannerImages] = useState<string[]>([]);
+  const [bannerImages, setBannerImages] = useState<BannerImage[]>([]);
   const [isDragging, setIsDragging] = useState(false);
+
+  useEffect(() => {
+    const fetchBanners = async () => {
+      try {
+        const response = await makeAuthorizedRequest(
+          `${API_BASE_URL}/admin/banner`,
+          {
+            method: "GET",
+          }
+        );
+        const data = await response.json();
+        if (data.http_status === "OK") {
+          setBannerImages(data.data.content.map((banner: any) => ({
+            imageUrl: `${API_BASE_URL}/${banner.imageUrl}`,
+            link: banner.link
+          })));
+        }
+      } catch (error) {
+        console.error("배너 이미지 조회 실패:", error);
+      }
+    };
+
+    fetchBanners();
+  }, []);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
-      const newImages = Array.from(files).map(file => URL.createObjectURL(file));
+      const newImages = Array.from(files).map(file => ({
+        imageUrl: URL.createObjectURL(file),
+        link: '',
+        file: file
+      }));
       setBannerImages([...bannerImages, ...newImages]);
     }
   };
@@ -35,13 +69,23 @@ const BannerTab = () => {
     const files = e.dataTransfer.files;
     if (files) {
       const imageFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
-      const newImages = imageFiles.map(file => URL.createObjectURL(file));
+      const newImages = imageFiles.map(file => ({
+        imageUrl: URL.createObjectURL(file),
+        link: '',
+        file: file
+      }));
       setBannerImages([...bannerImages, ...newImages]);
     }
   };
 
   const removeBannerImage = (index: number) => {
     setBannerImages(bannerImages.filter((_, i) => i !== index));
+  };
+
+  const updateBannerLink = (index: number, link: string) => {
+    const updatedBanners = [...bannerImages];
+    updatedBanners[index] = { ...updatedBanners[index], link };
+    setBannerImages(updatedBanners);
   };
 
   const onDragEnd = (result: DropResult) => {
@@ -56,20 +100,35 @@ const BannerTab = () => {
 
   const handleSave = async () => {
     try {
-      const response = await makeAuthorizedRequest(`${API_BASE_URL}/admin/banners`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ bannerImages }),
+      const formData = new FormData();
+      
+      const content = bannerImages.map(banner => ({
+        link: banner.link
+      }));
+      
+      formData.append('content', JSON.stringify(content));
+      
+      bannerImages.forEach((banner, index) => {
+        if (banner.file) {
+          formData.append('attachments', banner.file);
+        }
       });
 
-      if (response.ok) {
+      const response = await makeAuthorizedRequest(`${API_BASE_URL}/admin/banner`, {
+        method: "PATCH",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (data.http_status === "ACCEPTED") {
         alert("배너 이미지가 성공적으로 저장되었습니다.");
+      } else {
+        alert("배너 이미지 저장에 실패했습니다.");
       }
     } catch (error) {
       console.error("배너 이미지 저장 실패:", error);
-      alert("배너 이미지 저장에 실패했습니다.");
+      alert("배너 이미지 저장에 실패했습니다. 다시 시도해주세요.");
     }
   };
 
@@ -112,21 +171,28 @@ const BannerTab = () => {
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
-              {bannerImages.map((image, index) => (
-                <Draggable key={image} draggableId={image} index={index}>
+              {bannerImages.map((banner, index) => (
+                <Draggable key={banner.imageUrl} draggableId={banner.imageUrl} index={index}>
                   {(provided, snapshot) => (
                     <div
                       ref={provided.innerRef}
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
-                      className={`relative group ${snapshot.isDragging ? 'opacity-50' : ''}`}
+                      className={`relative group space-y-2 ${snapshot.isDragging ? 'opacity-50' : ''}`}
                     >
                       <Image
-                        src={image}
+                        src={banner.imageUrl}
                         alt={`배너 이미지 ${index + 1}`}
                         width={400}
                         height={192}
                         className="w-full h-48 object-cover rounded-lg cursor-move"
+                      />
+                      <input
+                        type="url"
+                        value={banner.link}
+                        onChange={(e) => updateBannerLink(index, e.target.value)}
+                        placeholder="배너 링크를 입력하세요"
+                        className="w-full p-2 border rounded-md"
                       />
                       <button
                         onClick={() => removeBannerImage(index)}

@@ -1,73 +1,52 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { API_BASE_URL } from "@/config/api";
 
-const partners = [
-  {
-    id: 1,
-    name: "넥슨",
-    logo: "/images/partners/logo-nexon.svg",
-    url: "https://www.nexon.com",
-  },
-  {
-    id: 2,
-    name: "NC소프트",
-    logo: "/images/partners/logo-nc.svg",
-    url: "https://www.ncsoft.com",
-  },
-  {
-    id: 3,
-    name: "넷마블",
-    logo: "/images/partners/logo-netmarble.svg",
-    url: "https://www.netmarble.com",
-  },
-  {
-    id: 4,
-    name: "카카오게임즈",
-    logo: "/images/partners/logo-kakaogames.jpg",
-    url: "https://www.kakaogames.com",
-  },
-  {
-    id: 5,
-    name: "스마일게이트",
-    logo: "/images/partners/logo-smilegate.png",
-    url: "https://www.smilegate.com",
-  },
-  {
-    id: 6,
-    name: "펄어비스",
-    logo: "/images/partners/logo-pearlabyss.jpg",
-    url: "https://www.pearlabyss.com",
-  },
-  {
-    id: 7,
-    name: "컴투스",
-    logo: "/images/partners/logo-com2us.png",
-    url: "https://www.com2us.com",
-  },
-  {
-    id: 8,
-    name: "네오위즈",
-    logo: "/images/partners/logo-neowiz.svg",
-    url: "https://www.neowiz.com",
-  },
-  {
-    id: 9,
-    name: "웹젠",
-    logo: "/images/partners/logo-webzen.jpg",
-    url: "https://www.webzen.com",
-  },
-  {
-    id: 10,
-    name: "위메이드",
-    logo: "/images/partners/logo-wemade.jpg",
-    url: "https://www.wemade.com",
-  },
-];
+interface Attachment {
+  id: number;
+  author: string;
+  file_name: string;
+  file_type: string;
+  file_size: number;
+  file_path: string;
+}
+
+interface Partner {
+  id: number;
+  name: string;
+  url: string;
+  attachment: Attachment;
+}
+
+interface ApiResponse {
+  http_status: string;
+  message: string;
+  data: Partner[];
+}
 
 const CompanyPage = () => {
+  const [partners, setPartners] = useState<Partner[]>([]);
+
+  useEffect(() => {
+    const fetchPartners = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/admin/coalitions`);
+        const data: ApiResponse = await response.json();
+
+        if (data.http_status === "OK") {
+          setPartners(data.data);
+        }
+      } catch (error) {
+        console.error("제휴 업체 목록을 불러오는데 실패했습니다:", error);
+      }
+    };
+
+    fetchPartners();
+  }, []);
+
   return (
     <div className="mt-[110px] w-full">
       <div className="max-w-[1200px] mx-auto p-8">
@@ -76,15 +55,15 @@ const CompanyPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {partners.map((partner) => (
             <Link
-              href={partner.url}
               key={partner.id}
+              href={partner.url || "#"}
               target="_blank"
               rel="noopener noreferrer"
               className="block p-6 bg-white border border-gray-200 rounded-lg hover:shadow-lg transition-shadow duration-300"
             >
               <div className="aspect-video relative mb-4">
                 <Image
-                  src={partner.logo}
+                  src={`${API_BASE_URL}/attachments/${partner.attachment.file_name}`}
                   alt={`${partner.name} 로고`}
                   fill
                   className="object-contain"

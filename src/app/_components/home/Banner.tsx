@@ -1,18 +1,37 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Image from "next/image";
+import { API_BASE_URL } from "@/config/api";
 
-const images = [
-  "/images/banner2.jpg",
-  "/images/banner1.jpg",
-  "/images/banner3.jpg",
-];
+interface BannerImage {
+  id: number;
+  file_path: string;
+}
 
 const Banner = () => {
+  const [images, setImages] = useState<BannerImage[]>([]);
+
+  useEffect(() => {
+    const fetchBanners = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/admin/banner`);
+        const data = await response.json();
+
+        if (data.http_status === "OK") {
+          setImages(data.data.attachments);
+        }
+      } catch (error) {
+        console.error("배너 이미지 로딩 실패:", error);
+      }
+    };
+
+    fetchBanners();
+  }, []);
+
   const settings = {
     dots: true,
     infinite: true,
@@ -27,11 +46,11 @@ const Banner = () => {
   return (
     <div className="relative w-full h-full">
       <Slider {...settings} className="w-full h-full">
-        {images.map((image, index) => (
-          <div key={index} className="w-full h-full relative">
+        {images.map((image) => (
+          <div key={image.id} className="w-full h-full relative">
             <Image
-              src={image}
-              alt={`banner${index}`}
+              src={`${API_BASE_URL}${image.file_path}`}
+              alt={`banner-${image.id}`}
               fill
               className="object-cover"
               sizes="100vw"

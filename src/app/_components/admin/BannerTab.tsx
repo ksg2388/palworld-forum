@@ -15,6 +15,7 @@ interface BannerImage {
 const BannerTab = () => {
   const [bannerImages, setBannerImages] = useState<BannerImage[]>([]);
   const [isDragging, setIsDragging] = useState(false);
+  const [tempLink, setTempLink] = useState("");
 
   useEffect(() => {
     const fetchBanners = async () => {
@@ -45,10 +46,11 @@ const BannerTab = () => {
     if (files) {
       const newImages = Array.from(files).map(file => ({
         imageUrl: URL.createObjectURL(file),
-        link: '',
+        link: tempLink,
         file: file
       }));
       setBannerImages([...bannerImages, ...newImages]);
+      setTempLink("");
     }
   };
 
@@ -65,16 +67,17 @@ const BannerTab = () => {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    
+
     const files = e.dataTransfer.files;
     if (files) {
       const imageFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
       const newImages = imageFiles.map(file => ({
         imageUrl: URL.createObjectURL(file),
-        link: '',
+        link: tempLink,
         file: file
       }));
       setBannerImages([...bannerImages, ...newImages]);
+      setTempLink("");
     }
   };
 
@@ -82,9 +85,12 @@ const BannerTab = () => {
     setBannerImages(bannerImages.filter((_, i) => i !== index));
   };
 
-  const updateBannerLink = (index: number, link: string) => {
+  const updateBannerLink = (index: number, newLink: string) => {
     const updatedBanners = [...bannerImages];
-    updatedBanners[index] = { ...updatedBanners[index], link };
+    updatedBanners[index] = {
+      ...updatedBanners[index],
+      link: newLink,
+    };
     setBannerImages(updatedBanners);
   };
 
@@ -143,15 +149,24 @@ const BannerTab = () => {
           저장
         </button>
       </div>
-      <div 
+      <div
         className={`mb-4 p-8 border-2 border-dashed rounded-lg text-center ${
-          isDragging ? 'border-gray-800 bg-gray-100' : 'border-gray-300'
+          isDragging ? "border-gray-800 bg-gray-100" : "border-gray-300"
         }`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
       >
         <p className="text-gray-600 mb-4">이미지를 드래그하여 업로드하거나</p>
+        <div className="mb-4">
+          <input
+            type="text"
+            value={tempLink}
+            onChange={(e) => setTempLink(e.target.value)}
+            placeholder="배너 클릭시 이동할 링크를 입력하세요"
+            className="w-full max-w-md px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-500"
+          />
+        </div>
         <label className="inline-block px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 cursor-pointer">
           이미지 업로드
           <input
@@ -166,19 +181,25 @@ const BannerTab = () => {
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="bannerImages" direction="horizontal">
           {(provided) => (
-            <div 
+            <div
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
               {bannerImages.map((banner, index) => (
-                <Draggable key={banner.imageUrl} draggableId={banner.imageUrl} index={index}>
+                <Draggable
+                  key={banner.imageUrl}
+                  draggableId={banner.imageUrl}
+                  index={index}
+                >
                   {(provided, snapshot) => (
                     <div
                       ref={provided.innerRef}
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
-                      className={`relative group space-y-2 ${snapshot.isDragging ? 'opacity-50' : ''}`}
+                      className={`relative group space-y-2 ${
+                        snapshot.isDragging ? "opacity-50" : ""
+                      }`}
                     >
                       <Image
                         src={banner.imageUrl}
@@ -187,13 +208,17 @@ const BannerTab = () => {
                         height={192}
                         className="w-full h-48 object-cover rounded-lg cursor-move"
                       />
-                      <input
-                        type="url"
-                        value={banner.link}
-                        onChange={(e) => updateBannerLink(index, e.target.value)}
-                        placeholder="배너 링크를 입력하세요"
-                        className="w-full p-2 border rounded-md"
-                      />
+                      <div className="mt-2">
+                        <input
+                          type="text"
+                          value={banner.link}
+                          onChange={(e) =>
+                            updateBannerLink(index, e.target.value)
+                          }
+                          placeholder="링크 입력"
+                          className="w-full px-2 py-1 text-sm border border-gray-300 rounded"
+                        />
+                      </div>
                       <button
                         onClick={() => removeBannerImage(index)}
                         className="absolute top-2 right-2 bg-red-600 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"

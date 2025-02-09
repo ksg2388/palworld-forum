@@ -59,10 +59,9 @@ const useUserStore = create<UserState>()(
 
           const data = await response.json();
 
-          if (data.http_status === "OK") {
+          if (data.http_status === "CREATED") {
             set({
               accessToken: data.data.access_token,
-              refreshToken: data.data.refresh_token,
             });
           } else {
             throw new Error("토큰 갱신에 실패했습니다");

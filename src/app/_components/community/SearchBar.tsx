@@ -10,17 +10,16 @@ interface SearchBarProps {
 const SearchBar = ({ currentTab }: SearchBarProps) => {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchType, setSearchType] = useState("title"); // title, content, author
+  const [searchType, setSearchType] = useState("TITLE"); // TITLE, CONTENT, AUTHOR로 변경
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchTerm.trim()) {
-      router.push(
-        `/community?tab=${currentTab}&page=1&type=${searchType}&search=${encodeURIComponent(
-          searchTerm
-        )}`
-      );
-    }
+    // 검색어 유무와 관계없이 항상 라우팅하도록 수정
+    router.push(
+      `/community?tab=${currentTab}&page=1&searchType=${searchType}&keyword=${encodeURIComponent(
+        searchTerm.trim()
+      )}`
+    );
   };
 
   return (
@@ -30,9 +29,9 @@ const SearchBar = ({ currentTab }: SearchBarProps) => {
         onChange={(e) => setSearchType(e.target.value)}
         className="px-2 py-2 border border-gray-300 rounded-lg text-[16px] focus:outline-none focus:border-gray-500"
       >
-        <option value="title">제목</option>
-        <option value="content">내용</option>
-        <option value="author">작성자</option>
+        <option value="TITLE">제목</option>
+        <option value="CONTENT">내용</option>
+        <option value="NICKNAME">작성자</option>
       </select>
       <input
         type="text"

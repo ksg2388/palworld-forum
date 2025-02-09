@@ -22,8 +22,13 @@ const CommunityDetail = () => {
   const [selectedCommentId, setSelectedCommentId] = useState<number | null>(
     null
   );
+  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+  const [editCommentText, setEditCommentText] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showCommentDeleteConfirm, setShowCommentDeleteConfirm] = useState<
+    number | null
+  >(null);
 
   const communityTabs = ["전체"];
 
@@ -84,7 +89,7 @@ const CommunityDetail = () => {
       );
 
       const result = await response.json();
-      if (result.http_status === "OK") {
+      if (result.http_status === "ACCEPTED") {
         // 댓글 작성 성공 시 게시글 새로고침
         const endpoint = getEndpoint(currentTab);
         const postResponse = await fetch(`${API_BASE_URL}/${endpoint}/${id}`);
@@ -92,11 +97,76 @@ const CommunityDetail = () => {
 
         if (postResult.http_status === "OK") {
           setPost(postResult.data);
+          setCommentText(""); // 댓글 입력창 초기화
+          router.refresh(); // 페이지 리프레시 추가
         }
-        setCommentText("");
       }
     } catch (error) {
       console.error("댓글 작성 중 오류 발생:", error);
+    }
+  };
+
+  const handleCommentEdit = async (commentId: number) => {
+    if (!editCommentText.trim()) return;
+
+    try {
+      const endpoint = getEndpoint(currentTab);
+      const response = await makeAuthorizedRequest(
+        `${API_BASE_URL}/${endpoint}/${id}/comments/${commentId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            content: editCommentText,
+          }),
+        }
+      );
+
+      const result = await response.json();
+      if (result.http_status === "ACCEPTED") {
+        const postResponse = await fetch(`${API_BASE_URL}/${endpoint}/${id}`);
+        const postResult = await postResponse.json();
+
+        if (postResult.http_status === "OK") {
+          setPost(postResult.data);
+          setEditingCommentId(null);
+          setEditCommentText("");
+          router.refresh();
+          alert("댓글이 수정되었습니다.");
+        }
+      }
+    } catch (error) {
+      console.error("댓글 수정 중 오류 발생:", error);
+      alert("댓글 수정에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
+
+  const handleCommentDelete = async (commentId: number) => {
+    try {
+      const endpoint = getEndpoint(currentTab);
+      const response = await makeAuthorizedRequest(
+        `${API_BASE_URL}/${endpoint}/${id}/comments/${commentId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        const postResponse = await fetch(`${API_BASE_URL}/${endpoint}/${id}`);
+        const postResult = await postResponse.json();
+
+        if (postResult.http_status === "OK") {
+          setPost(postResult.data);
+          setShowCommentDeleteConfirm(null);
+          router.refresh();
+          alert("댓글이 삭제되었습니다.");
+        }
+      }
+    } catch (error) {
+      console.error("댓글 삭제 중 오류 발생:", error);
+      alert("댓글 삭제에 실패했습니다. 다시 시도해주세요.");
     }
   };
 
@@ -106,6 +176,9 @@ const CommunityDetail = () => {
       await makeAuthorizedRequest(`${API_BASE_URL}/${endpoint}/${id}`, {
         method: "DELETE",
       });
+
+      // 캐시를 리프레시하고 커뮤니티 페이지로 이동
+      router.refresh();
       router.push("/community");
     } catch (error) {
       console.error("게시글 삭제 중 오류 발생:", error);
@@ -201,6 +274,30 @@ const CommunityDetail = () => {
         </div>
       )}
 
+      {/* 댓글 삭제 확인 모달 */}
+      {showCommentDeleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl">
+            <h3 className="text-lg font-bold mb-4">댓글 삭제</h3>
+            <p className="mb-4">정말로 이 댓글을 삭제하시겠습니까?</p>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setShowCommentDeleteConfirm(null)}
+                className="px-4 py-2 text-gray-600 rounded border"
+              >
+                취소
+              </button>
+              <button
+                onClick={() => handleCommentDelete(showCommentDeleteConfirm)}
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                삭제
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 게시글 내용 */}
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-4">
@@ -232,8 +329,55 @@ const CommunityDetail = () => {
                   {formatDate(comment.modified_at)}
                 </span>
               </div>
+              {user && user.nickname === comment.nickname && (
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      setEditingCommentId(comment.id);
+                      setEditCommentText(comment.content);
+                    }}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    수정
+                  </button>
+                  <button
+                    onClick={() => setShowCommentDeleteConfirm(comment.id)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    삭제
+                  </button>
+                </div>
+              )}
             </div>
-            <p className="mb-2">{comment.content}</p>
+            {editingCommentId === comment.id ? (
+              <div>
+                <textarea
+                  value={editCommentText}
+                  onChange={(e) => setEditCommentText(e.target.value)}
+                  className="w-full p-2 border rounded resize-none"
+                  rows={2}
+                />
+                <div className="flex justify-end gap-2 mt-2">
+                  <button
+                    onClick={() => {
+                      setEditingCommentId(null);
+                      setEditCommentText("");
+                    }}
+                    className="px-3 py-1 text-gray-600 rounded"
+                  >
+                    취소
+                  </button>
+                  <button
+                    onClick={() => handleCommentEdit(comment.id)}
+                    className="px-3 py-1 bg-red-500 text-white rounded"
+                  >
+                    수정
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <p className="mb-2">{comment.content}</p>
+            )}
 
             {selectedCommentId === comment.id && user && (
               <div className="ml-8 mt-4">

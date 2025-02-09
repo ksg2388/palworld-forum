@@ -13,7 +13,7 @@ interface UpdateResponse {
     email: string;
     nickname: string;
     member_role: string;
-  }
+  };
 }
 
 const MyPage = () => {
@@ -22,15 +22,15 @@ const MyPage = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [nickname, setNickname] = useState("현재닉네임");
-  const [currentPage, setCurrentPage] = useState(1);
-  const postsPerPage = 5;
-  const {  user, setUser, logout } = useUserStore();
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const postsPerPage = 5;
+  const { user, setUser, logout } = useUserStore();
 
-  const dummyPosts = [
-    { id: 1, title: "게시글 제목 1", date: "2024.01.20", views: 100 },
-    { id: 2, title: "게시글 제목 2", date: "2024.01.19", views: 85 },
-    { id: 3, title: "게시글 제목 3", date: "2024.01.18", views: 120 },
-  ];
+  // const dummyPosts = [
+  //   { id: 1, title: "게시글 제목 1", date: "2024.01.20", views: 100 },
+  //   { id: 2, title: "게시글 제목 2", date: "2024.01.19", views: 85 },
+  //   { id: 3, title: "게시글 제목 3", date: "2024.01.18", views: 120 },
+  // ];
 
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,23 +40,27 @@ const MyPage = () => {
     }
 
     try {
-      const response = await makeAuthorizedRequest(`${API_BASE_URL}/members`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          password: newPassword,
-          nickname: ""
-        })
-      });
+      const response = await makeAuthorizedRequest(
+        `${API_BASE_URL}/members/change-password`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            password: currentPassword,
+            new_password: newPassword,
+            new_password_confirm: confirmPassword,
+          }),
+        }
+      );
 
       const data: UpdateResponse = await response.json();
 
       setUser({
         email: data.data.email,
         nickname: data.data.nickname,
-        member_role: data.data.member_role
+        member_role: data.data.member_role,
       });
 
       alert("비밀번호가 변경되었습니다.");
@@ -64,31 +68,35 @@ const MyPage = () => {
       setNewPassword("");
       setConfirmPassword("");
     } catch (err) {
-      alert(err instanceof Error ? err.message : "비밀번호 변경에 실패했습니다.");
+      alert(
+        err instanceof Error ? err.message : "비밀번호 변경에 실패했습니다."
+      );
     }
   };
 
   const handleNicknameChange = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
-      const response = await makeAuthorizedRequest(`${API_BASE_URL}/members`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          password: "",
-          nickname: nickname
-        })
-      });
+      const response = await makeAuthorizedRequest(
+        `${API_BASE_URL}/members/change-nickname`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            nickname: nickname,
+          }),
+        }
+      );
 
       const data: UpdateResponse = await response.json();
 
       setUser({
         email: data.data.email,
         nickname: data.data.nickname,
-        member_role: data.data.member_role
+        member_role: data.data.member_role,
       });
 
       alert("닉네임이 변경되었습니다.");
@@ -104,7 +112,7 @@ const MyPage = () => {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-          }
+          },
         });
 
         alert("회원 탈퇴가 완료되었습니다.");
@@ -121,10 +129,10 @@ const MyPage = () => {
   }, [user]);
 
   // 페이지네이션 계산
-  const indexOfLastPost = currentPage * postsPerPage;
-  const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = dummyPosts.slice(indexOfFirstPost, indexOfLastPost);
-  const totalPages = Math.ceil(dummyPosts.length / postsPerPage);
+  // const indexOfLastPost = currentPage * postsPerPage;
+  // const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  // const currentPosts = dummyPosts.slice(indexOfFirstPost, indexOfLastPost);
+  // const totalPages = Math.ceil(dummyPosts.length / postsPerPage);
 
   return (
     <div className="min-h-[calc(100vh-262px)] mt-[110px] max-w-[1200px] mx-auto p-8">
@@ -184,7 +192,7 @@ const MyPage = () => {
         </div>
 
         <div className="space-y-6">
-          <div className="bg-white p-6 rounded-lg shadow h-[306px] overflow-y-auto">
+          {/* <div className="bg-white p-6 rounded-lg shadow h-[306px] overflow-y-auto">
             <h2 className="text-xl font-bold mb-4">작성한 게시글</h2>
             <div className="space-y-2">
               {currentPosts.map((post) => (
@@ -221,7 +229,7 @@ const MyPage = () => {
                 )}
               </div>
             )}
-          </div>
+          </div> */}
 
           <div className="bg-white p-6 rounded-lg shadow h-[190px] overflow-y-auto">
             <h2 className="text-xl font-bold mb-4">회원 탈퇴</h2>

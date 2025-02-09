@@ -39,10 +39,11 @@ const fetchPosts = async (
   page: number,
   limit: number,
   keyword: string,
+  searchType: string,
   sort: string
 ) => {
   const response = await fetch(
-    `${API_BASE_URL}/${endpoint}?page=${page}&limit=${limit}&keyword=${keyword}&sort=${sort}`
+    `${API_BASE_URL}/${endpoint}?page=${page}&limit=${limit}&keyword=${keyword}&search-type=${searchType}&sort=${sort}`
   );
   return response.json();
 };
@@ -120,9 +121,16 @@ const CommunityContent = () => {
 
   const endpoint = getEndpoint(currentTab);
   const { data, isLoading, error } = useQuery({
-    queryKey: ["posts", endpoint, currentPage, keyword, sort],
+    queryKey: ["posts", endpoint, currentPage, keyword, searchType, sort],
     queryFn: () =>
-      fetchPosts(endpoint, currentPage, POSTS_PER_PAGE, keyword, sort),
+      fetchPosts(
+        endpoint,
+        currentPage,
+        POSTS_PER_PAGE,
+        keyword,
+        searchType,
+        sort
+      ),
     staleTime: 5000, // 5초 동안 데이터를 "신선"하다고 간주
     gcTime: 5 * 60 * 1000, // 5분 동안 캐시 유지
     refetchOnWindowFocus: false, // 윈도우 포커스시 자동 재요청 비활성화
@@ -166,7 +174,7 @@ const CommunityContent = () => {
       router.push(
         `/community?tab=${currentTab}&page=${
           startPage - pageGroupSize
-        }&keyword=${keyword}&searchType=${searchType}&sort=${sort}`
+        }&keyword=${keyword}&search-type=${searchType}&sort=${sort}`
       );
     }
   };
@@ -176,7 +184,7 @@ const CommunityContent = () => {
       router.push(
         `/community?tab=${currentTab}&page=${
           startPage + pageGroupSize
-        }&keyword=${keyword}&searchType=${searchType}&sort=${sort}`
+        }&keyword=${keyword}&search-type=${searchType}&sort=${sort}`
       );
     }
   };
@@ -192,7 +200,7 @@ const CommunityContent = () => {
 
   const handlePageChange = (page: number) => {
     router.push(
-      `/community?tab=${currentTab}&page=${page}&keyword=${keyword}&searchType=${searchType}&sort=${sort}`
+      `/community?tab=${currentTab}&page=${page}&keyword=${keyword}&search-type=${searchType}&sort=${sort}`
     );
   };
 

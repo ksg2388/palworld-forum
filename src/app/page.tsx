@@ -15,7 +15,7 @@ const Home = () => {
         </div>
         <PreviewNews />
       </section>
-      <Trailer />
+      {/* <Trailer /> */}
     </div>
   );
 };

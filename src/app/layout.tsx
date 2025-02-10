@@ -32,7 +32,7 @@ export default function RootLayout({
           <Header />
           {children}
           <DiscordButton />
-          {/* <KakaoChatButton /> */}
+          <KakaoChatButton />
           <Footer />
         </Providers>
       </body>

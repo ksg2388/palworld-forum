@@ -24,7 +24,7 @@ const DiscordButton = () => {
             (link: TLink) => link.link_type === "DISCORD"
           );
           if (discord) {
-            setDiscordLink(discord.url);
+            setDiscordLink(discord);
           }
         }
       } catch (error) {

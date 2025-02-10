@@ -64,7 +64,7 @@ const Banner = () => {
               src={`${API_BASE_URL}/attachments/${image.file_name}`}
               alt={`banner-${image.id}`}
               fill
-              className="object-cover"
+              className="object-contain"
               sizes="100vw"
               priority
             />

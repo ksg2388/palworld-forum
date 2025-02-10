@@ -1,8 +1,38 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { API_BASE_URL } from "@/config/api";
+
+interface Attachment {
+  id: number;
+  file_name: string;
+  file_path: string;
+}
 
 const Footer = () => {
+  const [footerMessage, setFooterMessage] = useState("");
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
+
+  useEffect(() => {
+    const fetchFooter = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/admin/footer`);
+        const data = await response.json();
+
+        if (data.http_status === "OK") {
+          setFooterMessage(data.data.content);
+          setAttachments(data.data.attachments);
+        }
+      } catch (error) {
+        console.error("푸터 정보를 불러오는데 실패했습니다:", error);
+      }
+    };
+
+    fetchFooter();
+  }, []);
+
   return (
     <footer className="w-full min-w-[1000px] bg-gray-800 text-white">
       <div className="max-w-[1200px] mx-auto px-4 h-full flex flex-col justify-between py-8">
@@ -23,7 +53,7 @@ const Footer = () => {
           <div className="flex flex-col gap-8 flex-1">
             <div className="flex flex-col gap-2">
               <p className="text-gray-400 text-sm max-w-[600px]">
-                {`팔월드 한국 포럼 | 팔월드 유저들을 위한 공식 커뮤니티 사이트입니다. 게임 정보와 유저들간의 소통을 위한 공간을 제공합니다. 관계자 | 운영진: 팔월드 코리아 | 개발: 웹 개발팀 | 디자인: UI/UX팀\n\n`}
+                {footerMessage}
               </p>
               <p className="text-gray-400 text-sm max-w-[600px]">
                 © 2024 Palworld Community. All rights reserved.
@@ -32,11 +62,11 @@ const Footer = () => {
           </div>
 
           <div className="flex gap-4 flex-shrink-0">
-            {[1, 2].map((num) => (
-              <div key={num} className="w-[190px] h-[50px] relative">
+            {attachments.map((attachment) => (
+              <div key={attachment.id} className="w-[190px] h-[50px] relative">
                 <Image
-                  src={`/images/test-image.png`}
-                  alt={`footer image ${num}`}
+                  src={`${API_BASE_URL}/attachments/${attachment.file_name}`}
+                  alt={`footer image ${attachment.id}`}
                   fill
                   className="object-contain"
                 />

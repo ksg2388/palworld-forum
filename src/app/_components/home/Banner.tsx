@@ -18,11 +18,23 @@ const Banner = () => {
   useEffect(() => {
     const fetchBanners = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/admin/banner`);
+        const response = await fetch(`${API_BASE_URL}/admin/banners`);
         const data = await response.json();
 
         if (data.http_status === "OK") {
-          setImages(data.data.attachments);
+          setImages(
+            data.data.map(
+              (item: {
+                id: number;
+                name: string;
+                url: string;
+                attachment: {
+                  id: number;
+                  file_name: string;
+                };
+              }) => item.attachment
+            )
+          );
         }
       } catch (error) {
         console.error("배너 이미지 로딩 실패:", error);

@@ -1,16 +1,16 @@
 "use client";
 
+import { useState, ChangeEvent, useEffect } from "react";
 import Image from "next/image";
-import { useState, useEffect } from 'react';
-import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
-import { makeAuthorizedRequest } from "@/app/_utils/api";
 import { API_BASE_URL } from "@/config/api";
+import { makeAuthorizedRequest } from "@/app/_utils/api";
 
-interface BannerImage {
+interface Banner {
   id?: number;
-  imageUrl: string;
-  link: string;
-  file?: File;
+  name: string;
+  image: File | null;
+  imagePreview?: string;
+  url?: string;
   attachment?: {
     id: number;
     file_name: string;
@@ -19,238 +19,207 @@ interface BannerImage {
 }
 
 const BannerTab = () => {
-  const [bannerImages, setBannerImages] = useState<BannerImage[]>([]);
-  const [isDragging, setIsDragging] = useState(false);
-  const [tempLink, setTempLink] = useState("");
+  const [banners, setBanners] = useState<Banner[]>([]);
 
   useEffect(() => {
     const fetchBanners = async () => {
       try {
-        const response = await makeAuthorizedRequest(
-          `${API_BASE_URL}/admin/banner`,
-          {
-            method: "GET",
-          }
-        );
+        const response = await fetch(`${API_BASE_URL}/admin/banners`);
         const data = await response.json();
+
         if (data.http_status === "OK") {
-          setBannerImages(data.data.map((banner: any) => ({
+          const initialBanners = data.data.map((banner: Banner) => ({
             id: banner.id,
-            imageUrl: banner.attachment 
+            name: banner.name,
+            image: null,
+            imagePreview: banner.attachment
               ? `${API_BASE_URL}/attachments/${banner.attachment.file_name}`
-              : "",
-            link: banner.url || "",
-            attachment: banner.attachment
-          })));
+              : undefined,
+            url: banner.attachment?.file_path || "",
+            attachment: banner.attachment,
+          }));
+          setBanners(initialBanners);
         }
       } catch (error) {
-        console.error("배너 이미지 조회 실패:", error);
+        console.error("배너 목록을 불러오는데 실패했습니다:", error);
       }
     };
 
     fetchBanners();
   }, []);
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files) {
-      const newImages = Array.from(files).map(file => ({
-        imageUrl: URL.createObjectURL(file),
-        link: tempLink,
-        file: file
-      }));
-      setBannerImages([...bannerImages, ...newImages]);
-      setTempLink("");
-    }
+  const addBanner = () => {
+    setBanners([...banners, { name: "", image: null, url: "" }]);
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-
-    const files = e.dataTransfer.files;
-    if (files) {
-      const imageFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
-      const newImages = imageFiles.map(file => ({
-        imageUrl: URL.createObjectURL(file),
-        link: tempLink,
-        file: file
-      }));
-      setBannerImages([...bannerImages, ...newImages]);
-      setTempLink("");
-    }
-  };
-
-  const removeBannerImage = (index: number) => {
-    setBannerImages(bannerImages.filter((_, i) => i !== index));
-  };
-
-  const updateBannerLink = (index: number, newLink: string) => {
-    const updatedBanners = [...bannerImages];
-    updatedBanners[index] = {
-      ...updatedBanners[index],
-      link: newLink,
-    };
-    setBannerImages(updatedBanners);
-  };
-
-  const onDragEnd = (result: DropResult) => {
-    if (!result.destination) return;
-
-    const items = Array.from(bannerImages);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-
-    setBannerImages(items);
-  };
-
-  const handleSave = async () => {
+  const removeBanner = async (id: number) => {
     try {
-      for (const banner of bannerImages) {
-        const formData = new FormData();
-        const data = {
-          url: banner.link,
-        };
-
-        if (banner.id) {
-          data.id = banner.id;
+      const response = await makeAuthorizedRequest(
+        `${API_BASE_URL}/admin/banners/${id}`,
+        {
+          method: "DELETE",
         }
+      );
 
-        const blob = new Blob([JSON.stringify(data)], {
-          type: "application/json",
-        });
-
-        formData.append("data", blob);
-
-        if (banner.file) {
-          formData.append("attachment", banner.file);
-        }
-
-        const response = await makeAuthorizedRequest(
-          `${API_BASE_URL}/admin/banner`,
-          {
-            method: "PATCH",
-            body: formData,
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("배너 저장에 실패했습니다.");
-        }
+      if (response.ok) {
+        setBanners(banners.filter((banner) => banner.id !== id));
+        alert("삭제되었습니다.");
+      } else {
+        throw new Error("삭제에 실패했습니다.");
       }
-      alert("배너 이미지가 성공적으로 저장되었습니다.");
     } catch (error) {
-      console.error("배너 이미지 저장 실패:", error);
-      alert("배너 이미지 저장에 실패했습니다. 다시 시도해주세요.");
+      console.error("삭제 중 오류가 발생했습니다:", error);
+      alert("삭제 중 오류가 발생했습니다.");
+    }
+  };
+
+  const handleImageChange = (
+    index: number,
+    e: ChangeEvent<HTMLInputElement>
+  ) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const imagePreview = URL.createObjectURL(file);
+
+      const newBanners = banners.map((b, i) =>
+        i === index ? { ...b, image: file, imagePreview } : b
+      );
+      setBanners(newBanners);
+    }
+  };
+
+  const handleSave = async (banner: Banner) => {
+    if (!banner.name) {
+      alert("배너명을 입력해주세요.");
+      return;
+    }
+
+    const formData = new FormData();
+    const data: { name: string; id?: number; url?: string } = {
+      name: banner.name,
+      url: banner.url,
+    };
+
+    if (banner.id) {
+      data.id = banner.id;
+    }
+
+    const blob = new Blob([JSON.stringify(data)], {
+      type: "application/json",
+    });
+
+    formData.append("data", blob);
+
+    if (banner.image) {
+      formData.append("attachment", banner.image);
+    }
+
+    try {
+      const response = await makeAuthorizedRequest(
+        `${API_BASE_URL}/admin/banners`,
+        {
+          method: "PATCH",
+          body: formData,
+        }
+      );
+
+      if (response.ok) {
+        alert("저장되었습니다.");
+      } else {
+        throw new Error("저장에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("저장 중 오류가 발생했습니다:", error);
+      alert("저장 중 오류가 발생했습니다.");
     }
   };
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex items-center justify-between mb-8">
         <h2 className="text-xl font-bold">배너 이미지 관리</h2>
         <button
-          onClick={handleSave}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          onClick={addBanner}
+          className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900"
         >
-          저장
+          배너 추가
         </button>
       </div>
-      <div
-        className={`mb-4 p-8 border-2 border-dashed rounded-lg text-center ${
-          isDragging ? "border-gray-800 bg-gray-100" : "border-gray-300"
-        }`}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-      >
-        <p className="text-gray-600 mb-4">이미지를 드래그하여 업로드하거나</p>
-        <div className="mb-4">
-          <input
-            type="text"
-            value={tempLink}
-            onChange={(e) => setTempLink(e.target.value)}
-            placeholder="배너 클릭시 이동할 링크를 입력하세요"
-            className="w-full max-w-md px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-500"
-          />
-        </div>
-        <label className="inline-block px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 cursor-pointer">
-          이미지 업로드
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            className="hidden"
-            onChange={handleImageUpload}
-          />
-        </label>
-      </div>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="bannerImages" direction="horizontal">
-          {(provided) => (
-            <div
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-            >
-              {bannerImages.map((banner, index) => (
-                <Draggable
-                  key={banner.imageUrl}
-                  draggableId={banner.imageUrl}
-                  index={index}
-                >
-                  {(provided, snapshot) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      className={`relative group space-y-2 ${
-                        snapshot.isDragging ? "opacity-50" : ""
-                      }`}
-                    >
-                      <Image
-                        src={banner.imageUrl}
-                        alt={`배너 이미지 ${index + 1}`}
-                        width={400}
-                        height={192}
-                        className="w-full h-48 object-cover rounded-lg cursor-move"
-                      />
-                      <div className="mt-2">
-                        <input
-                          type="text"
-                          value={banner.link}
-                          onChange={(e) =>
-                            updateBannerLink(index, e.target.value)
-                          }
-                          placeholder="링크 입력"
-                          className="w-full px-2 py-1 text-sm border border-gray-300 rounded"
-                        />
-                      </div>
-                      <button
-                        onClick={() => removeBannerImage(index)}
-                        className="absolute top-2 right-2 bg-red-600 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        삭제
-                      </button>
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
+
+      <div className="grid gap-8">
+        {banners.map((banner, index) => (
+          <div
+            key={banner.id || index}
+            className="p-6 border border-gray-200 rounded-lg space-y-4"
+          >
+            <div className="flex items-center gap-4">
+              <input
+                type="text"
+                className="w-1/3 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800"
+                placeholder="배너명 입력"
+                value={banner.name}
+                onChange={(e) => {
+                  const newBanners = banners.map((b, i) =>
+                    i === index ? { ...b, name: e.target.value } : b
+                  );
+                  setBanners(newBanners);
+                }}
+              />
+              <input
+                type="text"
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800"
+                placeholder="배너 URL 입력"
+                value={banner.url}
+                onChange={(e) => {
+                  const newBanners = banners.map((b, i) =>
+                    i === index ? { ...b, url: e.target.value } : b
+                  );
+                  setBanners(newBanners);
+                }}
+              />
+              <div className="flex-1">
+                <label className="inline-block px-4 py-2 bg-gray-100 text-gray-700 rounded-md cursor-pointer hover:bg-gray-200">
+                  이미지 선택
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={(e) => handleImageChange(index, e)}
+                  />
+                </label>
+              </div>
             </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+
+            {banner.imagePreview && (
+              <div className="relative w-full h-[200px]">
+                <Image
+                  src={banner.imagePreview}
+                  alt={banner.name}
+                  fill
+                  className="object-contain"
+                />
+              </div>
+            )}
+
+            <div className="flex justify-end gap-4">
+              {banner.id && (
+                <button
+                  onClick={() => removeBanner(banner.id!)}
+                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                >
+                  삭제
+                </button>
+              )}
+              <button
+                onClick={() => handleSave(banner)}
+                className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900"
+              >
+                저장
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

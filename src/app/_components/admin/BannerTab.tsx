@@ -10,7 +10,7 @@ interface Banner {
   name: string;
   image: File | null;
   imagePreview?: string;
-  url?: string;
+  url: string;
   attachment?: {
     id: number;
     file_name: string;
@@ -28,17 +28,7 @@ const BannerTab = () => {
         const data = await response.json();
 
         if (data.http_status === "OK") {
-          const initialBanners = data.data.map((banner: Banner) => ({
-            id: banner.id,
-            name: banner.name,
-            image: null,
-            imagePreview: banner.attachment
-              ? `${API_BASE_URL}/attachments/${banner.attachment.file_name}`
-              : undefined,
-            url: banner.attachment?.file_path || "",
-            attachment: banner.attachment,
-          }));
-          setBanners(initialBanners);
+          setBanners(data.data);
         }
       } catch (error) {
         console.error("배너 목록을 불러오는데 실패했습니다:", error);

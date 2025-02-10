@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { TUser } from "../types/common/common.types";
+import { API_BASE_URL } from "@/config/api";
 
 interface UserState {
   user: TUser | null;
@@ -47,7 +48,7 @@ const useUserStore = create<UserState>()(
           const refreshToken = get().refreshToken;
           if (!refreshToken) throw new Error("리프레시 토큰이 없습니다");
 
-          const response = await fetch("/auth/refresh-token", {
+          const response = await fetch(`${API_BASE_URL}/auth/refresh-token`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

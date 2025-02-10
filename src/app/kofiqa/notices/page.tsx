@@ -129,7 +129,7 @@ const NoticesPage = () => {
         </div>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-lg">
+      <div className="bg-white border border-gray-200 rounded-lg min-h-[calc(100vh-132px)]">
         {notices.length > 0 &&
           notices.map((notice) => (
             <div

@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useRef, useState, Suspense } from "react";
+import { useRef, useState, Suspense, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { API_BASE_URL } from "@/config/api";
 import useUserStore from "@/app/_store/userSotre";
@@ -19,6 +19,13 @@ const WriteContent = () => {
   const editorRef = useRef<any>(null);
   const [title, setTitle] = useState("");
   const { accessToken } = useUserStore();
+
+  useEffect(() => {
+    if (!accessToken) {
+      alert("로그인 후 이용해주세요.");
+      router.push("/login");
+    }
+  }, [router, accessToken]);
 
   const handleSubmit = async () => {
     const content = editorRef.current?.value;
@@ -52,7 +59,7 @@ const WriteContent = () => {
 
       if (data.http_status === "CREATED") {
         alert("공지사항이 등록되었습니다.");
-        router.push('/kofiqa/notices');
+        router.push("/kofiqa/notices");
       } else {
         alert("공지사항 등록에 실패했습니다.");
       }
@@ -114,4 +121,4 @@ const WritePage = () => {
   );
 };
 
-export default WritePage; 
+export default WritePage;

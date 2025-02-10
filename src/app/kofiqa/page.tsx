@@ -113,7 +113,7 @@ const KofiqaPage = () => {
           >
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-bold">공지사항</h2>
-              <Link 
+              <Link
                 href="/kofiqa/notices"
                 className="text-gray-600 hover:text-gray-900 text-sm"
               >
@@ -143,6 +143,14 @@ const KofiqaPage = () => {
               className="text-gray-700"
               dangerouslySetInnerHTML={{ __html: occupancyContent }}
             />
+            <div className="flex justify-center mt-6">
+              <Link
+                href="/kofiqa/apply"
+                className="px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+              >
+                입주 신청
+              </Link>
+            </div>
           </div>
 
           <div

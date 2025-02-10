@@ -56,7 +56,7 @@ const CommunityContent = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [linkItems, setLinkItems] = useState<LinkItem[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { accessToken } = useUserStore();
+  const { accessToken, user } = useUserStore();
 
   const currentPage = Number(searchParams.get("page")) || 1;
   const currentTab = Number(searchParams.get("tab")) || 0;
@@ -210,6 +210,12 @@ const CommunityContent = () => {
       router.push("/login");
       return;
     }
+
+    if (currentTab === 0 && user?.member_role !== "ADMIN") {
+      alert("공지사항은 관리자만 작성할 수 있습니다.");
+      return;
+    }
+
     router.push(`/community/write?tab=${currentTab}`);
   };
 

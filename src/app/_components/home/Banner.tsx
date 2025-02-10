@@ -57,9 +57,10 @@ const Banner = () => {
       <Slider {...settings} className="w-full h-full">
         {images.map((image) => (
           <div key={image.id} className="w-full h-full relative">
-            <Link
+            <a
               href={image.url}
               target="_blank"
+              rel="noopener noreferrer"
               className="block w-full h-full"
             >
               <Image
@@ -70,7 +71,7 @@ const Banner = () => {
                 sizes="100vw"
                 priority
               />
-            </Link>
+            </a>
           </div>
         ))}
       </Slider>

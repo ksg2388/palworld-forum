@@ -5,6 +5,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Image from "next/image";
+import Link from "next/link";
 import { API_BASE_URL } from "@/config/api";
 
 interface BannerImage {
@@ -56,14 +57,20 @@ const Banner = () => {
       <Slider {...settings} className="w-full h-full">
         {images.map((image) => (
           <div key={image.id} className="w-full h-full relative">
-            <Image
-              src={`${API_BASE_URL}/attachments/${image.attachment?.file_name}`}
-              alt={`banner-${image.id}`}
-              fill
-              className="object-contain"
-              sizes="100vw"
-              priority
-            />
+            <Link
+              href={image.url}
+              target="_blank"
+              className="block w-full h-full"
+            >
+              <Image
+                src={`${API_BASE_URL}/attachments/${image.attachment?.file_name}`}
+                alt={`banner-${image.id}`}
+                fill
+                className="object-contain cursor-pointer"
+                sizes="100vw"
+                priority
+              />
+            </Link>
           </div>
         ))}
       </Slider>

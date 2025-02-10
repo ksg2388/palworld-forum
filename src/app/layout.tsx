@@ -31,8 +31,8 @@ export default function RootLayout({
         <Providers>
           <Header />
           {children}
-          <DiscordButton />
-          <KakaoChatButton />
+          {/* <DiscordButton />
+          <KakaoChatButton /> */}
           <Footer />
         </Providers>
       </body>

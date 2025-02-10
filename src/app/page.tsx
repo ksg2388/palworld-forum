@@ -13,7 +13,7 @@ const Home = () => {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold">News</h2>
         </div>
-        <PreviewNews />
+        {/* <PreviewNews /> */}
       </section>
       {/* <Trailer /> */}
     </div>

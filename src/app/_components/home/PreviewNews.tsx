@@ -19,7 +19,7 @@ const PreviewNews = () => {
     const fetchNews = async () => {
       try {
         const response = await fetch(
-          `${API_BASE_URL}/kofiqa_announcments/top5`,
+          `${API_BASE_URL}/kofiqa-announcments/top5`,
           {
             method: "GET",
           }

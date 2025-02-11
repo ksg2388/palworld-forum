@@ -13,6 +13,7 @@ interface Notice {
   nickname: string;
   author: string;
   member_role: string;
+  notice: boolean;
 }
 
 // SearchBar 컴포넌트
@@ -134,18 +135,26 @@ const NoticesPage = () => {
           notices.map((notice) => (
             <div
               key={notice.id}
-              className="p-4 border-b border-gray-200 hover:bg-gray-50 transition-colors"
+              onClick={() => router.push(`/kofiqa/notices/${notice.id}`)}
+              className="p-4 border-b border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer"
             >
               <div className="flex justify-between items-center">
-                <h2 className="text-lg font-semibold">{notice.title}</h2>
+                <h2 className="text-lg font-semibold">
+                  {notice.notice && (
+                    <span className="inline-block px-2 py-1 bg-gray-100 text-sm rounded mr-2">
+                      공지
+                    </span>
+                  )}
+                  {notice.title}
+                </h2>
                 <div className="flex items-center gap-4 text-sm text-gray-500">
+                  <span>{notice.nickname}</span>
                   <span>조회 {notice.hits}</span>
                   <span>
                     {new Date(notice.created_at).toLocaleDateString()}
                   </span>
                 </div>
               </div>
-              <p className="mt-2 text-gray-600">{notice.content}</p>
             </div>
           ))}
       </div>

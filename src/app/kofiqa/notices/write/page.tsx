@@ -18,6 +18,7 @@ const WriteContent = () => {
   const router = useRouter();
   const editorRef = useRef<any>(null);
   const [title, setTitle] = useState("");
+  const [notice, setNotice] = useState(false);
   const { accessToken } = useUserStore();
 
   useEffect(() => {
@@ -51,6 +52,7 @@ const WriteContent = () => {
           body: JSON.stringify({
             title: title,
             content: content,
+            notice: notice,
           }),
         }
       );
@@ -73,6 +75,18 @@ const WriteContent = () => {
     <div className="w-full max-w-[1200px] mx-auto pt-[150px] pb-[50px]">
       <div className="bg-white rounded-lg border border-gray-200 p-6">
         <div className="mb-4">
+          <div className="flex items-center gap-2 mb-2">
+            <input
+              type="checkbox"
+              id="notice"
+              checked={notice}
+              onChange={(e) => setNotice(e.target.checked)}
+              className="w-4 h-4"
+            />
+            <label htmlFor="notice" className="text-sm text-gray-700">
+              상단 고정
+            </label>
+          </div>
           <input
             type="text"
             value={title}

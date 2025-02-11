@@ -9,6 +9,7 @@ const SupportPage = () => {
   const [previews, setPreviews] = useState<string[]>([]);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [email, setEmail] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,12 +36,10 @@ const SupportPage = () => {
 
   const handleSubmit = async () => {
     try {
-      const userEmail = "사용자 이메일"; // 실제 로그인된 사용자의 이메일을 가져오는 로직 필요
-
       const formData = new FormData();
       formData.append("title", title);
       formData.append("content", content);
-      formData.append("userEmail", userEmail);
+      formData.append("userEmail", email);
       selectedFiles.forEach((file) => {
         formData.append("files", file);
       });
@@ -52,19 +51,20 @@ const SupportPage = () => {
       });
 
       if (response.ok) {
-        toast.success(
-          "문의가 정상적으로 접수되었습니다. 가입하신 이메일로 답변드리겠습니다."
+        alert(
+          "문의가 정상적으로 접수되었습니다. 최대한 빠른 시일 내에 답변 드리도록 하겠습니다."
         );
         // 폼 초기화
         setTitle("");
         setContent("");
+        setEmail("");
         setSelectedFiles([]);
         setPreviews([]);
       } else {
-        toast.error("문의 접수 중 오류가 발생했습니다. 다시 시도해주세요.");
+        alert("문의 접수 중 오류가 발생했습니다. 다시 시도해주세요.");
       }
     } catch (error) {
-      toast.error("문의 접수 중 오류가 발생했습니다. 다시 시도해주세요.");
+      alert("문의 접수 중 오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
 
@@ -79,6 +79,18 @@ const SupportPage = () => {
       <div className="flex gap-8">
         <div className="flex-1">
           <div className="bg-white border border-gray-200 p-6">
+            <div className="mb-[8px] text-[17px] font-bold text-gray-900">
+              이메일
+            </div>
+            <div className="mb-4">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="답변 받으실 이메일을 입력해주세요."
+                className="w-full p-2 border border-gray-300"
+              />
+            </div>
             <div className="mb-[8px] text-[17px] font-bold text-gray-900">
               제목
             </div>

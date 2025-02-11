@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .ql-editor {
+    @apply max-w-none; /* Tailwind의 typography 스타일 적용 */
+  }
+}

@@ -4,6 +4,7 @@ import React, { useRef, useState, useEffect } from "react";
 import PreviewNews from "../_components/home/PreviewNews";
 import { API_BASE_URL } from "@/config/api";
 import Link from "next/link";
+import QuillView from "../_components/editor/QuillView";
 
 const tabs = ["공지사항", "서버규칙", "입주자신청", "서버접속방법"];
 
@@ -128,10 +129,7 @@ const KofiqaPage = () => {
             className="bg-white border border-gray-200 p-6 rounded-lg scroll-mt-[160px]"
           >
             <h2 className="text-2xl font-bold mb-4">서버규칙</h2>
-            <div
-              className="text-gray-700"
-              dangerouslySetInnerHTML={{ __html: ruleContent }}
-            />
+            <QuillView content={ruleContent} />
           </div>
 
           <div
@@ -139,10 +137,7 @@ const KofiqaPage = () => {
             className="bg-white border border-gray-200 p-6 rounded-lg scroll-mt-[160px]"
           >
             <h2 className="text-2xl font-bold mb-4">입주자 신청</h2>
-            <div
-              className="text-gray-700"
-              dangerouslySetInnerHTML={{ __html: occupancyContent }}
-            />
+            <QuillView content={occupancyContent} />
             <div className="flex justify-center mt-6">
               <Link
                 href="/kofiqa/apply"
@@ -158,12 +153,7 @@ const KofiqaPage = () => {
             className="bg-white border border-gray-200 p-6 rounded-lg scroll-mt-[160px]"
           >
             <h2 className="text-2xl font-bold mb-4">서버 접속 방법</h2>
-            <div className="space-y-4">
-              <div
-                className="text-gray-700"
-                dangerouslySetInnerHTML={{ __html: connectionContent }}
-              />
-            </div>
+            <QuillView content={connectionContent} />
           </div>
         </div>
       </div>

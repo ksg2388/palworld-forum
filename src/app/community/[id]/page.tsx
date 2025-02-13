@@ -207,14 +207,6 @@ const CommunityDetail = () => {
           ))}
         </div>
         <div className="flex gap-2">
-          <button className="p-2">
-            <span className="sr-only">북마크</span>
-            🔖
-          </button>
-          <button className="p-2">
-            <span className="sr-only">공유</span>
-            🔗
-          </button>
           {user && user.email === post.author && (
             <div className="relative">
               <button

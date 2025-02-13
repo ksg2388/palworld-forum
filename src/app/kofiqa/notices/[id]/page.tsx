@@ -4,6 +4,19 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { API_BASE_URL } from "@/config/api";
 
+interface Attachment {
+  id: number;
+  file_name: string;
+  file_path: string;
+}
+
+interface Comment {
+  id: number;
+  content: string;
+  author: string;
+  created_at: string;
+}
+
 interface Notice {
   id: number;
   author: string;
@@ -11,10 +24,10 @@ interface Notice {
   member_role: string;
   title: string;
   content: string;
-  attachments: any[];
+  attachments: Attachment[];
   hits: number;
   count_of_comments: number;
-  comments: any[];
+  comments: Comment[];
   created_at: string;
   modified_at: string;
   notice: boolean;

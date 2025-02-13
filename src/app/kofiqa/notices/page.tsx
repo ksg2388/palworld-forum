@@ -91,6 +91,10 @@ const NoticesPage = () => {
     setCurrentPage(page);
   };
 
+  const handleNoticeClick = (noticeId: number) => {
+    router.push(`/kofiqa/notices/${noticeId}`);
+  };
+
   useEffect(() => {
     const fetchNotices = async () => {
       try {
@@ -135,7 +139,7 @@ const NoticesPage = () => {
           notices.map((notice) => (
             <div
               key={notice.id}
-              onClick={() => router.push(`/kofiqa/notices/${notice.id}`)}
+              onClick={() => handleNoticeClick(notice.id)}
               className="p-4 border-b border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer"
             >
               <div className="flex justify-between items-center">

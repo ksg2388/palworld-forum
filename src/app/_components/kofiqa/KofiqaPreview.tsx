@@ -12,14 +12,14 @@ interface News {
   hits: number;
 }
 
-const PreviewNews = () => {
+const KofiqaPreview = () => {
   const [news, setNews] = useState<News[]>([]);
 
   useEffect(() => {
     const fetchNews = async () => {
       try {
         const response = await fetch(
-          `${API_BASE_URL}/frees?page=1&limit=5`,
+          `${API_BASE_URL}/kofiqa-announcements/top5`,
           {
             method: "GET",
           }
@@ -55,7 +55,7 @@ const PreviewNews = () => {
       {news.length > 0 &&
         news.map((item) => (
           <Link
-            href={`/community/${item.id}`}
+            href={`/kofiqa/notices/${item.id}`}
             key={item.id}
             className="flex items-center justify-between py-3 border-b border-gray-200 hover:bg-gray-50"
           >
@@ -78,4 +78,4 @@ const PreviewNews = () => {
   );
 };
 
-export default PreviewNews;
+export default KofiqaPreview;

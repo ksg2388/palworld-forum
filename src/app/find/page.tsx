@@ -94,7 +94,6 @@ const FindPage = () => {
     );
   };
 
-  // todo: 비밀번호 요청 api 엔드포인트 수정
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -130,7 +129,7 @@ const FindPage = () => {
       const data = await response.json();
 
       if (data.http_status === "OK") {
-        alert("비밀번호가 성공적으로 변경되었습니다.");
+        alert("비밀번호가 성공적으로 변경되었습니다. 로그인 페이지로 이동합니다.");
         router.push("/login");
       } else {
         alert(data.message || "비밀번호 변경에 실패했습니다.");

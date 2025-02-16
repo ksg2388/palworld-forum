@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import PreviewNews from "../_components/home/PreviewNews";
 import { API_BASE_URL } from "@/config/api";
 import Link from "next/link";
 import QuillView from "../_components/editor/QuillView";
+import KofiqaPreview from "../_components/kofiqa/KofiqaPreview";
 
 const tabs = ["공지사항", "서버규칙", "입주자신청", "서버접속방법"];
 
@@ -121,7 +121,7 @@ const KofiqaPage = () => {
                 더보기 &gt;
               </Link>
             </div>
-            <PreviewNews />
+            <KofiqaPreview />
           </div>
 
           <div

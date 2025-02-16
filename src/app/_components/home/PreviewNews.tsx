@@ -19,7 +19,7 @@ const PreviewNews = () => {
     const fetchNews = async () => {
       try {
         const response = await fetch(
-          `${API_BASE_URL}/frees?page=1&limit=5`,
+          `${API_BASE_URL}/announcements?page=1&limit=5`,
           {
             method: "GET",
           }

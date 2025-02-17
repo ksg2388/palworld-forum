@@ -89,7 +89,7 @@ const CommunityEditPage = () => {
       );
 
       const result = await response.json();
-      if (result.http_status === "OK") {
+      if (result.http_status === "ACCEPTED") {
         alert("게시글이 성공적으로 수정되었습니다.");
         router.push(`/community/${id}?tab=${currentTab}`);
       }

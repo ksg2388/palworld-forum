@@ -207,35 +207,36 @@ const CommunityDetail = () => {
           ))}
         </div>
         <div className="flex gap-2">
-          {user && user.email === post.author && (
-            <div className="relative">
-              <button
-                className="p-2"
-                onClick={() => setShowDropdown(!showDropdown)}
-              >
-                <span className="sr-only">더보기</span>⋮
-              </button>
-              {showDropdown && (
-                <div className="absolute right-0 mt-2 w-24 bg-white rounded-md shadow-lg z-10">
-                  <button
-                    onClick={handleEdit}
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                  >
-                    수정
-                  </button>
-                  <button
-                    onClick={() => {
-                      setShowDropdown(false);
-                      setShowDeleteConfirm(true);
-                    }}
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-500"
-                  >
-                    삭제
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
+          {user &&
+            (user.email === post.author || user.member_role === "ADMIN") && (
+              <div className="relative">
+                <button
+                  className="p-2"
+                  onClick={() => setShowDropdown(!showDropdown)}
+                >
+                  <span className="sr-only">더보기</span>⋮
+                </button>
+                {showDropdown && (
+                  <div className="absolute right-0 mt-2 w-24 bg-white rounded-md shadow-lg z-10">
+                    <button
+                      onClick={handleEdit}
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                    >
+                      수정
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowDropdown(false);
+                        setShowDeleteConfirm(true);
+                      }}
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-500"
+                    >
+                      삭제
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
         </div>
       </div>
 
@@ -321,25 +322,27 @@ const CommunityDetail = () => {
                   {formatDate(comment.modified_at)}
                 </span>
               </div>
-              {user && user.nickname === comment.nickname && (
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => {
-                      setEditingCommentId(comment.id);
-                      setEditCommentText(comment.content);
-                    }}
-                    className="text-gray-500 hover:text-gray-700"
-                  >
-                    수정
-                  </button>
-                  <button
-                    onClick={() => setShowCommentDeleteConfirm(comment.id)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    삭제
-                  </button>
-                </div>
-              )}
+              {user &&
+                (user.nickname === comment.nickname ||
+                  user.member_role === "ADMIN") && (
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        setEditingCommentId(comment.id);
+                        setEditCommentText(comment.content);
+                      }}
+                      className="text-gray-500 hover:text-gray-700"
+                    >
+                      수정
+                    </button>
+                    <button
+                      onClick={() => setShowCommentDeleteConfirm(comment.id)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      삭제
+                    </button>
+                  </div>
+                )}
             </div>
             {editingCommentId === comment.id ? (
               <div>

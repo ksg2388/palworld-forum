@@ -30,7 +30,7 @@ const QuillEditor = ({ style, value, onChange }: Props) => {
 
       try {
         const formData = new FormData();
-        formData.append("image", file);
+        formData.append("attachment", file);
 
         // 서버 액션 호출
         const response = await makeAuthorizedRequest(

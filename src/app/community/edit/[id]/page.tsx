@@ -77,7 +77,7 @@ const CommunityEditPage = () => {
       const response = await makeAuthorizedRequest(
         `${API_BASE_URL}/${endpoint}/${id}`,
         {
-          method: "PUT",
+          method: "PATCH",
           headers: {
             "Content-Type": "application/json",
           },

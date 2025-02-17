@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { API_BASE_URL } from "@/config/api";
 import { makeAuthorizedRequest } from "@/app/_utils/api";
@@ -20,7 +20,6 @@ const NoticeEditPage = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [isNotice, setIsNotice] = useState(false);
-  const editorRef = useRef<any>(null);
   const { user } = useUserStore();
 
   useEffect(() => {
@@ -49,8 +48,6 @@ const NoticeEditPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const content = editorRef.current?.value;
 
     if (!content?.trim()) {
       alert("내용을 입력해주세요.");
@@ -109,7 +106,7 @@ const NoticeEditPage = () => {
         </div>
 
         <div className="min-h-[500px]">
-          <QuillEditor ref={editorRef} initialValue={content} />
+          <QuillEditor value={content} onChange={setContent} />
         </div>
 
         <div className="flex justify-end gap-2 mt-4">

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { API_BASE_URL } from "@/config/api";
 import { makeAuthorizedRequest } from "@/app/_utils/api";
@@ -21,7 +21,6 @@ const CommunityEditPage = () => {
   const currentTab = Number(searchParams.get("tab")) || 0;
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const editorRef = useRef<any>(null);
   const { user } = useUserStore();
 
   const getEndpoint = (tab: number) => {
@@ -67,9 +66,6 @@ const CommunityEditPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const content = editorRef.current?.value;
-
     if (!content?.trim()) {
       alert("내용을 입력해주세요.");
       return;
@@ -113,7 +109,7 @@ const CommunityEditPage = () => {
         />
 
         <div className="min-h-[500px]">
-          <QuillEditor ref={editorRef} initialValue={content} />
+          <QuillEditor value={content} onChange={setContent} />
         </div>
 
         <div className="flex justify-end gap-2 mt-4">

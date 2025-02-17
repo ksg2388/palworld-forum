@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useRef, useState, Suspense, useEffect } from "react";
+import { useState, Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { API_BASE_URL } from "@/config/api";
 import useUserStore from "@/app/_store/userSotre";
@@ -17,8 +17,8 @@ const QuillEditor = dynamic(
 const WriteContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const editorRef = useRef<any>(null);
   const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
   const currentTab = Number(searchParams.get("tab")) || 0;
   const { accessToken } = useUserStore();
 
@@ -45,8 +45,6 @@ const WriteContent = () => {
   };
 
   const handleSubmit = async () => {
-    const content = editorRef.current?.value;
-
     if (!title.trim()) {
       alert("제목을 입력해주세요.");
       return;
@@ -102,7 +100,7 @@ const WriteContent = () => {
         </div>
 
         <div className="min-h-[500px]">
-          <QuillEditor ref={editorRef} />
+          <QuillEditor value={content} onChange={setContent} />
         </div>
 
         <div className="flex justify-end gap-2 mt-4">

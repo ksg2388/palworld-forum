@@ -294,7 +294,7 @@ const CommunityDetail = () => {
       {/* 게시글 내용 */}
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-4">
-          <span className="font-bold">{post.author}</span>
+          <span className="font-bold">{post.nickname}</span>
           <span className="text-gray-500 text-sm">
             {formatDate(post.created_at)}
           </span>

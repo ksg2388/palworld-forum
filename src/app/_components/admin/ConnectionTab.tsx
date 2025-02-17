@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import QuillView from "../editor/QuillView";
 import QuillEditor from "../editor/QuillEditor";
 import { API_BASE_URL } from "@/config/api";
@@ -9,7 +9,6 @@ import { makeAuthorizedRequest } from "@/app/_utils/api";
 const ConnectionTab = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState("");
-  const editorRef = useRef<any>(null);
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -37,8 +36,6 @@ const ConnectionTab = () => {
   };
 
   const handleSave = async () => {
-    const content = editorRef.current?.value;
-
     if (!content?.trim()) {
       alert("내용을 입력해주세요.");
       return;
@@ -90,7 +87,7 @@ const ConnectionTab = () => {
       <div className="border rounded-lg p-4 bg-white shadow-sm">
         {isEditing ? (
           <div className="space-y-4">
-            <QuillEditor ref={editorRef} initialValue={content} />
+            <QuillEditor value={content} onChange={setContent} />
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setIsEditing(false)}

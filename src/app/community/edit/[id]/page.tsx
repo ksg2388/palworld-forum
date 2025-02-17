@@ -90,10 +90,12 @@ const CommunityEditPage = () => {
 
       const result = await response.json();
       if (result.http_status === "OK") {
+        alert("게시글이 성공적으로 수정되었습니다.");
         router.push(`/community/${id}?tab=${currentTab}`);
       }
     } catch (error) {
       console.error("게시글 수정 중 오류 발생:", error);
+      alert("게시글 수정에 실패했습니다. 다시 시도해주세요.");
     }
   };
 

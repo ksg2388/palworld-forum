@@ -80,43 +80,74 @@ const QuillEditor = ({ style, value, onChange }: Props) => {
           const canvas = document.createElement("canvas");
           const ctx = canvas.getContext("2d")!;
 
-          // 최대 너비/높이 설정 (필요에 따라 조정)
-          const MAX_WIDTH = 1024;
-          const MAX_HEIGHT = 1024;
+          // 이미지 최대 크기를 더 크게 설정
+          const MAX_WIDTH = 2048;
+          const MAX_HEIGHT = 2048;
 
           let width = img.width;
           let height = img.height;
 
-          if (width > height) {
-            if (width > MAX_WIDTH) {
-              height *= MAX_WIDTH / width;
-              width = MAX_WIDTH;
-            }
-          } else {
-            if (height > MAX_HEIGHT) {
-              width *= MAX_HEIGHT / height;
-              height = MAX_HEIGHT;
+          // 원본 크기가 최대 크기보다 큰 경우에만 리사이징
+          if (width > MAX_WIDTH || height > MAX_HEIGHT) {
+            if (width > height) {
+              if (width > MAX_WIDTH) {
+                height *= MAX_WIDTH / width;
+                width = MAX_WIDTH;
+              }
+            } else {
+              if (height > MAX_HEIGHT) {
+                width *= MAX_HEIGHT / height;
+                height = MAX_HEIGHT;
+              }
             }
           }
 
           canvas.width = width;
           canvas.height = height;
+
+          // 이미지 렌더링 품질 개선
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = "high";
           ctx.drawImage(img, 0, 0, width, height);
+
+          // 파일 크기가 2MB 이하면 원본 품질 유지
+          const maxFileSize = 2 * 1024 * 1024; // 2MB
+          let quality = 0.92; // 초기 품질값 상향 조정
 
           canvas.toBlob(
             (blob) => {
               if (blob) {
-                resolve(
-                  new File([blob], file.name, {
-                    type: "image/jpeg",
-                    lastModified: Date.now(),
-                  })
-                );
+                // 파일 크기가 2MB 이하면 현재 품질로 저장
+                if (blob.size <= maxFileSize) {
+                  resolve(
+                    new File([blob], file.name, {
+                      type: "image/jpeg",
+                      lastModified: Date.now(),
+                    })
+                  );
+                } else {
+                  // 2MB 초과시에만 품질 조정
+                  quality = Math.min(maxFileSize / blob.size, 0.9);
+                  canvas.toBlob(
+                    (compressedBlob) => {
+                      if (compressedBlob) {
+                        resolve(
+                          new File([compressedBlob], file.name, {
+                            type: "image/jpeg",
+                            lastModified: Date.now(),
+                          })
+                        );
+                      }
+                    },
+                    "image/jpeg",
+                    quality
+                  );
+                }
               }
             },
             "image/jpeg",
-            0.7
-          ); // 품질 0.7로 압축
+            quality
+          );
         };
         img.src = e.target?.result as string;
       };

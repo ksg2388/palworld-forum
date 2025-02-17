@@ -35,10 +35,6 @@ const NoticeEditPage = () => {
         const result = await response.json();
 
         if (result.http_status === "OK") {
-          if (!user || user.email !== result.data.author) {
-            router.push("/");
-            return;
-          }
           setTitle(result.data.title);
           setContent(result.data.content);
           setIsNotice(result.data.notice);
@@ -72,7 +68,7 @@ const NoticeEditPage = () => {
           body: JSON.stringify({
             title: title,
             content: content,
-            notice: isNotice
+            notice: isNotice,
           }),
         }
       );
@@ -136,4 +132,4 @@ const NoticeEditPage = () => {
   );
 };
 
-export default NoticeEditPage; 
+export default NoticeEditPage;

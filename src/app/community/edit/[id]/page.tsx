@@ -54,10 +54,6 @@ const CommunityEditPage = () => {
         const result = await response.json();
 
         if (result.http_status === "OK") {
-          if (!user || user.email !== result.data.author) {
-            router.push("/");
-            return;
-          }
           setTitle(result.data.title);
           setContent(result.data.content);
         }

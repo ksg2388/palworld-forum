@@ -58,7 +58,7 @@ const NoticeEditPage = () => {
       const response = await makeAuthorizedRequest(
         `${API_BASE_URL}/kofiqa-announcements/${id}`,
         {
-          method: "PUT",
+          method: "PATCH",
           headers: {
             "Content-Type": "application/json",
           },
@@ -71,7 +71,7 @@ const NoticeEditPage = () => {
       );
 
       const result = await response.json();
-      if (result.http_status === "OK") {
+      if (result.http_status === "ACCEPTED") {
         router.push(`/kofiqa/notices/${id}`);
       }
     } catch (error) {

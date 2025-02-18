@@ -23,6 +23,13 @@ const NoticeEditPage = () => {
   const { user } = useUserStore();
 
   useEffect(() => {
+    if (user?.member_role !== "ADMIN") {
+      alert("관리자만 이용할 수 있습니다.");
+      router.push("/kofiqa/notices");
+    }
+  }, [router, user]);
+
+  useEffect(() => {
     const fetchNotice = async () => {
       try {
         const response = await makeAuthorizedRequest(

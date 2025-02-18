@@ -19,14 +19,18 @@ const WriteContent = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [notice, setNotice] = useState(false);
-  const { accessToken } = useUserStore();
+  const { accessToken, user } = useUserStore();
 
   useEffect(() => {
     if (!accessToken) {
       alert("로그인 후 이용해주세요.");
       router.push("/login");
     }
-  }, [router, accessToken]);
+    if (user?.member_role !== "ADMIN") {
+      alert("관리자만 이용할 수 있습니다.");
+      router.push("/kofiqa/notices");
+    }
+  }, [router, accessToken, user]);
 
   const handleSubmit = async () => {
     if (!title.trim()) {

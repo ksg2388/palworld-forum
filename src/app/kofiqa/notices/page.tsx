@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { API_BASE_URL } from "@/config/api";
 import { useRouter } from "next/navigation";
+import useUserStore from "@/app/_store/userSotre";
 
 interface Notice {
   id: number;
@@ -62,6 +63,7 @@ const NoticesPage = () => {
   const [notices, setNotices] = useState<Notice[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [keyword, setKeyword] = useState("");
+  const { user } = useUserStore();
   const limit = 10;
 
   // 페이지네이션 로직
@@ -104,7 +106,13 @@ const NoticesPage = () => {
         const data = await response.json();
 
         if (data.http_status === "OK") {
-          setNotices(data.data);
+          // 공지사항을 우선적으로 보이도록 정렬
+          const sortedNotices = [...data.data].sort((a, b) => {
+            if (a.notice && !b.notice) return -1;
+            if (!a.notice && b.notice) return 1;
+            return 0;
+          });
+          setNotices(sortedNotices);
         }
       } catch (error) {
         console.error("공지사항을 불러오는데 실패했습니다:", error);
@@ -125,12 +133,14 @@ const NoticesPage = () => {
               setCurrentPage(1);
             }}
           />
-          <button
-            onClick={() => router.push("/kofiqa/notices/write")}
-            className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 text-[16px]"
-          >
-            글쓰기
-          </button>
+          {user?.member_role === "ADMIN" && (
+            <button
+              onClick={() => router.push("/kofiqa/notices/write")}
+              className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 text-[16px]"
+            >
+              글쓰기
+            </button>
+          )}
         </div>
       </div>
 

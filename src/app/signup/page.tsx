@@ -191,15 +191,15 @@ const SignupPage = () => {
               placeholder="이메일"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800"
+              className="flex-1 px-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800"
               disabled={isEmailVerified}
             />
             <button
               onClick={handleSendVerification}
               disabled={isEmailVerified || isVerificationLoading}
-              className="px-4 py-3 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors disabled:bg-gray-400 min-w-[80px]"
+              className="px-3 py-3 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors disabled:bg-gray-400"
             >
-              {isVerificationLoading ? "발송중..." : "인증"}
+              {!isVerificationLoading ? "발송중..." : "인증"}
             </button>
           </div>
 
@@ -210,11 +210,11 @@ const SignupPage = () => {
                 placeholder="인증번호 입력"
                 value={verificationCode}
                 onChange={(e) => setVerificationCode(e.target.value)}
-                className="flex-1 px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800"
+                className="flex-1 px-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800"
               />
               <button
                 onClick={handleVerifyCode}
-                className="px-4 py-3 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors"
+                className="px-3 py-3 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors"
               >
                 확인
               </button>
@@ -227,7 +227,7 @@ const SignupPage = () => {
               placeholder="비밀번호 (8~16자리, 특수문자 포함)"
               value={password}
               onChange={handlePasswordChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800"
+              className="w-full px-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800"
             />
             {passwordError && (
               <p className="mt-1 text-sm text-red-500">{passwordError}</p>
@@ -238,7 +238,7 @@ const SignupPage = () => {
             placeholder="비밀번호 확인"
             value={passwordConfirm}
             onChange={(e) => setPasswordConfirm(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800"
+            className="w-full px-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800"
           />
           <div>
             <input
@@ -246,7 +246,7 @@ const SignupPage = () => {
               placeholder="닉네임 (3~8자)"
               value={nickname}
               onChange={handleNicknameChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800"
+              className="w-full px-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800"
             />
             {nicknameError && (
               <p className="mt-1 text-sm text-red-500">{nicknameError}</p>

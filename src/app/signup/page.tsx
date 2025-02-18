@@ -18,6 +18,7 @@ const SignupPage = () => {
   const [showVerification, setShowVerification] = useState(false);
   const [passwordError, setPasswordError] = useState("");
   const [nicknameError, setNicknameError] = useState("");
+  const [isVerificationLoading, setIsVerificationLoading] = useState(false);
 
   const validatePassword = (password: string) => {
     const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
@@ -40,26 +41,34 @@ const SignupPage = () => {
   const handleSendVerification = async (e: React.MouseEvent) => {
     e.preventDefault();
     if (email) {
+      setIsVerificationLoading(true);
       try {
-        const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.SEND_VERIFICATION}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email }),
-        });
+        const response = await fetch(
+          `${API_BASE_URL}${API_ENDPOINTS.SEND_VERIFICATION}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email }),
+          }
+        );
 
         const data = await response.json();
-        
+
         if (data.http_status === "CREATED") {
           setShowVerification(true);
-          alert("인증번호가 발송되었습니다. 최대 30초 정도 소요될 수 있습니다.");
+          alert(
+            "인증번호가 발송되었습니다. 최대 30초 정도 소요될 수 있습니다."
+          );
         } else {
           alert(data.message || "인증번호 발송에 실패했습니다.");
         }
       } catch (error) {
         console.error("인증번호 발송 실패:", error);
         alert("인증번호 발송에 실패했습니다. 다시 시도해주세요.");
+      } finally {
+        setIsVerificationLoading(false);
       }
     }
   };
@@ -68,19 +77,22 @@ const SignupPage = () => {
     e.preventDefault();
     if (verificationCode) {
       try {
-        const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.VERIFY_CODE}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ 
-            email,
-            verification_code: verificationCode 
-          }),
-        });
+        const response = await fetch(
+          `${API_BASE_URL}${API_ENDPOINTS.VERIFY_CODE}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email,
+              verification_code: verificationCode,
+            }),
+          }
+        );
 
         const data = await response.json();
-        
+
         if (data.http_status === "ACCEPTED") {
           setIsEmailVerified(true);
           alert(data.message);
@@ -96,7 +108,7 @@ const SignupPage = () => {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!isEmailVerified) {
       alert("이메일 인증을 완료해주세요.");
       return;
@@ -184,10 +196,10 @@ const SignupPage = () => {
             />
             <button
               onClick={handleSendVerification}
-              disabled={isEmailVerified}
-              className="px-4 py-3 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors disabled:bg-gray-400"
+              disabled={isEmailVerified || isVerificationLoading}
+              className="px-4 py-3 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors disabled:bg-gray-400 min-w-[80px]"
             >
-              인증
+              {isVerificationLoading ? "발송중..." : "인증"}
             </button>
           </div>
 

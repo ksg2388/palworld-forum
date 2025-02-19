@@ -13,80 +13,103 @@ interface Attachment {
 
 const FooterTab = () => {
   const [footerMessage, setFooterMessage] = useState("");
-  const [partnerImages, setPartnerImages] = useState<File[]>([]);
   const [imagePreview, setImagePreview] = useState<string[]>([]);
+  const [existingImages, setExistingImages] = useState<Attachment[]>([]);
 
-  useEffect(() => {
-    const fetchFooter = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/admin/footer`);
-        const data = await response.json();
+  const fetchFooter = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/admin/footer`);
+      const data = await response.json();
 
-        if (data.http_status === "OK") {
-          setFooterMessage(data.data.content);
-          const previews = data.data.attachments.map(
-            (attachment: Attachment) =>
-              `${API_BASE_URL}/attachments/${attachment.file_name}`
-          );
-          setImagePreview(previews);
-        }
-      } catch (error) {
-        console.error("푸터 정보를 불러오는데 실패했습니다:", error);
+      if (data.http_status === "OK") {
+        setFooterMessage(data.data.content);
+        setExistingImages(data.data.attachments);
+        const previews = data.data.attachments.map(
+          (attachment: Attachment) =>
+            `${API_BASE_URL}/attachments/${attachment.file_name}`
+        );
+        setImagePreview(previews);
       }
-    };
-
-    fetchFooter();
-  }, []);
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && partnerImages.length < 3) {
-      const newFiles = Array.from(files).slice(0, 3 - partnerImages.length);
-      const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
-
-      setPartnerImages([...partnerImages, ...newFiles]);
-      setImagePreview([...imagePreview, ...newPreviews]);
+    } catch (error) {
+      console.error("푸터 정보를 불러오는데 실패했습니다:", error);
     }
   };
 
-  const removeImage = (index: number) => {
-    setPartnerImages(partnerImages.filter((_, i) => i !== index));
-    setImagePreview(imagePreview.filter((_, i) => i !== index));
+  useEffect(() => {
+    fetchFooter();
+  }, []);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && (imagePreview.length + files.length) <= 3) {
+      try {
+        for (let i = 0; i < files.length; i++) {
+          const formData = new FormData();
+          formData.append("attachment", files[i]);
+
+          const response = await makeAuthorizedRequest(
+            `${API_BASE_URL}/admin/footer`,
+            {
+              method: "POST",
+              body: formData,
+            }
+          );
+
+          if (response.ok) {
+            await fetchFooter(); // 이미지 업로드 후 데이터 다시 조회
+          }
+        }
+        alert("이미지가 업로드되었습니다.");
+      } catch (error) {
+        console.error("이미지 업로드 중 오류가 발생했습니다:", error);
+        alert("이미지 업로드에 실패했습니다.");
+      }
+    }
   };
 
-  const handleSave = async () => {
+  const removeImage = async (index: number) => {
     try {
-      const formData = new FormData();
-      const data = {
-        content: footerMessage,
-      };
-
-      const blob = new Blob([JSON.stringify(data)], {
-        type: "application/json",
-      });
-
-      formData.append("data", blob);
-
-      partnerImages.forEach((file) => {
-        formData.append("attachments", file);
-      });
-
+      const imageToDelete = existingImages[index];
       const response = await makeAuthorizedRequest(
-        `${API_BASE_URL}/admin/footer`,
+        `${API_BASE_URL}/admin/footer/${imageToDelete.id}`,
         {
-          method: "PATCH",
-          body: formData,
+          method: "DELETE",
         }
       );
 
       if (response.ok) {
-        alert("저장되었습니다.");
-      } else {
-        throw new Error("저장에 실패했습니다.");
+        await fetchFooter(); // 이미지 삭제 후 데이터 다시 조회
+        alert("이미지가 삭제되었습니다.");
       }
     } catch (error) {
-      console.error("저장 중 오류가 발생했습니다:", error);
-      alert("저장 중 오류가 발생했습니다.");
+      console.error("이미지 삭제 중 오류가 발생했습니다:", error);
+      alert("이미지 삭제에 실패했습니다.");
+    }
+  };
+
+  const handleSaveMessage = async () => {
+    try {
+      const response = await makeAuthorizedRequest(
+        `${API_BASE_URL}/admin/footer`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            content: footerMessage,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        alert("메시지가 저장되었습니다.");
+      } else {
+        throw new Error("메시지 저장에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("메시지 저장 중 오류가 발생했습니다:", error);
+      alert("메시지 저장 중 오류가 발생했습니다.");
     }
   };
 
@@ -111,10 +134,10 @@ const FooterTab = () => {
               {footerMessage.length}/200자
             </span>
             <button
-              onClick={handleSave}
+              onClick={handleSaveMessage}
               className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900"
             >
-              저장
+              메시지 저장
             </button>
           </div>
         </div>
@@ -125,7 +148,7 @@ const FooterTab = () => {
         <div className="space-y-4">
           <div className="flex gap-4 flex-wrap">
             {imagePreview.map((image, index) => (
-              <div key={index} className="relative">
+              <div key={existingImages[index].id} className="relative">
                 <Image
                   src={image}
                   alt={`제휴업체 이미지 ${index + 1}`}

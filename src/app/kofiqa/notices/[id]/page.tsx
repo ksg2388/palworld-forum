@@ -106,7 +106,7 @@ const NoticeDetailPage = () => {
                   공지사항
                 </span>
               )}
-              {user && user.email === notice.author && (
+              {user && (user.email === notice.author || user.member_role === "admin") && (
                 <div className="relative">
                   <button
                     className="p-2"

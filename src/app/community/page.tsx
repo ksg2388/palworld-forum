@@ -16,7 +16,7 @@ import {
 
 const tabs = [
   "공지사항",
-  "자유게시판",
+  "자유게시판", 
   "공략/팁",
   "서버홍보",
   "통합자료실",
@@ -217,9 +217,11 @@ const CommunityContent = () => {
       return;
     }
 
-    if (currentTab === 0 && user?.member_role !== "ADMIN") {
-      alert("공지사항은 관리자만 작성할 수 있습니다.");
-      return;
+    if (currentTab === 0) {
+      if (user?.member_role !== "ADMIN") {
+        alert("공지사항은 관리자만 작성할 수 있습니다.");
+        return;
+      }
     }
 
     router.push(`/community/write?tab=${currentTab}`);
@@ -280,12 +282,14 @@ const CommunityContent = () => {
           <h1 className="text-2xl font-bold">{tabs[currentTab]}</h1>
           <div className="flex items-center gap-4">
             <SearchBar currentTab={currentTab} />
-            <button
-              onClick={handleWriteClick}
-              className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700"
-            >
-              글쓰기
-            </button>
+            {(currentTab !== 0 || (currentTab === 0 && user?.member_role === "ADMIN")) && (
+              <button
+                onClick={handleWriteClick}
+                className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700"
+              >
+                글쓰기
+              </button>
+            )}
           </div>
         </div>
 

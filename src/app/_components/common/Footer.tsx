@@ -39,9 +39,9 @@ const Footer = () => {
         <div className="flex items-start gap-12">
           <div className="flex-shrink-0">
             <Link href="/" className="w-[119px] h-[32px] relative">
-              <div className="w-[140px] h-[38px] relative">
+              <div className="w-[80px] h-[80px] relative">
                 <Image
-                  src="/images/logo-palworld.webp"
+                  src="/images/ic-footer-logo.png"
                   alt="logo"
                   fill
                   className="brightness-0 invert"

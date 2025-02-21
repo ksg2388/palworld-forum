@@ -16,6 +16,9 @@ const pretendard = localFont({
 export const metadata: Metadata = {
   title: "팰월드 한국 포럼",
   description: "팰월드 한국 포럼입니다.",
+  other: {
+    "naver-site-verification": "66849f872fd23a19de7c52b84af3344e3076378d",
+  },
 };
 
 export default function RootLayout({

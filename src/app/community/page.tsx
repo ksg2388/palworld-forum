@@ -131,14 +131,20 @@ const CommunityContent = () => {
         searchType,
         sort
       ),
-    staleTime: 5000, // 5초 동안 데이터를 "신선"하다고 간주
-    gcTime: 5 * 60 * 1000, // 5분 동안 캐시 유지
-    refetchOnWindowFocus: false, // 윈도우 포커스시 자동 재요청 비활성화
+    staleTime: 5000,
+    gcTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
   });
 
   useEffect(() => {
     if (data?.http_status === "OK") {
-      setPosts(data.data);
+      // 공지사항을 최상단에 고정하기 위해 데이터 정렬
+      const sortedPosts = [...data.data].sort((a, b) => {
+        if (a.notice && !b.notice) return -1;
+        if (!a.notice && b.notice) return 1;
+        return 0;
+      });
+      setPosts(sortedPosts);
       setTotalPages(Math.ceil(data.data.length / POSTS_PER_PAGE));
     }
   }, [data]);
@@ -301,11 +307,13 @@ const CommunityContent = () => {
             <Link
               href={`/community/${post.id}?tab=${currentTab}&page=${currentPage}`}
               key={post.id}
-              className="flex items-center justify-between p-4 border-b border-gray-200 hover:bg-gray-50"
+              className={`flex items-center justify-between p-4 border-b border-gray-200 hover:bg-gray-50 ${
+                post.notice ? "bg-gray-50" : ""
+              }`}
             >
               <div className="flex items-center gap-4 flex-1">
                 <span className="w-[80px] text-center text-sm text-gray-500">
-                  {post.id}
+                  {post.notice ? "공지" : post.id}
                 </span>
                 <span className="flex-1">{post.title}</span>
               </div>

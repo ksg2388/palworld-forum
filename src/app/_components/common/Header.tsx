@@ -93,7 +93,7 @@ const Header = () => {
             href="/kofiqa"
             className="text-white hover:text-gray-300 transition-colors duration-200"
           >
-            KOFIQA 서버
+            포럼 서버
           </Link>
           <Link
             href="/community"

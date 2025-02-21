@@ -70,9 +70,12 @@ const NoticeDetailPage = () => {
 
   const handleDelete = async () => {
     try {
-      await makeAuthorizedRequest(`${API_BASE_URL}/kofiqa-announcements/${params.id}`, {
-        method: "DELETE",
-      });
+      await makeAuthorizedRequest(
+        `${API_BASE_URL}/kofiqa-announcements/${params.id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       router.refresh();
       router.push("/kofiqa/notices");
@@ -106,35 +109,37 @@ const NoticeDetailPage = () => {
                   공지사항
                 </span>
               )}
-              {user && (user.email === notice.author || user.member_role === "admin") && (
-                <div className="relative">
-                  <button
-                    className="p-2"
-                    onClick={() => setShowDropdown(!showDropdown)}
-                  >
-                    <span className="sr-only">더보기</span>⋮
-                  </button>
-                  {showDropdown && (
-                    <div className="absolute right-0 mt-2 w-24 bg-white rounded-md shadow-lg z-10">
-                      <button
-                        onClick={handleEdit}
-                        className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                      >
-                        수정
-                      </button>
-                      <button
-                        onClick={() => {
-                          setShowDropdown(false);
-                          setShowDeleteConfirm(true);
-                        }}
-                        className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-500"
-                      >
-                        삭제
-                      </button>
-                    </div>
-                  )}
-                </div>
-              )}
+              {user &&
+                (user.email === notice.author ||
+                  user.member_role === "ADMIN") && (
+                  <div className="relative">
+                    <button
+                      className="p-2"
+                      onClick={() => setShowDropdown(!showDropdown)}
+                    >
+                      <span className="sr-only">더보기</span>⋮
+                    </button>
+                    {showDropdown && (
+                      <div className="absolute right-0 mt-2 w-24 bg-white rounded-md shadow-lg z-10">
+                        <button
+                          onClick={handleEdit}
+                          className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                        >
+                          수정
+                        </button>
+                        <button
+                          onClick={() => {
+                            setShowDropdown(false);
+                            setShowDeleteConfirm(true);
+                          }}
+                          className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-500"
+                        >
+                          삭제
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
             </div>
           </div>
           <div className="flex items-center justify-between text-sm text-gray-600">

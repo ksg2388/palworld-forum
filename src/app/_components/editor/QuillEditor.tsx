@@ -36,7 +36,6 @@ const QuillEditor = ({ style, value, onChange }: Props) => {
 
         // 임시 이미지 플레이스홀더 삽입
         const range = quillInstance.getSelection(true);
-        const tempId = "temp-" + Date.now();
         quillInstance.insertEmbed(range.index, "image", "/images/loading.gif");
         const tempPosition = range.index;
 

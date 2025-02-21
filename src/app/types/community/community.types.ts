@@ -19,6 +19,7 @@ export type TCommunity = {
   comments: TComment[];
   created_at: string;
   modified_at: string;
+  notice?: boolean;
 };
 
 export type TComment = {

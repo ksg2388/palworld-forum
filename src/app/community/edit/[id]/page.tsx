@@ -22,6 +22,7 @@ const CommunityEditPage = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const { user } = useUserStore();
+  const [isNotice, setIsNotice] = useState(false);
 
   const getEndpoint = (tab: number) => {
     switch (tab) {
@@ -55,6 +56,7 @@ const CommunityEditPage = () => {
         if (result.http_status === "OK") {
           setTitle(result.data.title);
           setContent(result.data.content);
+          setIsNotice(result.data.notice);
         }
       } catch (error) {
         console.error("게시글 조회 중 오류 발생:", error);
@@ -84,6 +86,7 @@ const CommunityEditPage = () => {
           body: JSON.stringify({
             title: title,
             content: content,
+            notice: isNotice,
           }),
         }
       );
@@ -109,6 +112,18 @@ const CommunityEditPage = () => {
           placeholder="제목을 입력하세요"
           className="w-full p-2 mb-4 border rounded"
         />
+
+        <div className="mb-4">
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={isNotice}
+              onChange={(e) => setIsNotice(e.target.checked)}
+              className="form-checkbox"
+            />
+            <span>공지사항으로 등록</span>
+          </label>
+        </div>
 
         <div className="min-h-[500px]">
           <QuillEditor value={content} onChange={setContent} />

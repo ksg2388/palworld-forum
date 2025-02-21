@@ -19,15 +19,20 @@ const WriteContent = () => {
   const searchParams = useSearchParams();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [notice, setNotice] = useState(false);
   const currentTab = Number(searchParams.get("tab")) || 0;
-  const { accessToken } = useUserStore();
+  const { accessToken, user } = useUserStore();
 
   useEffect(() => {
     if (!accessToken) {
       alert("로그인 후 이용해주세요.");
       router.push("/login");
     }
-  }, [router, accessToken]);
+    if (currentTab === 0 && user?.member_role !== "ADMIN") {
+      alert("관리자만 공지사항을 작성할 수 있습니다.");
+      router.push("/community");
+    }
+  }, [router, accessToken, currentTab, user]);
 
   const getEndpoint = (tab: number) => {
     switch (tab) {
@@ -68,6 +73,7 @@ const WriteContent = () => {
           body: JSON.stringify({
             title: title,
             content: content,
+            notice: notice,
           }),
         }
       );
@@ -90,6 +96,20 @@ const WriteContent = () => {
     <div className="w-full max-w-[1200px] mx-auto pt-[150px] pb-[50px]">
       <div className="bg-white rounded-lg border border-gray-200 p-6">
         <div className="mb-4">
+          {currentTab === 0 && (
+            <div className="flex items-center gap-2 mb-2">
+              <input
+                type="checkbox"
+                id="notice"
+                checked={notice}
+                onChange={(e) => setNotice(e.target.checked)}
+                className="w-4 h-4"
+              />
+              <label htmlFor="notice" className="text-sm text-gray-700">
+                상단 고정
+              </label>
+            </div>
+          )}
           <input
             type="text"
             value={title}

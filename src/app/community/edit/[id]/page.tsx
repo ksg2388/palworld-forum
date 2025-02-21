@@ -86,7 +86,7 @@ const CommunityEditPage = () => {
           body: JSON.stringify({
             title: title,
             content: content,
-            notice: isNotice,
+            notice: currentTab === 0 ? isNotice : false,
           }),
         }
       );
@@ -113,17 +113,19 @@ const CommunityEditPage = () => {
           className="w-full p-2 mb-4 border rounded"
         />
 
-        <div className="mb-4">
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={isNotice}
-              onChange={(e) => setIsNotice(e.target.checked)}
-              className="form-checkbox"
-            />
-            <span>공지사항으로 등록</span>
-          </label>
-        </div>
+        {currentTab === 0 && user?.member_role === "ADMIN" && (
+          <div className="mb-4">
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={isNotice}
+                onChange={(e) => setIsNotice(e.target.checked)}
+                className="form-checkbox"
+              />
+              <span>공지사항으로 등록</span>
+            </label>
+          </div>
+        )}
 
         <div className="min-h-[500px]">
           <QuillEditor value={content} onChange={setContent} />

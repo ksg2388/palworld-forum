@@ -19,6 +19,10 @@ export const metadata: Metadata = {
   other: {
     "naver-site-verification": "66849f872fd23a19de7c52b84af3344e3076378d",
   },
+  icons: {
+    icon: "/favicon.png", // 기본 아이콘
+    shortcut: "/favicon.png", // 단축 아이콘 (옵션)
+  },
 };
 
 export default function RootLayout({

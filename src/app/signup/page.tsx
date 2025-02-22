@@ -199,7 +199,7 @@ const SignupPage = () => {
               disabled={isEmailVerified || isVerificationLoading}
               className="px-3 py-3 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors disabled:bg-gray-400"
             >
-              {!isVerificationLoading ? "발송중..." : "인증"}
+              {isVerificationLoading ? "발송중..." : "인증"}
             </button>
           </div>
 

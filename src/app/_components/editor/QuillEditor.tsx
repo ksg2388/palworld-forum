@@ -67,6 +67,11 @@ const QuillEditor = ({ style, value, onChange }: Props) => {
 
   // 이미지 압축 유틸리티 함수
   const compressImage = async (file: File): Promise<File> => {
+    // GIF 파일인 경우 압축하지 않고 원본 반환
+    if (file.type === "image/gif") {
+      return file;
+    }
+
     return new Promise((resolve) => {
       const reader = new FileReader();
       reader.onload = (e) => {

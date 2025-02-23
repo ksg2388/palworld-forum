@@ -178,7 +178,7 @@ const QuillEditor = ({ style, value, onChange }: Props) => {
         },
       },
     }),
-    [imageHandler]
+    []
   );
 
   const formats = [

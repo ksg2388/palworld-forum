@@ -10,22 +10,6 @@ interface QuillViewProps {
 }
 
 const QuillView = ({ content }: QuillViewProps) => {
-  const modules = {
-    clipboard: {
-      matchVisual: false
-    },
-    keyboard: {
-      bindings: {
-        tab: {
-          key: 9,
-          handler: function() {
-            return true;
-          }
-        }
-      }
-    }
-  };
-
   return (
     <>
       <style>
@@ -89,7 +73,9 @@ const QuillView = ({ content }: QuillViewProps) => {
         value={content}
         readOnly={true} 
         theme="bubble"
-        modules={modules}
+        modules={{
+          toolbar: false
+        }}
       />
     </>
   );

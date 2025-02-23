@@ -72,7 +72,7 @@ const QuillView = ({ content }: QuillViewProps) => {
       <ReactQuillNew
         value={content}
         readOnly={true} 
-        theme="bubble"
+        theme="snow"
         modules={{
           toolbar: false
         }}

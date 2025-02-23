@@ -2,8 +2,6 @@
 
 import dynamic from "next/dynamic";
 import 'react-quill-new/dist/quill.bubble.css';
-import 'highlight.js/styles/monokai.css';
-import hljs from 'highlight.js';
 
 const ReactQuillNew = dynamic(() => import("react-quill-new"), { ssr: false });
 
@@ -88,9 +86,6 @@ const QuillView = ({ content }: QuillViewProps) => {
         theme="bubble"
         modules={{
           toolbar: false,
-          syntax: {
-            highlight: (text: string) => hljs.highlightAuto(text).value,
-          }
         }}
       />
     </>

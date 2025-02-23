@@ -176,6 +176,13 @@ const QuillEditor = ({ style, value, onChange }: Props) => {
           image: imageHandler,
         },
       },
+      clipboard: {
+        matchVisual: false
+      },
+      "code-block": {
+        prefix: "```",
+        suffix: "```"
+      }
     }),
     []
   );
@@ -209,15 +216,8 @@ const QuillEditor = ({ style, value, onChange }: Props) => {
             min-height: 500px;
           }
           .ql-code-block {
-            white-space: pre !important;
+            white-space: pre-wrap !important;
             font-family: monospace;
-            tab-size: 4;
-            -moz-tab-size: 4;
-          }
-          .ql-editor .ql-code-block > div {
-            white-space: pre !important;
-            display: inline-block;
-            min-width: 100%;
           }
         `}
       </style>

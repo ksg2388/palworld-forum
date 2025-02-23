@@ -157,7 +157,6 @@ const QuillEditor = ({ style, value, onChange }: Props) => {
 
   const modules = useMemo(
     () => ({
-      syntax: true,
       toolbar: {
         container: [
           [{ header: [1, 2, 3, 4, 5, false] }],

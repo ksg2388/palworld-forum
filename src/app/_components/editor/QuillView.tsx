@@ -79,7 +79,6 @@ const QuillView = ({ content }: QuillViewProps) => {
         theme="bubble"
         modules={{
           toolbar: false,
-          syntax: true
         }}
       />
     </>

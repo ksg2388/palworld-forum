@@ -1,7 +1,9 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import 'react-quill-new/dist/quill.bubble.css';
+import 'react-quill-new/dist/quill.core.css';
+import 'highlight.js/styles/monokai.css';
+import hljs from 'highlight.js';
 
 const ReactQuillNew = dynamic(() => import("react-quill-new"), { ssr: false });
 
@@ -18,6 +20,10 @@ const QuillView = ({ content }: QuillViewProps) => {
             width: 100%;
             aspect-ratio: 16/9;
           }
+
+          .quill-viewer .ql-container {
+            border: none; /* 테두리 제거 */
+            }
 
           /* Quill 기본 스타일 복원 */
           .ql-editor {
@@ -83,9 +89,12 @@ const QuillView = ({ content }: QuillViewProps) => {
       <ReactQuillNew
         value={content}
         readOnly={true} 
-        theme="bubble"
+        theme="core"
         modules={{
           toolbar: false,
+          syntax: {
+            highlight: (text: string) => hljs.highlightAuto(text).value,
+          }
         }}
       />
     </>

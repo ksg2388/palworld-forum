@@ -68,8 +68,21 @@ const QuillView = ({ content }: QuillViewProps) => {
             padding-left: 16px;
           }
             .ql-code-block {
-                white-space: pre;
+                white-space: pre !important;
                 font-family: monospace;
+                background-color: #f8f9fa;
+                padding: 1em;
+                border-radius: 4px;
+                margin: 0.5em 0;
+                tab-size: 4;
+                -moz-tab-size: 4;
+            }
+
+            /* 코드 블록 내부 div 스타일 재정의 */
+            .ql-editor .ql-code-block > div {
+                white-space: pre !important;
+                display: inline-block;
+                min-width: 100%;
             }
         `}
       </style>

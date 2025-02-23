@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import 'react-quill-new/dist/quill.snow.css';
+import 'react-quill-new/dist/quill.bubble.css';
 
 const ReactQuillNew = dynamic(() => import("react-quill-new"), { ssr: false });
 
@@ -72,7 +72,7 @@ const QuillView = ({ content }: QuillViewProps) => {
       <ReactQuillNew
         value={content}
         readOnly={true} 
-        theme="snow"
+        theme="bubble"
         modules={{
           toolbar: false
         }}

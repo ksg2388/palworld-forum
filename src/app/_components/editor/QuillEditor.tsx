@@ -208,10 +208,17 @@ const QuillEditor = ({ style, value, onChange }: Props) => {
           .ql-editor {
             min-height: 500px;
           }
-            .ql-code-block {
-                white-space: pre;
-                font-family: monospace;
-            }
+          .ql-code-block {
+            white-space: pre !important;
+            font-family: monospace;
+            tab-size: 4;
+            -moz-tab-size: 4;
+          }
+          .ql-editor .ql-code-block > div {
+            white-space: pre !important;
+            display: inline-block;
+            min-width: 100%;
+          }
         `}
       </style>
       <ReactQuill

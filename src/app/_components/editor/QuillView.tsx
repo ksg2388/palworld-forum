@@ -70,20 +70,25 @@ const QuillView = ({ content }: QuillViewProps) => {
             .ql-code-block {
                 white-space: pre !important;
                 font-family: monospace;
-                background-color: #f8f9fa;
                 padding: 1em;
                 border-radius: 4px;
                 margin: 0.5em 0;
                 tab-size: 4;
                 -moz-tab-size: 4;
+                display: block !important;
             }
 
-            /* 코드 블록 내부 div 스타일 재정의 */
-            .ql-editor .ql-code-block > div {
-                white-space: pre !important;
-                display: inline-block;
-                min-width: 100%;
-            }
+          /* 코드 블록 내부 div 스타일 재정의 */
+          .ql-editor .ql-code-block > div {
+            white-space: pre !important;
+            display: block !important;
+            min-width: 100%;
+          }
+
+          /* 코드 블록 내부의 불필요한 여백 제거 */
+          .ql-editor .ql-code-block > div:not(:last-child) {
+            margin-bottom: 0;
+          }
         `}
       </style>
       <ReactQuillNew

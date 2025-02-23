@@ -157,6 +157,7 @@ const QuillEditor = ({ style, value, onChange }: Props) => {
 
   const modules = useMemo(
     () => ({
+      syntax: true,
       toolbar: {
         container: [
           [{ header: [1, 2, 3, 4, 5, false] }],
@@ -177,7 +178,7 @@ const QuillEditor = ({ style, value, onChange }: Props) => {
         },
       },
     }),
-    []
+    [imageHandler]
   );
 
   const formats = [
@@ -208,6 +209,10 @@ const QuillEditor = ({ style, value, onChange }: Props) => {
           .ql-editor {
             min-height: 500px;
           }
+            .ql-code-block {
+                white-space: pre;
+                font-family: monospace;
+            }
         `}
       </style>
       <ReactQuill

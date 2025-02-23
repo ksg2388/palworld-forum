@@ -67,6 +67,10 @@ const QuillView = ({ content }: QuillViewProps) => {
             margin-top: 1em;
             padding-left: 16px;
           }
+            .ql-code-block {
+                white-space: pre;
+                font-family: monospace;
+            }
         `}
       </style>
       <ReactQuillNew
@@ -74,7 +78,8 @@ const QuillView = ({ content }: QuillViewProps) => {
         readOnly={true} 
         theme="bubble"
         modules={{
-          toolbar: false
+          toolbar: false,
+          syntax: true
         }}
       />
     </>

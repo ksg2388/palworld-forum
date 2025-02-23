@@ -2,8 +2,6 @@
 
 import { useMemo, useRef } from "react";
 import "react-quill-new/dist/quill.snow.css";
-import hljs from 'highlight.js';
-import 'highlight.js/styles/monokai.css';
 import { API_BASE_URL } from "@/config/api";
 import { makeAuthorizedRequest } from "@/app/_utils/api";
 import ReactQuill from "react-quill-new";
@@ -178,16 +176,6 @@ const QuillEditor = ({ style, value, onChange }: Props) => {
           image: imageHandler,
         },
       },
-      syntax: {
-        highlight: (text: string) => hljs.highlightAuto(text).value,
-      },
-      clipboard: {
-        matchVisual: false
-      },
-      "code-block": {
-        prefix: "```",
-        suffix: "```"
-      }
     }),
     []
   );
@@ -220,10 +208,10 @@ const QuillEditor = ({ style, value, onChange }: Props) => {
           .ql-editor {
             min-height: 500px;
           }
-          .ql-code-block {
-            white-space: pre-wrap !important;
-            font-family: monospace;
-          }
+            .ql-code-block {
+                white-space: pre;
+                font-family: monospace;
+            }
         `}
       </style>
       <ReactQuill

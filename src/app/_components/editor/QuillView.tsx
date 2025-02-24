@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import 'react-quill-new/dist/quill.bubble.css';
+import "react-quill-new/dist/quill.bubble.css";
 
 const ReactQuillNew = dynamic(() => import("react-quill-new"), { ssr: false });
 
@@ -10,6 +10,16 @@ interface QuillViewProps {
 }
 
 const QuillView = ({ content }: QuillViewProps) => {
+  const convertCodeblock = (content: string) => {
+    return content
+      .replace(
+        /<div class="ql-code-block-container"/g,
+        '<pre class="ql-code-block-container"'
+      )
+      .replace(/<div class="ql-code-block"/g, '<pre class="ql-code-block"')
+      .replace(/<\/div>/g, "</pre>");
+  };
+
   return (
     <>
       <style>
@@ -60,29 +70,11 @@ const QuillView = ({ content }: QuillViewProps) => {
           .ql-editor ol > li {
             list-style-type: decimal;
           }
-          
-          .ql-editor blockquote {
-            border-left: 4px solid #ccc;
-            margin-bottom: 1em;
-            margin-top: 1em;
-            padding-left: 16px;
-          }
-            .ql-code-block {
-                white-space: pre-wrap !important;
-                font-family: monospace;
-            }
-                .ql-editor pre.ql-code-block-container {
-            white-space: pre-wrap !important;
-          }
-
-          .ql-editor .ql-code-block * {
-            white-space: pre-wrap !important;
-          }
         `}
       </style>
       <ReactQuillNew
-        value={content}
-        readOnly={true} 
+        value={convertCodeblock(content)}
+        readOnly={true}
         theme="bubble"
         modules={{
           toolbar: false,

@@ -161,7 +161,7 @@ const QuillEditor = ({ style, value, onChange }: Props) => {
         container: [
           [{ header: [1, 2, 3, 4, 5, false] }],
           [{ font: [] }],
-          [{ size: ["small", "normal", "large", "huge"] }],
+          [{ size: ["small", false, "large", "huge"] }],
           ["bold", "italic", "underline", "strike"],
           [{ color: [] }, { background: [] }],
           [{ script: "sub" }, { script: "super" }],

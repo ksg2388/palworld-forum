@@ -35,6 +35,10 @@ const QuillView = ({ content }: QuillViewProps) => {
             font-size: 1rem;
             line-height: 1.5;
           }
+
+           .ql-editor li::marker {
+            display: none;
+          }
           
           .ql-editor p {
             margin-bottom: 1em;

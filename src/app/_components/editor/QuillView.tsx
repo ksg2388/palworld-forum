@@ -36,8 +36,8 @@ const QuillView = ({ content }: QuillViewProps) => {
             line-height: 1.5;
           }
 
-           .ql-editor li {
-            list-style-type: none;
+          .ql-editor li {
+            list-style-type: none !important;
           }
           
           .ql-editor p {

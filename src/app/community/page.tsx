@@ -52,6 +52,7 @@ const CommunityContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [posts, setPosts] = useState<TCommunity[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [totalPages, setTotalPages] = useState(0);
   const [showDropdown, setShowDropdown] = useState(false);
   const [linkItems, setLinkItems] = useState<LinkItem[]>([]);
@@ -166,34 +167,34 @@ const CommunityContent = () => {
   }, []);
 
   // 페이지네이션 로직
-  const pageGroupSize = 10;
-  const currentGroup = Math.ceil(currentPage / pageGroupSize);
-  const startPage = (currentGroup - 1) * pageGroupSize + 1;
-  const endPage = Math.min(currentGroup * pageGroupSize, totalPages);
-  const pageNumbers = Array.from(
-    { length: endPage - startPage + 1 },
-    (_, i) => startPage + i
-  );
+  // const pageGroupSize = 10;
+  // const currentGroup = Math.ceil(currentPage / pageGroupSize);
+  // const startPage = (currentGroup - 1) * pageGroupSize + 1;
+  // const endPage = Math.min(currentGroup * pageGroupSize, totalPages);
+  // const pageNumbers = Array.from(
+  //   { length: endPage - startPage + 1 },
+  //   (_, i) => startPage + i
+  // );
 
-  const handlePrevGroup = () => {
-    if (startPage > 1) {
-      router.push(
-        `/community?tab=${currentTab}&page=${
-          startPage - pageGroupSize
-        }&keyword=${keyword}&search-type=${searchType}&sort=${sort}`
-      );
-    }
-  };
+  // const handlePrevGroup = () => {
+  //   if (startPage > 1) {
+  //     router.push(
+  //       `/community?tab=${currentTab}&page=${
+  //         startPage - pageGroupSize
+  //       }&keyword=${keyword}&search-type=${searchType}&sort=${sort}`
+  //     );
+  //   }
+  // };
 
-  const handleNextGroup = () => {
-    if (endPage < totalPages) {
-      router.push(
-        `/community?tab=${currentTab}&page=${
-          startPage + pageGroupSize
-        }&keyword=${keyword}&search-type=${searchType}&sort=${sort}`
-      );
-    }
-  };
+  // const handleNextGroup = () => {
+  //   if (endPage < totalPages) {
+  //     router.push(
+  //       `/community?tab=${currentTab}&page=${
+  //         startPage + pageGroupSize
+  //       }&keyword=${keyword}&search-type=${searchType}&sort=${sort}`
+  //     );
+  //   }
+  // };
 
   const handleTabClick = (index: number) => {
     if (index === tabs.length - 1) {
@@ -346,39 +347,29 @@ const CommunityContent = () => {
 
         <div className="flex justify-center mt-4 gap-1 items-center">
           <button
-            onClick={handlePrevGroup}
-            disabled={startPage === 1}
-            className={`px-2 py-1 rounded ${
-              startPage === 1
+            onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+            disabled={currentPage === 1}
+            className={`px-4 py-2 rounded ${
+              currentPage === 1
                 ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
           >
-            ◀
+            이전 페이지
           </button>
-          {pageNumbers.map((number) => (
-            <button
-              key={number}
-              onClick={() => handlePageChange(number)}
-              className={`px-3 py-1 rounded ${
-                currentPage === number
-                  ? "bg-gray-800 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
-            >
-              {number}
-            </button>
-          ))}
+          
+          <span className="mx-4">현재 페이지: {currentPage}</span>
+          
           <button
-            onClick={handleNextGroup}
-            disabled={endPage === totalPages}
-            className={`px-2 py-1 rounded ${
-              endPage === totalPages
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={data?.data.length < POSTS_PER_PAGE}
+            className={`px-4 py-2 rounded ${
+              data?.data.length < POSTS_PER_PAGE
                 ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
           >
-            ▶
+            다음 페이지
           </button>
         </div>
       </div>

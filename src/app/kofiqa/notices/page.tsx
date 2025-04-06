@@ -66,26 +66,16 @@ const NoticesPage = () => {
   const { user } = useUserStore();
   const limit = 10;
 
-  // 페이지네이션 로직
-  const pageGroupSize = 10;
-  const totalPages = Math.ceil(notices.length / limit);
-  const currentGroup = Math.ceil(currentPage / pageGroupSize);
-  const startPage = (currentGroup - 1) * pageGroupSize + 1;
-  const endPage = Math.min(currentGroup * pageGroupSize, totalPages);
-  const pageNumbers = Array.from(
-    { length: endPage - startPage + 1 },
-    (_, i) => startPage + i
-  );
-
+  // 페이지네이션 로직 수정
   const handlePrevGroup = () => {
-    if (startPage > 1) {
-      setCurrentPage(startPage - pageGroupSize);
+    if (currentPage > 1) {
+      setCurrentPage(Math.max(1, currentPage - 1));
     }
   };
 
   const handleNextGroup = () => {
-    if (endPage < totalPages) {
-      setCurrentPage(startPage + pageGroupSize);
+    if (notices.length === limit) {
+      setCurrentPage(currentPage + 1);
     }
   };
 
@@ -113,6 +103,11 @@ const NoticesPage = () => {
             return 0;
           });
           setNotices(sortedNotices);
+          
+          // 데이터가 없고 현재 페이지가 1보다 크면 이전 페이지로 자동 이동
+          if (sortedNotices.length === 0 && currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+          }
         }
       } catch (error) {
         console.error("공지사항을 불러오는데 실패했습니다:", error);
@@ -120,7 +115,7 @@ const NoticesPage = () => {
     };
 
     fetchNotices();
-  }, [currentPage, keyword]);
+  }, [currentPage, keyword, limit]);
 
   return (
     <div className="mt-[110px] max-w-[1200px] mx-auto p-8">
@@ -176,33 +171,43 @@ const NoticesPage = () => {
       <div className="flex justify-center mt-4 gap-1 items-center">
         <button
           onClick={handlePrevGroup}
-          disabled={startPage === 1}
+          disabled={currentPage === 1}
           className={`px-2 py-1 rounded ${
-            startPage === 1
+            currentPage === 1
               ? "bg-gray-100 text-gray-400 cursor-not-allowed"
               : "bg-gray-100 text-gray-700 hover:bg-gray-200"
           }`}
         >
           ◀
         </button>
-        {pageNumbers.map((number) => (
+        
+        {currentPage > 1 && (
           <button
-            key={number}
-            onClick={() => handlePageChange(number)}
-            className={`px-3 py-1 rounded ${
-              currentPage === number
-                ? "bg-gray-800 text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-            }`}
+            onClick={() => handlePageChange(currentPage - 1)}
+            className="px-3 py-1 rounded bg-gray-100 text-gray-700 hover:bg-gray-200"
           >
-            {number}
+            {currentPage - 1}
           </button>
-        ))}
+        )}
+        
+        <button className="px-3 py-1 rounded bg-gray-800 text-white">
+          {currentPage}
+        </button>
+        
+        {notices.length === limit && (
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            className="px-3 py-1 rounded bg-gray-100 text-gray-700 hover:bg-gray-200"
+          >
+            {currentPage + 1}
+          </button>
+        )}
+        
         <button
           onClick={handleNextGroup}
-          disabled={endPage === totalPages}
+          disabled={notices.length < limit}
           className={`px-2 py-1 rounded ${
-            endPage === totalPages
+            notices.length < limit
               ? "bg-gray-100 text-gray-400 cursor-not-allowed"
               : "bg-gray-100 text-gray-700 hover:bg-gray-200"
           }`}

@@ -146,9 +146,17 @@ const CommunityContent = () => {
         return 0;
       });
       setPosts(sortedPosts);
+      
+      // 데이터가 없고 현재 페이지가 1보다 크면 이전 페이지로 자동 이동
+      if (sortedPosts.length === 0 && currentPage > 1) {
+        router.push(
+          `/community?tab=${currentTab}&page=${currentPage - 1}&keyword=${keyword}&search-type=${searchType}&sort=${sort}`
+        );
+      }
+      
       setTotalPages(Math.ceil(data.data.length / POSTS_PER_PAGE));
     }
-  }, [data]);
+  }, [data, currentPage, currentTab, keyword, router, searchType, sort]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -165,36 +173,6 @@ const CommunityContent = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-  // 페이지네이션 로직
-  // const pageGroupSize = 10;
-  // const currentGroup = Math.ceil(currentPage / pageGroupSize);
-  // const startPage = (currentGroup - 1) * pageGroupSize + 1;
-  // const endPage = Math.min(currentGroup * pageGroupSize, totalPages);
-  // const pageNumbers = Array.from(
-  //   { length: endPage - startPage + 1 },
-  //   (_, i) => startPage + i
-  // );
-
-  // const handlePrevGroup = () => {
-  //   if (startPage > 1) {
-  //     router.push(
-  //       `/community?tab=${currentTab}&page=${
-  //         startPage - pageGroupSize
-  //       }&keyword=${keyword}&search-type=${searchType}&sort=${sort}`
-  //     );
-  //   }
-  // };
-
-  // const handleNextGroup = () => {
-  //   if (endPage < totalPages) {
-  //     router.push(
-  //       `/community?tab=${currentTab}&page=${
-  //         startPage + pageGroupSize
-  //       }&keyword=${keyword}&search-type=${searchType}&sort=${sort}`
-  //     );
-  //   }
-  // };
 
   const handleTabClick = (index: number) => {
     if (index === tabs.length - 1) {
@@ -349,27 +327,47 @@ const CommunityContent = () => {
           <button
             onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
             disabled={currentPage === 1}
-            className={`px-4 py-2 rounded ${
+            className={`px-2 py-1 rounded ${
               currentPage === 1
                 ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
           >
-            이전 페이지
+            ◀
           </button>
           
-          <span className="mx-4">현재 페이지: {currentPage}</span>
+          {currentPage > 1 && (
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              className="px-3 py-1 rounded bg-gray-100 text-gray-700 hover:bg-gray-200"
+            >
+              {currentPage - 1}
+            </button>
+          )}
+          
+          <button className="px-3 py-1 rounded bg-gray-800 text-white">
+            {currentPage}
+          </button>
+          
+          {data?.data.length === POSTS_PER_PAGE && (
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              className="px-3 py-1 rounded bg-gray-100 text-gray-700 hover:bg-gray-200"
+            >
+              {currentPage + 1}
+            </button>
+          )}
           
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={data?.data.length < POSTS_PER_PAGE}
-            className={`px-4 py-2 rounded ${
+            className={`px-2 py-1 rounded ${
               data?.data.length < POSTS_PER_PAGE
                 ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
           >
-            다음 페이지
+            ▶
           </button>
         </div>
       </div>

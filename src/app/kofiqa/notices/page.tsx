@@ -19,7 +19,7 @@ interface Notice {
 
 // SearchBar 컴포넌트
 interface SearchBarProps {
-  onSearch: (value: string) => void;
+  onSearch: (value: string, searchType: string) => void;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
@@ -28,7 +28,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearch(searchValue);
+    onSearch(searchValue, searchType);
   };
 
   return (
@@ -63,6 +63,7 @@ const NoticesPage = () => {
   const [notices, setNotices] = useState<Notice[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [keyword, setKeyword] = useState("");
+  const [searchType, setSearchType] = useState("TITLE");
   const { user } = useUserStore();
   const limit = 10;
 
@@ -91,7 +92,7 @@ const NoticesPage = () => {
     const fetchNotices = async () => {
       try {
         const response = await fetch(
-          `${API_BASE_URL}/kofiqa-announcements?page=${currentPage}&limit=${limit}&keyword=${keyword}`
+          `${API_BASE_URL}/kofiqa-announcements?page=${currentPage}&limit=${limit}&keyword=${keyword}&search-type=${searchType}`
         );
         const data = await response.json();
 
@@ -103,7 +104,7 @@ const NoticesPage = () => {
             return 0;
           });
           setNotices(sortedNotices);
-          
+
           // 데이터가 없고 현재 페이지가 1보다 크면 이전 페이지로 자동 이동
           if (sortedNotices.length === 0 && currentPage > 1) {
             setCurrentPage(currentPage - 1);
@@ -115,7 +116,7 @@ const NoticesPage = () => {
     };
 
     fetchNotices();
-  }, [currentPage, keyword, limit]);
+  }, [currentPage, keyword, searchType, limit]);
 
   return (
     <div className="mt-[110px] max-w-[1200px] mx-auto p-8">
@@ -123,8 +124,9 @@ const NoticesPage = () => {
         <h1 className="text-2xl font-bold">KOFIQA 공지사항</h1>
         <div className="flex items-center gap-2">
           <SearchBar
-            onSearch={(value) => {
+            onSearch={(value, type) => {
               setKeyword(value);
+              setSearchType(type);
               setCurrentPage(1);
             }}
           />
@@ -180,7 +182,7 @@ const NoticesPage = () => {
         >
           ◀
         </button>
-        
+
         {currentPage > 1 && (
           <button
             onClick={() => handlePageChange(currentPage - 1)}
@@ -189,11 +191,11 @@ const NoticesPage = () => {
             {currentPage - 1}
           </button>
         )}
-        
+
         <button className="px-3 py-1 rounded bg-gray-800 text-white">
           {currentPage}
         </button>
-        
+
         {notices.length === limit && (
           <button
             onClick={() => handlePageChange(currentPage + 1)}
@@ -202,7 +204,7 @@ const NoticesPage = () => {
             {currentPage + 1}
           </button>
         )}
-        
+
         <button
           onClick={handleNextGroup}
           disabled={notices.length < limit}

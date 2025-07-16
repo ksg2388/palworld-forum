@@ -19,6 +19,7 @@ const SignupPage = () => {
   const [passwordError, setPasswordError] = useState("");
   const [nicknameError, setNicknameError] = useState("");
   const [isVerificationLoading, setIsVerificationLoading] = useState(false);
+  const [agreeToPrivacy, setAgreeToPrivacy] = useState(false);
 
   const validatePassword = (password: string) => {
     const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
@@ -111,6 +112,11 @@ const SignupPage = () => {
 
     if (!isEmailVerified) {
       alert("이메일 인증을 완료해주세요.");
+      return;
+    }
+
+    if (!agreeToPrivacy) {
+      alert("개인정보처리방침에 동의해주세요.");
       return;
     }
 
@@ -253,10 +259,36 @@ const SignupPage = () => {
             )}
           </div>
 
+          <div className="flex items-start gap-2">
+            <input
+              type="checkbox"
+              id="privacy"
+              checked={agreeToPrivacy}
+              onChange={(e) => setAgreeToPrivacy(e.target.checked)}
+              className="mt-1 w-4 h-4 text-gray-800 border-gray-300 rounded focus:ring-gray-800"
+            />
+            <label htmlFor="privacy" className="text-sm text-gray-700">
+              <span>개인정보처리방침에 동의합니다. </span>
+              <a
+                href="/privacy-policy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-800 underline hover:text-gray-600"
+              >
+                (보기)
+              </a>
+            </label>
+          </div>
+
           <button
             type="submit"
             className="w-full py-3 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors disabled:bg-gray-400"
-            disabled={!isEmailVerified || !!passwordError || !!nicknameError}
+            disabled={
+              !isEmailVerified ||
+              !!passwordError ||
+              !!nicknameError ||
+              !agreeToPrivacy
+            }
           >
             회원가입
           </button>

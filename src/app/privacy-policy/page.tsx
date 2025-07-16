@@ -72,23 +72,7 @@ const PrivacyPolicyPage = () => {
 
           <section>
             <h2 className="text-xl font-semibold mb-3">
-              4. 개인정보처리의 위탁
-            </h2>
-            <p>
-              회사는 원활한 개인정보 업무처리를 위하여 다음과 같이 개인정보
-              처리업무를 위탁하고 있습니다.
-            </p>
-            <div className="mt-3 p-4 bg-gray-50 rounded">
-              <p className="font-medium">위탁받는 자 (수탁자):</p>
-              <p className="mt-1">- AWS (Amazon Web Services)</p>
-              <p className="font-medium mt-3">위탁하는 업무의 내용:</p>
-              <p className="mt-1">- 서버 호스팅 및 데이터 저장</p>
-            </div>
-          </section>
-
-          <section>
-            <h2 className="text-xl font-semibold mb-3">
-              5. 정보주체의 권리·의무 및 그 행사방법
+              4. 정보주체의 권리·의무 및 그 행사방법
             </h2>
             <p className="mb-2">
               이용자는 개인정보주체로서 다음과 같은 권리를 행사할 수 있습니다.
@@ -103,7 +87,7 @@ const PrivacyPolicyPage = () => {
 
           <section>
             <h2 className="text-xl font-semibold mb-3">
-              6. 개인정보의 안전성 확보 조치
+              5. 개인정보의 안전성 확보 조치
             </h2>
             <p className="mb-2">
               회사는 개인정보보호법 제29조에 따라 다음과 같은 안전성 확보 조치를
@@ -119,20 +103,20 @@ const PrivacyPolicyPage = () => {
 
           <section>
             <h2 className="text-xl font-semibold mb-3">
-              7. 개인정보 보호책임자
+              6. 개인정보 보호책임자
             </h2>
             <div className="p-4 bg-gray-50 rounded">
               <p>
                 <strong>개인정보 보호책임자</strong>
               </p>
               <p className="mt-1">성명: 관리자</p>
-              <p>연락처: admin@palworld-forum.com</p>
+              <p>연락처: kofiqa001@gmail.com</p>
             </div>
           </section>
 
           <section>
             <h2 className="text-xl font-semibold mb-3">
-              8. 개인정보처리방침의 변경
+              7. 개인정보처리방침의 변경
             </h2>
             <p>
               이 개인정보처리방침은 시행일로부터 적용되며, 법령 및 방침에 따른
@@ -143,14 +127,14 @@ const PrivacyPolicyPage = () => {
 
           <section>
             <h2 className="text-xl font-semibold mb-3">
-              9. 개인정보의 열람청구를 접수·처리하는 부서
+              8. 개인정보의 열람청구를 접수·처리하는 부서
             </h2>
             <div className="p-4 bg-gray-50 rounded">
               <p>
                 <strong>개인정보 열람청구 접수·처리부서</strong>
               </p>
               <p className="mt-1">부서명: 고객지원팀</p>
-              <p>연락처: admin@palworld-forum.com</p>
+              <p>연락처: kofiqa001@gmail.com</p>
             </div>
           </section>
 

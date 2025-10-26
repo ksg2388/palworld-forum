@@ -16,8 +16,8 @@ import {
 
 const tabs = [
   "공지사항",
-  "자유게시판", 
-  "공략/팁",
+  "자유게시판",
+  "라운지",
   "서버홍보",
   "통합자료실",
   "링크",
@@ -146,14 +146,16 @@ const CommunityContent = () => {
         return 0;
       });
       setPosts(sortedPosts);
-      
+
       // 데이터가 없고 현재 페이지가 1보다 크면 이전 페이지로 자동 이동
       if (sortedPosts.length === 0 && currentPage > 1) {
         router.push(
-          `/community?tab=${currentTab}&page=${currentPage - 1}&keyword=${keyword}&search-type=${searchType}&sort=${sort}`
+          `/community?tab=${currentTab}&page=${
+            currentPage - 1
+          }&keyword=${keyword}&search-type=${searchType}&sort=${sort}`
         );
       }
-      
+
       setTotalPages(Math.ceil(data.data.length / POSTS_PER_PAGE));
     }
   }, [data, currentPage, currentTab, keyword, router, searchType, sort]);
@@ -261,7 +263,8 @@ const CommunityContent = () => {
           <h1 className="text-2xl font-bold">{tabs[currentTab]}</h1>
           <div className="flex items-center gap-4">
             <SearchBar currentTab={currentTab} />
-            {(currentTab !== 0 || (currentTab === 0 && user?.member_role === "ADMIN")) && (
+            {(currentTab !== 0 ||
+              (currentTab === 0 && user?.member_role === "ADMIN")) && (
               <button
                 onClick={handleWriteClick}
                 className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700"
@@ -335,7 +338,7 @@ const CommunityContent = () => {
           >
             ◀
           </button>
-          
+
           {currentPage > 1 && (
             <button
               onClick={() => handlePageChange(currentPage - 1)}
@@ -344,11 +347,11 @@ const CommunityContent = () => {
               {currentPage - 1}
             </button>
           )}
-          
+
           <button className="px-3 py-1 rounded bg-gray-800 text-white">
             {currentPage}
           </button>
-          
+
           {data?.data.length === POSTS_PER_PAGE && (
             <button
               onClick={() => handlePageChange(currentPage + 1)}
@@ -357,7 +360,7 @@ const CommunityContent = () => {
               {currentPage + 1}
             </button>
           )}
-          
+
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={data?.data.length < POSTS_PER_PAGE}

@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { API_BASE_URL } from "@/config/api";
 import { useRouter } from "next/navigation";
+import CustomAlert from "@/app/_components/common/CustomAlert";
 
 const FindPage = () => {
   const router = useRouter();
@@ -15,6 +16,7 @@ const FindPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
 
   const handleSendVerification = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -94,6 +96,11 @@ const FindPage = () => {
     );
   };
 
+  const handleSuccessAlertClose = () => {
+    setShowSuccessAlert(false);
+    router.push("/login");
+  };
+
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -128,9 +135,8 @@ const FindPage = () => {
 
       const data = await response.json();
 
-      if (data.http_status === "OK") {
-        alert("비밀번호가 성공적으로 변경되었습니다. 로그인 페이지로 이동합니다.");
-        router.push("/login");
+      if (response.ok && (data.http_status === "OK" || data.http_status === "ACCEPTED")) {
+        setShowSuccessAlert(true);
       } else {
         alert(data.message || "비밀번호 변경에 실패했습니다.");
       }
@@ -141,8 +147,14 @@ const FindPage = () => {
   };
 
   return (
-    <div className="w-full h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-[400px] bg-white p-8 rounded-lg shadow-md">
+    <>
+      <CustomAlert
+        isOpen={showSuccessAlert}
+        message="비밀번호가 성공적으로 변경되었습니다."
+        onClose={handleSuccessAlertClose}
+      />
+      <div className="w-full h-screen flex items-center justify-center bg-gray-100">
+        <div className="w-[400px] bg-white p-8 rounded-lg shadow-md">
         <div className="flex flex-col items-center mb-8">
           <Image
             src="/images/logo-palworld-black.png"
@@ -244,6 +256,7 @@ const FindPage = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

@@ -3,12 +3,17 @@
 import React, { useRef, useState, useEffect } from "react";
 import { API_BASE_URL } from "@/config/api";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import useUserStore from "@/app/_store/userSotre";
+import CustomAlert from "@/app/_components/common/CustomAlert";
 import QuillView from "../_components/editor/QuillView";
 import KofiqaPreview from "../_components/kofiqa/KofiqaPreview";
 
 const tabs = ["공지사항", "서버규칙", "입주자신청", "서버접속방법"];
 
 const KofiqaPage = () => {
+  const router = useRouter();
+  const { isLoggedIn } = useUserStore();
   const serverInfoRef = useRef<HTMLDivElement>(null);
   const noticeRef = useRef<HTMLDivElement>(null);
   const rulesRef = useRef<HTMLDivElement>(null);
@@ -16,6 +21,7 @@ const KofiqaPage = () => {
   const [connectionContent, setConnectionContent] = useState<string>("");
   const [ruleContent, setRuleContent] = useState<string>("");
   const [occupancyContent, setOccupancyContent] = useState<string>("");
+  const [showLoginAlert, setShowLoginAlert] = useState(false);
 
   useEffect(() => {
     const fetchConnectionInfo = async () => {
@@ -73,8 +79,26 @@ const KofiqaPage = () => {
     });
   };
 
+  const handleApplyClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!isLoggedIn) {
+      e.preventDefault();
+      setShowLoginAlert(true);
+    }
+  };
+
+  const handleLoginAlertClose = () => {
+    setShowLoginAlert(false);
+    router.push("/login");
+  };
+
   return (
-    <div className="mt-[110px] w-full">
+    <>
+      <CustomAlert
+        isOpen={showLoginAlert}
+        message="로그인이 필요합니다."
+        onClose={handleLoginAlertClose}
+      />
+      <div className="mt-[110px] w-full">
       <div className="fixed top-[110px] left-0 right-0 bg-white z-10 border-b">
         <div className="max-w-[1200px] mx-auto">
           <div className="flex items-center gap-0 font-semibold text-[20px]">
@@ -141,6 +165,7 @@ const KofiqaPage = () => {
             <div className="flex justify-center mt-6">
               <Link
                 href="/kofiqa/apply"
+                onClick={handleApplyClick}
                 className="px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
               >
                 입주 신청
@@ -158,6 +183,7 @@ const KofiqaPage = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

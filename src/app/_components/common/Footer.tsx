@@ -34,12 +34,12 @@ const Footer = () => {
   }, []);
 
   return (
-    <footer className="w-full min-w-[1000px] bg-gray-800 text-white">
-      <div className="max-w-[1200px] mx-auto px-4 h-full flex flex-col justify-between py-8">
-        <div className="flex items-start gap-12">
+    <footer className="w-full bg-gray-800 text-white">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-4 h-full flex flex-col justify-between py-6 sm:py-8">
+        <div className="flex flex-col lg:flex-row items-start gap-6 sm:gap-8 lg:gap-12">
           <div className="flex-shrink-0">
             <Link href="/" className="w-[119px] h-[32px] relative">
-              <div className="w-[80px] h-[80px] relative">
+              <div className="w-[60px] h-[60px] sm:w-[70px] sm:h-[70px] lg:w-[80px] lg:h-[80px] relative">
                 <Image
                   src="/images/ic-footer-logo.png"
                   alt="logo"
@@ -50,20 +50,20 @@ const Footer = () => {
             </Link>
           </div>
 
-          <div className="flex flex-col gap-8 flex-1">
+          <div className="flex flex-col gap-4 sm:gap-6 lg:gap-8 flex-1 min-w-0">
             <div className="flex flex-col gap-2">
-              <p className="text-gray-400 text-sm max-w-[600px]">
+              <p className="text-gray-400 text-xs sm:text-sm max-w-full lg:max-w-[600px]">
                 {footerMessage}
               </p>
-              <p className="text-gray-400 text-sm max-w-[600px]">
+              <p className="text-gray-400 text-xs sm:text-sm max-w-full lg:max-w-[600px]">
                 © 2024 Palworld Community. All rights reserved.
               </p>
             </div>
           </div>
 
-          <div className="flex gap-4 flex-shrink-0">
+          <div className="flex flex-wrap gap-3 sm:gap-4 flex-shrink-0 w-full lg:w-auto">
             {attachments.map((attachment) => (
-              <div key={attachment.id} className="w-[190px] h-[50px] relative">
+              <div key={attachment.id} className="w-[140px] h-[40px] sm:w-[160px] sm:h-[45px] lg:w-[190px] lg:h-[50px] relative">
                 <Image
                   src={`${API_BASE_URL}/attachments/${attachment.file_name}`}
                   alt={`footer image ${attachment.id}`}

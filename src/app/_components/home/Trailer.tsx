@@ -41,7 +41,7 @@ const Trailer = () => {
   };
 
   return (
-    <section className="w-full mt-[50px]">
+    <section className="w-full mt-[30px] sm:mt-[40px] lg:mt-[50px] px-0">
       <div className="w-full aspect-video">
         {videoId && (
           <YouTube videoId={videoId} opts={opts} className="w-full h-full" />

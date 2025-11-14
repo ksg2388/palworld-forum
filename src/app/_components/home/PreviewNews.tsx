@@ -57,20 +57,20 @@ const PreviewNews = () => {
           <Link
             href={`/community/${item.id}`}
             key={item.id}
-            className="flex items-center justify-between py-3 border-b border-gray-200 hover:bg-gray-50"
+            className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-3 border-b border-gray-200 hover:bg-gray-50 gap-2 sm:gap-0"
           >
-            <div className="flex-1 flex items-center gap-4">
-              <span className="min-w-[40px] text-center text-sm font-medium text-white bg-gray-800 px-2 py-1 rounded">
+            <div className="flex-1 flex items-center gap-2 sm:gap-4 min-w-0">
+              <span className="shrink-0 text-center text-xs sm:text-sm font-medium text-white bg-gray-800 px-2 py-1 rounded">
                 공지
               </span>
-              <span className="text-sm flex-1">{item.title}</span>
+              <span className="text-xs sm:text-sm flex-1 truncate">{item.title}</span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-gray-500">
-              <span className="min-w-[80px] text-center">{item.nickname}</span>
-              <span className="min-w-[100px] text-center">
+            <div className="flex items-center gap-2 sm:gap-2 text-xs sm:text-sm text-gray-500">
+              <span className="min-w-[60px] sm:min-w-[80px] text-center truncate">{item.nickname}</span>
+              <span className="min-w-[80px] sm:min-w-[100px] text-center">
                 {formatDate(item.created_at)}
               </span>
-              <span className="min-w-[60px] text-center">{item.hits}</span>
+              <span className="min-w-[40px] sm:min-w-[60px] text-center">{item.hits}</span>
             </div>
           </Link>
         ))}

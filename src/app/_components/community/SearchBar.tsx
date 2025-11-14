@@ -23,11 +23,11 @@ const SearchBar = ({ currentTab }: SearchBarProps) => {
   };
 
   return (
-    <form onSubmit={handleSearch} className="flex items-center gap-2">
+    <form onSubmit={handleSearch} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
       <select
         value={searchType}
         onChange={(e) => setSearchType(e.target.value)}
-        className="px-2 py-2 border border-gray-300 rounded-lg text-[16px] focus:outline-none focus:border-gray-500"
+        className="px-2 sm:px-3 py-2 border border-gray-300 rounded-lg text-sm sm:text-[16px] focus:outline-none focus:border-gray-500 bg-white shrink-0"
       >
         <option value="TITLE">제목</option>
         <option value="CONTENT">내용</option>
@@ -38,11 +38,11 @@ const SearchBar = ({ currentTab }: SearchBarProps) => {
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         placeholder="검색어를 입력하세요"
-        className="px-4 py-2 border border-gray-300 rounded-lg w-[380px] text-[16px] focus:outline-none focus:border-gray-500"
+        className="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg flex-1 sm:w-[280px] lg:w-[380px] text-sm sm:text-[16px] focus:outline-none focus:border-gray-500"
       />
       <button
         type="submit"
-        className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 text-[16px]"
+        className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 text-sm sm:text-[16px] transition-colors shrink-0"
       >
         검색
       </button>

@@ -74,7 +74,7 @@ const ApplyPage = () => {
   };
 
   return (
-    <div className="mt-[110px] max-w-[1200px] mx-auto p-8">
+    <div className="mt-[80px] lg:mt-[110px] max-w-[1200px] mx-auto p-8">
       <CustomAlert
         isOpen={showAlert}
         message={`서버 입주 신청이 완료되었습니다.\n${serverLink}\n`}

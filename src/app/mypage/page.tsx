@@ -135,55 +135,55 @@ const MyPage = () => {
   // const totalPages = Math.ceil(dummyPosts.length / postsPerPage);
 
   return (
-    <div className="min-h-[calc(100vh-262px)] mt-[110px] max-w-[1200px] mx-auto p-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="space-y-6">
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-xl font-bold mb-4">비밀번호 변경</h2>
-            <form onSubmit={handlePasswordChange} className="space-y-4">
+    <div className="min-h-[calc(100vh-262px)] mt-[80px] lg:mt-[110px] max-w-[1200px] mx-auto px-4 sm:px-6 lg:p-8 py-6 sm:py-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
+        <div className="space-y-4 sm:space-y-6">
+          <div className="bg-white p-4 sm:p-5 lg:p-6 rounded-lg shadow-sm border border-gray-200">
+            <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">비밀번호 변경</h2>
+            <form onSubmit={handlePasswordChange} className="space-y-3 sm:space-y-4">
               <input
                 type="password"
                 placeholder="현재 비밀번호"
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
-                className="w-full px-4 py-2 border rounded"
+                className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 text-sm sm:text-base"
               />
               <input
                 type="password"
                 placeholder="새 비밀번호"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="w-full px-4 py-2 border rounded"
+                className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 text-sm sm:text-base"
               />
               <input
                 type="password"
                 placeholder="새 비밀번호 확인"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-4 py-2 border rounded"
+                className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 text-sm sm:text-base"
               />
               <button
                 type="submit"
-                className="w-full py-2 bg-gray-800 text-white rounded hover:bg-gray-900"
+                className="w-full py-2.5 sm:py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors text-sm sm:text-base font-medium"
               >
                 변경하기
               </button>
             </form>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-xl font-bold mb-4">닉네임 변경</h2>
-            <form onSubmit={handleNicknameChange} className="space-y-4">
+          <div className="bg-white p-4 sm:p-5 lg:p-6 rounded-lg shadow-sm border border-gray-200">
+            <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">닉네임 변경</h2>
+            <form onSubmit={handleNicknameChange} className="space-y-3 sm:space-y-4">
               <input
                 type="text"
                 placeholder="새 닉네임"
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
-                className="w-full px-4 py-2 border rounded"
+                className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 text-sm sm:text-base"
               />
               <button
                 type="submit"
-                className="w-full py-2 bg-gray-800 text-white rounded hover:bg-gray-900"
+                className="w-full py-2.5 sm:py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors text-sm sm:text-base font-medium"
               >
                 변경하기
               </button>
@@ -191,7 +191,7 @@ const MyPage = () => {
           </div>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* <div className="bg-white p-6 rounded-lg shadow h-[306px] overflow-y-auto">
             <h2 className="text-xl font-bold mb-4">작성한 게시글</h2>
             <div className="space-y-2">
@@ -231,14 +231,14 @@ const MyPage = () => {
             )}
           </div> */}
 
-          <div className="bg-white p-6 rounded-lg shadow h-[190px] overflow-y-auto">
-            <h2 className="text-xl font-bold mb-4">회원 탈퇴</h2>
-            <p className="text-gray-600 mb-4">
+          <div className="bg-white p-4 sm:p-5 lg:p-6 rounded-lg shadow-sm border border-gray-200 min-h-[190px]">
+            <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4">회원 탈퇴</h2>
+            <p className="text-gray-600 mb-4 text-sm sm:text-base leading-relaxed">
               탈퇴하시면 모든 데이터가 삭제되며 복구할 수 없습니다.
             </p>
             <button
               onClick={handleDeleteAccount}
-              className="w-full py-2 bg-red-600 text-white rounded hover:bg-red-700"
+              className="w-full py-2.5 sm:py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm sm:text-base font-medium"
             >
               회원 탈퇴
             </button>

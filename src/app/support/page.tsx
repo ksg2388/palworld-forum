@@ -71,7 +71,7 @@ const SupportPage = () => {
   console.log(selectedFiles);
 
   return (
-    <div className="mt-[110px] w-full max-w-[1200px] mx-auto p-8">
+    <div className="mt-[80px] lg:mt-[110px] w-full max-w-[1200px] mx-auto p-8">
       <div className="w-full flex items-center justify-center mt-8 mb-8">
         <h2 className="text-[36px] font-bold">1:1문의/신고</h2>
       </div>

@@ -218,9 +218,9 @@ const CommunityContent = () => {
 
   return (
     <div className="w-full">
-      <div className="fixed top-[110px] left-0 right-0 bg-white z-10 border-b">
-        <div className="max-w-[1200px] mx-auto">
-          <div className="flex items-center gap-0 font-semibold text-[20px] relative">
+      <div className="fixed top-[80px] lg:top-[110px] left-0 right-0 bg-white z-10 border-b shadow-sm">
+        <div className="max-w-[1200px] mx-auto overflow-x-auto">
+          <div className="flex items-center gap-0 font-semibold text-sm sm:text-base lg:text-[20px] relative min-w-max sm:min-w-0">
             {tabs.map((tab, index) => (
               <div
                 key={tab}
@@ -229,7 +229,7 @@ const CommunityContent = () => {
               >
                 <button
                   onClick={() => handleTabClick(index)}
-                  className={`px-6 py-3 text-gray-700 hover:text-gray-900 transition-all duration-200 ${
+                  className={`px-3 sm:px-4 lg:px-6 py-2 sm:py-2.5 lg:py-3 text-gray-700 hover:text-gray-900 transition-all duration-200 whitespace-nowrap ${
                     currentTab === index && index !== tabs.length - 1
                       ? "text-gray-900 border-b-2 border-gray-900"
                       : ""
@@ -238,14 +238,14 @@ const CommunityContent = () => {
                   {tab}
                 </button>
                 {index === tabs.length - 1 && showDropdown && (
-                  <div className="absolute top-full left-0 w-[200px] bg-white border border-gray-200 rounded-lg shadow-lg z-20">
+                  <div className="absolute top-full left-0 w-[180px] sm:w-[200px] bg-white border border-gray-200 rounded-lg shadow-lg z-20">
                     {linkItems.map((item) => (
                       <a
                         key={item.id}
                         href={item.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block px-4 py-2 hover:bg-gray-100 text-[16px] text-gray-700"
+                        className="block px-3 sm:px-4 py-2 hover:bg-gray-100 text-sm sm:text-[16px] text-gray-700 transition-colors"
                       >
                         {item.title}
                       </a>
@@ -258,16 +258,16 @@ const CommunityContent = () => {
         </div>
       </div>
 
-      <div className="w-full max-w-[1200px] mx-auto pt-[200px] pb-[50px] min-h-[calc(100vh-132px)]">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold">{tabs[currentTab]}</h1>
-          <div className="flex items-center gap-4">
+      <div className="w-full max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-0 pt-[140px] sm:pt-[160px] lg:pt-[170px] pb-[50px] min-h-[calc(100vh-132px)]">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 gap-3 sm:gap-4">
+          <h1 className="text-xl sm:text-2xl font-bold">{tabs[currentTab]}</h1>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
             <SearchBar currentTab={currentTab} />
             {(currentTab !== 0 ||
               (currentTab === 0 && user?.member_role === "ADMIN")) && (
               <button
                 onClick={handleWriteClick}
-                className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700"
+                className="px-4 py-2 bg-gray-800 text-white text-sm sm:text-base rounded-lg hover:bg-gray-700 transition-colors shrink-0"
               >
                 글쓰기
               </button>
@@ -275,17 +275,18 @@ const CommunityContent = () => {
           </div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-lg">
-          <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50 text-sm text-gray-600">
-            <div className="flex items-center gap-4 flex-1">
-              <span className="w-[80px] text-center">번호</span>
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+          {/* 데스크톱 헤더 */}
+          <div className="hidden sm:flex items-center justify-between p-3 sm:p-4 border-b border-gray-200 bg-gray-50 text-xs sm:text-sm text-gray-600">
+            <div className="flex items-center gap-2 sm:gap-4 flex-1">
+              <span className="w-[60px] sm:w-[80px] text-center">번호</span>
               <span className="flex-1">제목</span>
             </div>
-            <div className="flex items-center gap-4">
-              <span className="w-[100px] text-center">작성자</span>
-              <span className="w-[100px] text-center">작성일</span>
-              <span className="w-[80px] text-center">조회</span>
-              <span className="w-[80px] text-center">댓글</span>
+            <div className="flex items-center gap-2 sm:gap-4">
+              <span className="w-[80px] sm:w-[100px] text-center">작성자</span>
+              <span className="w-[80px] sm:w-[100px] text-center">작성일</span>
+              <span className="w-[50px] sm:w-[80px] text-center">조회</span>
+              <span className="w-[50px] sm:w-[80px] text-center">댓글</span>
             </div>
           </div>
 
@@ -293,32 +294,42 @@ const CommunityContent = () => {
             <Link
               href={`/community/${post.id}?tab=${currentTab}&page=${currentPage}`}
               key={post.id}
-              className={`flex items-center justify-between p-4 border-b border-gray-200 hover:bg-gray-50 ${
+              className={`flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 border-b border-gray-200 hover:bg-gray-50 transition-colors ${
                 post.notice ? "bg-gray-50" : ""
               }`}
             >
-              <div className="flex items-center gap-4 flex-1">
-                <span className="w-[80px] text-center text-sm text-gray-500">
-                  {post.notice ? "공지" : post.id}
+              <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0 mb-2 sm:mb-0">
+                <span className="w-[50px] sm:w-[80px] text-center text-xs sm:text-sm text-gray-500 shrink-0">
+                  {post.notice ? (
+                    <span className="inline-block px-2 py-0.5 bg-gray-800 text-white text-xs rounded">
+                      공지
+                    </span>
+                  ) : (
+                    post.id
+                  )}
                 </span>
-                <span className="flex-1">{post.title}</span>
+                <span className="flex-1 text-sm sm:text-base truncate font-medium">{post.title}</span>
               </div>
-              <div className="flex items-center gap-4 text-sm text-gray-500">
-                <span className="w-[100px] text-center flex items-center justify-center gap-1">
+              <div className="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500">
+                <span className="w-[70px] sm:w-[100px] text-center flex items-center justify-center gap-1 shrink-0">
                   <Image
                     src={getRoleImage(post.member_role)}
                     alt={post.member_role}
-                    width={16}
-                    height={16}
+                    width={14}
+                    height={14}
+                    className="sm:w-4 sm:h-4"
                     unoptimized
                   />
-                  {post.nickname}
+                  <span className="truncate">{post.nickname}</span>
                 </span>
-                <span className="w-[100px] text-center">
-                  {new Date(post.created_at).toLocaleDateString()}
+                <span className="w-[70px] sm:w-[100px] text-center shrink-0">
+                  {new Date(post.created_at).toLocaleDateString("ko-KR", {
+                    month: "2-digit",
+                    day: "2-digit",
+                  })}
                 </span>
-                <span className="w-[80px] text-center">{post.hits}</span>
-                <span className="w-[80px] text-center">
+                <span className="w-[40px] sm:w-[80px] text-center shrink-0">{post.hits}</span>
+                <span className="w-[40px] sm:w-[80px] text-center shrink-0">
                   {post.count_of_comments}
                 </span>
               </div>
@@ -326,14 +337,14 @@ const CommunityContent = () => {
           ))}
         </div>
 
-        <div className="flex justify-center mt-4 gap-1 items-center">
+        <div className="flex justify-center mt-4 sm:mt-6 gap-1 sm:gap-2 items-center">
           <button
             onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
             disabled={currentPage === 1}
-            className={`px-2 py-1 rounded ${
+            className={`px-2 sm:px-3 py-1.5 sm:py-2 rounded text-sm sm:text-base ${
               currentPage === 1
                 ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
             }`}
           >
             ◀
@@ -342,20 +353,20 @@ const CommunityContent = () => {
           {currentPage > 1 && (
             <button
               onClick={() => handlePageChange(currentPage - 1)}
-              className="px-3 py-1 rounded bg-gray-100 text-gray-700 hover:bg-gray-200"
+              className="px-2 sm:px-3 py-1.5 sm:py-2 rounded bg-gray-100 text-gray-700 hover:bg-gray-200 text-sm sm:text-base transition-colors"
             >
               {currentPage - 1}
             </button>
           )}
 
-          <button className="px-3 py-1 rounded bg-gray-800 text-white">
+          <button className="px-2 sm:px-3 py-1.5 sm:py-2 rounded bg-gray-800 text-white text-sm sm:text-base">
             {currentPage}
           </button>
 
           {data?.data.length === POSTS_PER_PAGE && (
             <button
               onClick={() => handlePageChange(currentPage + 1)}
-              className="px-3 py-1 rounded bg-gray-100 text-gray-700 hover:bg-gray-200"
+              className="px-2 sm:px-3 py-1.5 sm:py-2 rounded bg-gray-100 text-gray-700 hover:bg-gray-200 text-sm sm:text-base transition-colors"
             >
               {currentPage + 1}
             </button>
@@ -364,10 +375,10 @@ const CommunityContent = () => {
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={data?.data.length < POSTS_PER_PAGE}
-            className={`px-2 py-1 rounded ${
+            className={`px-2 sm:px-3 py-1.5 sm:py-2 rounded text-sm sm:text-base ${
               data?.data.length < POSTS_PER_PAGE
                 ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
             }`}
           >
             ▶

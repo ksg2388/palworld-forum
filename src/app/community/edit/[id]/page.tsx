@@ -103,7 +103,7 @@ const CommunityEditPage = () => {
   };
 
   return (
-    <div className="max-w-[1200px] mx-auto p-4 pt-[140px]">
+    <div className="max-w-[1200px] mx-auto p-4 pt-[110px] lg:pt-[140px]">
       <form onSubmit={handleSubmit}>
         <input
           type="text"

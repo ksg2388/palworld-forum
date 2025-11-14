@@ -80,27 +80,60 @@ const Banner = () => {
         .slick-prev,
         .slick-next {
           z-index: 10;
-          width: 30px;
-          height: 30px;
+          width: 24px;
+          height: 24px;
+        }
+        @media (min-width: 640px) {
+          .slick-prev,
+          .slick-next {
+            width: 30px;
+            height: 30px;
+          }
         }
         .slick-prev {
-          left: 10px;
+          left: 5px;
+        }
+        @media (min-width: 640px) {
+          .slick-prev {
+            left: 10px;
+          }
         }
         .slick-next {
-          right: 10px;
+          right: 5px;
+        }
+        @media (min-width: 640px) {
+          .slick-next {
+            right: 10px;
+          }
         }
         .slick-prev:before,
         .slick-next:before {
-          font-size: 30px;
+          font-size: 24px;
+        }
+        @media (min-width: 640px) {
+          .slick-prev:before,
+          .slick-next:before {
+            font-size: 30px;
+          }
         }
         .slick-list {
           height: 100%;
         }
         .slick-dots {
-          bottom: 20px;
+          bottom: 10px;
+        }
+        @media (min-width: 640px) {
+          .slick-dots {
+            bottom: 20px;
+          }
         }
         .slick-dots li button:before {
-          font-size: 12px;
+          font-size: 10px;
+        }
+        @media (min-width: 640px) {
+          .slick-dots li button:before {
+            font-size: 12px;
+          }
         }
         .slick-track {
           height: 100%;

@@ -69,7 +69,7 @@ const KofiqaPage = () => {
   }, []);
 
   const scrollToSection = (ref: React.RefObject<HTMLDivElement | null>) => {
-    const headerOffset = 180;
+    const headerOffset = typeof window !== "undefined" && window.innerWidth >= 1024 ? 180 : window.innerWidth >= 640 ? 150 : 140;
     const elementPosition = ref.current?.getBoundingClientRect().top;
     const offsetPosition = elementPosition! + window.scrollY - headerOffset;
 
@@ -98,10 +98,10 @@ const KofiqaPage = () => {
         message="로그인이 필요합니다."
         onClose={handleLoginAlertClose}
       />
-      <div className="mt-[110px] w-full">
-      <div className="fixed top-[110px] left-0 right-0 bg-white z-10 border-b">
-        <div className="max-w-[1200px] mx-auto">
-          <div className="flex items-center gap-0 font-semibold text-[20px]">
+      <div className="mt-[80px] lg:mt-[110px] w-full">
+      <div className="fixed top-[80px] lg:top-[110px] left-0 right-0 bg-white z-10 border-b shadow-sm">
+        <div className="max-w-[1200px] mx-auto overflow-x-auto">
+          <div className="flex items-center gap-0 font-semibold text-sm sm:text-base lg:text-[20px] min-w-max sm:min-w-0">
             {tabs.map((tab, index) => (
               <button
                 key={tab}
@@ -121,7 +121,7 @@ const KofiqaPage = () => {
                       break;
                   }
                 }}
-                className="px-6 py-3 text-gray-700 hover:text-gray-900 transition-all duration-200"
+                className="px-3 sm:px-4 lg:px-6 py-2 sm:py-2.5 lg:py-3 text-gray-700 hover:text-gray-900 transition-all duration-200 whitespace-nowrap"
               >
                 {tab}
               </button>
@@ -130,17 +130,17 @@ const KofiqaPage = () => {
         </div>
       </div>
 
-      <div className="max-w-[1200px] mx-auto p-8 pt-[80px]">
-        <div className="flex flex-col gap-8">
+      <div className="max-w-[1200px] mx-auto p-4 sm:p-6 lg:p-8 pt-[60px] sm:pt-[70px] lg:pt-[80px]">
+        <div className="flex flex-col gap-4 sm:gap-6 lg:gap-8">
           <div
             ref={noticeRef}
-            className="bg-white border border-gray-200 p-6 rounded-lg scroll-mt-[160px]"
+            className="bg-white border border-gray-200 p-4 sm:p-5 lg:p-6 rounded-lg shadow-sm scroll-mt-[140px] sm:scroll-mt-[150px] lg:scroll-mt-[160px]"
           >
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold">공지사항</h2>
+            <div className="flex justify-between items-center mb-3 sm:mb-4">
+              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold">공지사항</h2>
               <Link
                 href="/kofiqa/notices"
-                className="text-gray-600 hover:text-gray-900 text-sm"
+                className="text-gray-600 hover:text-gray-900 text-xs sm:text-sm shrink-0 ml-2"
               >
                 더보기 &gt;
               </Link>
@@ -150,23 +150,23 @@ const KofiqaPage = () => {
 
           <div
             ref={rulesRef}
-            className="bg-white border border-gray-200 p-6 rounded-lg scroll-mt-[160px]"
+            className="bg-white border border-gray-200 p-4 sm:p-5 lg:p-6 rounded-lg shadow-sm scroll-mt-[140px] sm:scroll-mt-[150px] lg:scroll-mt-[160px]"
           >
-            <h2 className="text-2xl font-bold mb-4">서버규칙</h2>
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-bold mb-3 sm:mb-4">서버규칙</h2>
             <QuillView content={ruleContent} />
           </div>
 
           <div
             ref={applicationRef}
-            className="bg-white border border-gray-200 p-6 rounded-lg scroll-mt-[160px]"
+            className="bg-white border border-gray-200 p-4 sm:p-5 lg:p-6 rounded-lg shadow-sm scroll-mt-[140px] sm:scroll-mt-[150px] lg:scroll-mt-[160px]"
           >
-            <h2 className="text-2xl font-bold mb-4">입주자 신청</h2>
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-bold mb-3 sm:mb-4">입주자 신청</h2>
             <QuillView content={occupancyContent} />
-            <div className="flex justify-center mt-6">
+            <div className="flex justify-center mt-4 sm:mt-5 lg:mt-6">
               <Link
                 href="/kofiqa/apply"
                 onClick={handleApplyClick}
-                className="px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                className="px-4 sm:px-5 lg:px-6 py-2 sm:py-2.5 lg:py-3 bg-gray-800 text-white text-sm sm:text-base rounded-lg hover:bg-gray-700 transition-colors duration-200"
               >
                 입주 신청
               </Link>
@@ -175,9 +175,9 @@ const KofiqaPage = () => {
 
           <div
             ref={serverInfoRef}
-            className="bg-white border border-gray-200 p-6 rounded-lg scroll-mt-[160px]"
+            className="bg-white border border-gray-200 p-4 sm:p-5 lg:p-6 rounded-lg shadow-sm scroll-mt-[140px] sm:scroll-mt-[150px] lg:scroll-mt-[160px]"
           >
-            <h2 className="text-2xl font-bold mb-4">서버 접속 방법</h2>
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-bold mb-3 sm:mb-4">서버 접속 방법</h2>
             <QuillView content={connectionContent} />
           </div>
         </div>

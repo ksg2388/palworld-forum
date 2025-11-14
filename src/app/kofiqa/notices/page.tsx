@@ -119,7 +119,7 @@ const NoticesPage = () => {
   }, [currentPage, keyword, searchType, limit]);
 
   return (
-    <div className="mt-[110px] max-w-[1200px] mx-auto p-8">
+    <div className="mt-[80px] lg:mt-[110px] max-w-[1200px] mx-auto p-8">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">KOFIQA 공지사항</h1>
         <div className="flex items-center gap-2">

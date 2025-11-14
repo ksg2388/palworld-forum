@@ -93,7 +93,7 @@ const WriteContent = () => {
   };
 
   return (
-    <div className="w-full max-w-[1200px] mx-auto pt-[150px] pb-[50px]">
+    <div className="w-full max-w-[1200px] mx-auto pt-[120px] lg:pt-[150px] pb-[50px]">
       <div className="bg-white rounded-lg border border-gray-200 p-6">
         <div className="mb-4">
           {currentTab === 0 && user?.member_role === "ADMIN" && (

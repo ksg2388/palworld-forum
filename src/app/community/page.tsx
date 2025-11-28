@@ -219,8 +219,8 @@ const CommunityContent = () => {
   return (
     <div className="w-full">
       <div className="fixed top-[60px] lg:top-[110px] left-0 right-0 bg-white/90 backdrop-blur-md z-20 border-b border-gray-200/80 shadow-sm transition-all duration-300">
-        <div className="max-w-[1200px] mx-auto overflow-x-auto scrollbar-hide">
-          <div className="flex items-center gap-3 px-4 py-3 font-medium text-sm sm:text-base min-w-max sm:min-w-0">
+        <div className="max-w-[1200px] mx-auto overflow-x-auto scrollbar-hide lg:px-8">
+          <div className="flex items-center gap-3 px-4 lg:px-0 py-3 font-medium text-sm sm:text-base min-w-max sm:min-w-0">
             {tabs.map((tab, index) => (
               <div
                 key={tab}

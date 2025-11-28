@@ -41,9 +41,9 @@ const KakaoChatButton = () => {
     <Link
       href={kakaoLink.url}
       target="_blank"
-      className="fixed bottom-5 right-4 md:bottom-8 md:right-8 w-12 h-12 md:w-14 md:h-14 rounded-full bg-yellow-400 flex items-center justify-center shadow-lg hover:bg-yellow-500 transition-all duration-200 z-40 hover:scale-105 active:scale-95"
+      className="fixed bottom-4 right-4 md:bottom-8 md:right-8 w-10 h-10 md:w-14 md:h-14 rounded-full bg-yellow-400 flex items-center justify-center shadow-lg hover:bg-yellow-500 transition-all duration-200 z-40 hover:scale-105 active:scale-95"
     >
-      <div className="relative w-8 h-8">
+      <div className="relative w-6 h-6 md:w-8 md:h-8">
         <Image
           src="/images/ic-kakao-talk.png"
           alt="카카오톡 채팅 문의"

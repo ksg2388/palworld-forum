@@ -214,7 +214,7 @@ const QuillEditor = ({ style, value, onChange }: Props) => {
           }
           .ql-toolbar {
             position: sticky;
-            top: 80px;
+            top: 60px;
             z-index: 30;
             background-color: white;
             border-bottom: 1px solid #ccc;

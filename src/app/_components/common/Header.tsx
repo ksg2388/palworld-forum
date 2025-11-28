@@ -20,7 +20,7 @@ const Header = () => {
   return (
     <>
       <header
-        className={`w-full h-[80px] lg:h-[110px] fixed top-0 left-0 z-50 transition-shadow duration-300 ease-in-out shadow-sm bg-gray-800 text-white`}
+        className={`w-full h-[60px] lg:h-[110px] fixed top-0 left-0 z-50 transition-shadow duration-300 ease-in-out shadow-sm bg-gray-800 text-white`}
       >
         <div className="max-w-[1200px] h-full mx-auto px-4 flex items-center relative">
           {/* 모바일 햄버거 메뉴 버튼 */}
@@ -61,9 +61,12 @@ const Header = () => {
           {/* 로고 - 모바일 */}
           <div className="lg:hidden absolute left-1/2 -translate-x-1/2 flex items-center justify-center">
             <Link href="/" className="flex flex-col items-center" onClick={closeMobileMenu}>
-              <div className="w-[100px] h-[28px] relative">
+              <div className="w-[90px] h-[24px] relative">
                 <Image src="/images/logo-palworld.webp" alt="logo" fill className="object-contain" />
               </div>
+              <span className="text-[8px] font-medium whitespace-nowrap mt-0.5 text-gray-400">
+                Palworld Korea Forum
+              </span>
             </Link>
           </div>
 
@@ -180,10 +183,10 @@ const Header = () => {
       >
         <div className="flex flex-col h-full">
           {/* 사이드바 상단 헤더 (로고 + 닫기 버튼) */}
-          <div className="px-5 py-4 border-b border-gray-800 flex items-center justify-between">
+          <div className="px-5 py-3 border-b border-gray-800 flex items-center justify-between h-[60px]">
             <Link href="/" className="flex flex-col items-start" onClick={closeMobileMenu}>
               <div className="flex flex-col items-center">
-                <div className="w-[100px] h-[28px] relative">
+                <div className="w-[90px] h-[24px] relative">
                   <Image src="/images/logo-palworld.webp" alt="logo" fill />
                 </div>
                 <span className="text-[8px] font-medium whitespace-nowrap mt-0.5 text-gray-400">

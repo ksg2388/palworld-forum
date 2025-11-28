@@ -6,7 +6,7 @@ import Trailer from "./_components/home/Trailer";
 const Home = () => {
   return (
     <div className="w-full min-h-screen max-w-[1200px] mx-auto pt-[60px] lg:pt-[110px] pb-[60px] px-4 lg:px-0">
-      <section className="w-full h-[200px] sm:h-[350px] lg:h-[450px] mt-[20px] sm:mt-[40px] lg:mt-[50px] rounded-xl sm:rounded-2xl overflow-hidden shadow-lg sm:shadow-none">
+      <section className="w-[calc(100%+2rem)] -mx-4 sm:w-full sm:mx-0 h-[200px] sm:h-[350px] lg:h-[450px] mt-[20px] sm:mt-[40px] lg:mt-[50px] sm:rounded-2xl overflow-hidden">
         <Banner />
       </section>
       <section className="w-full mt-[30px] sm:mt-[50px]">

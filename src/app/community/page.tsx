@@ -217,7 +217,6 @@ const CommunityContent = () => {
   }
 
   return (
-  return (
     <div className="w-full">
       <div className="fixed top-[60px] lg:top-[110px] left-0 right-0 bg-white/90 backdrop-blur-md z-20 border-b border-gray-200/80 shadow-sm transition-all duration-300">
         <div className="max-w-[1200px] mx-auto overflow-x-auto scrollbar-hide">

@@ -34,44 +34,42 @@ const Footer = () => {
   }, []);
 
   return (
-    <footer className="w-full bg-gray-800 text-white">
-      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-4 h-full flex flex-col justify-between py-8 sm:py-10 lg:py-8">
-        <div className="flex flex-col lg:flex-row items-end lg:items-start gap-8 sm:gap-10 lg:gap-12 text-right lg:text-left">
+    <footer className="w-full bg-gray-800 text-white border-t border-gray-700">
+      <div className="max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-4 h-full flex flex-col justify-between py-10 sm:py-12 lg:py-10">
+        <div className="flex flex-col lg:flex-row items-start gap-6 sm:gap-10 lg:gap-12 text-left">
           <div className="flex-shrink-0">
-            <Link href="/" className="w-[119px] h-[32px] relative block">
-              <div className="w-[80px] h-[80px] relative ml-auto lg:mx-0">
-                <Image
-                  src="/images/ic-footer-logo.png"
-                  alt="logo"
-                  fill
-                  className="brightness-0 invert object-contain"
-                />
-              </div>
+            <Link href="/" className="block w-[80px] h-[80px] relative opacity-80 hover:opacity-100 transition-opacity">
+              <Image
+                src="/images/ic-footer-logo.png"
+                alt="logo"
+                fill
+                className="brightness-0 invert object-contain"
+              />
             </Link>
           </div>
 
-          <div className="flex flex-col gap-4 sm:gap-6 lg:gap-8 flex-1 min-w-0 w-full">
-            <div className="flex flex-col gap-2 items-end lg:items-start">
-              <p className="text-gray-400 text-sm max-w-full lg:max-w-[600px] leading-relaxed">
+          <div className="flex flex-col gap-6 flex-1 min-w-0 w-full">
+            <div className="flex flex-col gap-1.5 items-start">
+              <p className="text-gray-400 text-[13px] sm:text-sm leading-relaxed break-keep">
                 {footerMessage}
               </p>
-              <p className="text-gray-500 text-xs sm:text-sm max-w-full lg:max-w-[600px]">
-                © 2024 Palworld Community. All rights reserved.
+              <p className="text-gray-500 text-[11px] sm:text-xs font-light mt-2">
+                COPYRIGHT © 2024 Palworld Community. ALL RIGHTS RESERVED.
               </p>
             </div>
-          </div>
 
-          <div className="flex flex-wrap justify-end lg:justify-start gap-3 sm:gap-4 flex-shrink-0 w-full lg:w-auto">
-            {attachments.map((attachment) => (
-              <div key={attachment.id} className="w-[140px] h-[40px] sm:w-[160px] sm:h-[45px] lg:w-[190px] lg:h-[50px] relative grayscale hover:grayscale-0 transition-all duration-300">
-                <Image
-                  src={`${API_BASE_URL}/attachments/${attachment.file_name}`}
-                  alt={`footer image ${attachment.id}`}
-                  fill
-                  className="object-contain"
-                />
-              </div>
-            ))}
+            <div className="flex flex-wrap justify-start gap-3 w-full">
+              {attachments.map((attachment) => (
+                <div key={attachment.id} className="w-[120px] h-[35px] sm:w-[140px] sm:h-[40px] relative grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                  <Image
+                    src={`${API_BASE_URL}/attachments/${attachment.file_name}`}
+                    alt={`footer image ${attachment.id}`}
+                    fill
+                    className="object-contain object-left"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

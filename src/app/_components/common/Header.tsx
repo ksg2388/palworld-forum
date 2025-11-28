@@ -26,7 +26,7 @@ const Header = () => {
           {/* 모바일 햄버거 메뉴 버튼 */}
           <button
             onClick={toggleMobileMenu}
-            className="lg:hidden absolute left-4 top-1/2 -translate-y-1/2 z-50 p-2 text-white hover:text-gray-300 transition-colors"
+            className="lg:hidden absolute left-4 top-1/2 -translate-y-1/2 z-50 p-3 text-white hover:text-gray-300 transition-colors active:scale-90"
             aria-label="메뉴 열기"
           >
             <svg
@@ -59,14 +59,11 @@ const Header = () => {
           </div>
 
           {/* 로고 - 모바일 */}
-          <div className="lg:hidden absolute left-16">
+          <div className="lg:hidden absolute left-1/2 -translate-x-1/2 flex items-center justify-center">
             <Link href="/" className="flex flex-col items-center" onClick={closeMobileMenu}>
-              <div className="w-[90px] h-[24px] relative">
-                <Image src="/images/logo-palworld.webp" alt="logo" fill />
+              <div className="w-[100px] h-[28px] relative">
+                <Image src="/images/logo-palworld.webp" alt="logo" fill className="object-contain" />
               </div>
-              <span className="text-[8px] font-medium whitespace-nowrap">
-                Palworld Korea Forum
-              </span>
             </Link>
           </div>
 

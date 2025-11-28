@@ -34,14 +34,14 @@ const Trailer = () => {
 
   const opts = {
     width: "100%",
-    height: "675",
+    height: "100%",
     playerVars: {
       autoplay: 0,
     },
   };
 
   return (
-    <section className="w-full mt-[30px] sm:mt-[40px] lg:mt-[50px] px-0">
+    <section className="w-full mt-[30px] sm:mt-[50px] px-0 rounded-xl overflow-hidden shadow-lg sm:shadow-none">
       <div className="w-full aspect-video">
         {videoId && (
           <YouTube videoId={videoId} opts={opts} className="w-full h-full" />

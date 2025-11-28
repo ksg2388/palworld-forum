@@ -41,7 +41,7 @@ const DiscordButton = () => {
     <Link
       href={discordLink.url}
       target="_blank"
-      className="fixed bottom-24 right-8 w-14 h-14 rounded-full bg-[#5865F2] flex items-center justify-center shadow-lg hover:bg-[#4752C4] transition-colors duration-200 z-50"
+      className="fixed bottom-20 right-4 md:bottom-24 md:right-8 w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#5865F2] flex items-center justify-center shadow-lg hover:bg-[#4752C4] transition-all duration-200 z-40 hover:scale-105 active:scale-95"
     >
       <div className="relative w-8 h-8">
         <Image

@@ -32,25 +32,27 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-center gap-2">
-      <select
-        value={searchType}
-        onChange={(e) => setSearchType(e.target.value)}
-        className="px-2 py-2 border border-gray-300 rounded-lg text-[16px] focus:outline-none focus:border-gray-500"
-      >
-        <option value="TITLE">제목</option>
-        <option value="CONTENT">내용</option>
-      </select>
-      <input
-        type="text"
-        value={searchValue}
-        onChange={(e) => setSearchValue(e.target.value)}
-        placeholder="검색어를 입력하세요"
-        className="px-4 py-2 border border-gray-300 rounded-lg w-[380px] text-[16px] focus:outline-none focus:border-gray-500"
-      />
+    <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
+      <div className="flex gap-2">
+        <select
+          value={searchType}
+          onChange={(e) => setSearchType(e.target.value)}
+          className="px-2 py-2 border border-gray-300 rounded-lg text-[14px] lg:text-[16px] focus:outline-none focus:border-gray-500"
+        >
+          <option value="TITLE">제목</option>
+          <option value="CONTENT">내용</option>
+        </select>
+        <input
+          type="text"
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
+          placeholder="검색어를 입력하세요"
+          className="px-4 py-2 border border-gray-300 rounded-lg flex-1 sm:w-[380px] text-[14px] lg:text-[16px] focus:outline-none focus:border-gray-500"
+        />
+      </div>
       <button
         type="submit"
-        className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 text-[16px]"
+        className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 text-[14px] lg:text-[16px]"
       >
         검색
       </button>
@@ -119,10 +121,10 @@ const NoticesPage = () => {
   }, [currentPage, keyword, searchType, limit]);
 
   return (
-    <div className="mt-[80px] lg:mt-[110px] max-w-[1200px] mx-auto p-8">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">KOFIQA 공지사항</h1>
-        <div className="flex items-center gap-2">
+    <div className="mt-[60px] lg:mt-[110px] max-w-[1200px] mx-auto p-4 lg:p-8 pb-20">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-6 gap-4">
+        <h1 className="text-xl lg:text-2xl font-bold">KOFIQA 공지사항</h1>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
           <SearchBar
             onSearch={(value, type) => {
               setKeyword(value);
@@ -133,7 +135,7 @@ const NoticesPage = () => {
           {user?.member_role === "ADMIN" && (
             <button
               onClick={() => router.push("/kofiqa/notices/write")}
-              className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 text-[16px]"
+              className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 text-[14px] lg:text-[16px] w-full sm:w-auto"
             >
               글쓰기
             </button>
@@ -141,29 +143,34 @@ const NoticesPage = () => {
         </div>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-lg min-h-[calc(100vh-132px)]">
+      <div className="bg-transparent lg:bg-white lg:border lg:border-gray-200 rounded-lg min-h-[calc(100vh-200px)] space-y-3 lg:space-y-0">
         {notices.length > 0 &&
           notices.map((notice) => (
             <div
               key={notice.id}
               onClick={() => handleNoticeClick(notice.id)}
-              className="p-4 border-b border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer"
+              className="p-4 bg-white border border-gray-100 lg:border-0 lg:border-b lg:border-gray-200 rounded-xl lg:rounded-none shadow-sm lg:shadow-none hover:shadow-md lg:hover:bg-gray-50 transition-all cursor-pointer flex flex-col lg:block gap-2"
             >
-              <div className="flex justify-between items-center">
-                <h2 className="text-lg font-semibold">
+              <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-2 lg:gap-0">
+                <h2 className="text-[15px] lg:text-lg font-medium lg:font-semibold break-all line-clamp-2 lg:line-clamp-1">
                   {notice.notice && (
-                    <span className="inline-block px-2 py-1 bg-gray-100 text-sm rounded mr-2">
+                    <span className="inline-block px-2 py-0.5 lg:py-1 bg-gray-100 text-xs lg:text-sm rounded mr-2 align-middle">
                       공지
                     </span>
                   )}
                   {notice.title}
                 </h2>
-                <div className="flex items-center gap-4 text-sm text-gray-500">
-                  <span>{notice.nickname}</span>
-                  <span>조회 {notice.hits}</span>
-                  <span>
-                    {new Date(notice.created_at).toLocaleDateString()}
-                  </span>
+                <div className="flex items-center justify-between lg:justify-end gap-2 lg:gap-4 text-xs lg:text-sm text-gray-500 pt-2 border-t border-gray-50 lg:border-0 lg:pt-0 mt-1 lg:mt-0">
+                  <span className="font-medium text-gray-600 lg:text-gray-500">{notice.nickname}</span>
+                  <div className="flex items-center gap-2 lg:gap-4">
+                    <span className="flex items-center gap-1">
+                      <span className="lg:hidden">조회</span>
+                      {notice.hits}
+                    </span>
+                    <span>
+                      {new Date(notice.created_at).toLocaleDateString()}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>

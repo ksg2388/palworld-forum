@@ -238,18 +238,33 @@ const CommunityContent = () => {
                   {tab}
                 </button>
                 {index === tabs.length - 1 && showDropdown && (
-                  <div className="absolute top-full right-0 mt-2 w-[180px] sm:w-[200px] bg-white border border-gray-200 rounded-xl shadow-xl z-30 overflow-hidden py-1 animate-in fade-in zoom-in duration-200">
-                    {linkItems.map((item) => (
-                      <a
-                        key={item.id}
-                        href={item.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block px-4 py-3 hover:bg-gray-50 text-sm sm:text-[15px] text-gray-700 transition-colors border-b border-gray-50 last:border-0"
-                      >
-                        {item.title}
-                      </a>
-                    ))}
+                  <div className="fixed inset-0 sm:absolute sm:inset-auto sm:top-full sm:right-0 sm:mt-2 w-full sm:w-[200px] h-full sm:h-auto bg-black/50 sm:bg-white sm:border sm:border-gray-200 sm:rounded-xl sm:shadow-xl z-50 sm:z-30 flex items-end sm:block animate-in fade-in duration-200 sm:zoom-in">
+                    {/* 모바일 닫기 영역 */}
+                    <div className="absolute inset-0 sm:hidden" onClick={() => setShowDropdown(false)} />
+                    
+                    {/* 드롭다운 컨텐츠 */}
+                    <div className="w-full bg-white rounded-t-2xl sm:rounded-none p-4 sm:p-1 space-y-1 sm:space-y-0 max-h-[80vh] overflow-y-auto">
+                      <div className="flex items-center justify-between px-2 pb-4 mb-2 border-b border-gray-100 sm:hidden">
+                        <span className="font-bold text-lg">링크 목록</span>
+                        <button onClick={() => setShowDropdown(false)} className="p-2 -mr-2 text-gray-500">
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                      
+                      {linkItems.map((item) => (
+                        <a
+                          key={item.id}
+                          href={item.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block px-4 py-3.5 sm:py-3 hover:bg-gray-50 text-[16px] sm:text-[15px] text-gray-800 sm:text-gray-700 transition-colors rounded-xl sm:rounded-none font-medium sm:font-normal sm:border-b sm:border-gray-50 sm:last:border-0"
+                        >
+                          {item.title}
+                        </a>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
@@ -306,7 +321,7 @@ const CommunityContent = () => {
                       공지
                     </span>
                   ) : (
-                    <span className="text-xs text-gray-400 font-medium">#{post.id}</span>
+                    <span className="text-xs text-gray-400 font-medium">{post.id}</span>
                   )}
                 </div>
 

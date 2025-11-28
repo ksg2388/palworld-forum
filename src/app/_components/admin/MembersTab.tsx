@@ -138,7 +138,59 @@ const MembersTab = () => {
   return (
     <div className="space-y-4">
       <h2 className="text-xl font-bold mb-4">회원 관리</h2>
-      <div className="overflow-x-auto">
+      
+      {/* 모바일 카드 뷰 */}
+      <div className="block sm:hidden space-y-4">
+        {members.map((member) => (
+          <div key={member.email} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+            <div className="flex justify-between items-start mb-3">
+              <div>
+                <div className="text-sm text-gray-500 mb-1">{member.email}</div>
+                <div className="font-medium text-gray-900">{member.nickname}</div>
+              </div>
+              <span className={`px-2 py-1 rounded text-xs font-medium ${
+                member.member_role === 'ADMIN' ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'
+              }`}>
+                {getMemberRoleText(member.member_role)}
+              </span>
+            </div>
+            
+            <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+              <div className="flex-1 mr-4">
+                {member.member_role !== "ADMIN" && (
+                  <select
+                    value={member.member_role}
+                    onChange={(e) =>
+                      handleRoleChange(
+                        member.id,
+                        e.target.value as TMember["member_role"]
+                      )
+                    }
+                    className="w-full border rounded px-2 py-1.5 text-sm"
+                  >
+                    {MEMBER_ROLES.map((role) => (
+                      <option key={role.value} value={role.value}>
+                        {role.label}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </div>
+              {member.member_role !== "ADMIN" && (
+                <button
+                  onClick={() => handleDelete(member)}
+                  className="px-3 py-1.5 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors whitespace-nowrap"
+                >
+                  삭제
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* 데스크톱 테이블 뷰 */}
+      <div className="hidden sm:block overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead>
             <tr>

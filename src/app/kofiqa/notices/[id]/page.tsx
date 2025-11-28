@@ -98,8 +98,8 @@ const NoticeDetailPage = () => {
   }
 
   return (
-    <div className="mt-[80px] lg:mt-[110px] max-w-[1200px] mx-auto p-8">
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
+    <div className="mt-[60px] lg:mt-[110px] max-w-[1200px] mx-auto p-4 lg:p-8">
+      <div className="bg-white rounded-lg border border-gray-200 p-4 lg:p-6">
         <div className="border-b border-gray-200 pb-4">
           <div className="flex items-center justify-between mb-2">
             <h1 className="text-2xl font-bold">{notice.title}</h1>

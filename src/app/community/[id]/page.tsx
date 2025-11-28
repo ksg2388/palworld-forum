@@ -192,7 +192,7 @@ const CommunityDetail = () => {
   if (!post) return <div>로딩중...</div>;
 
   return (
-    <div className="max-w-[1200px] mx-auto p-4 pt-[140px]">
+    <div className="max-w-[1200px] mx-auto p-4 pt-[80px] lg:pt-[140px]">
       {/* 상단 탭 */}
       <div className="flex justify-between items-center border-b pb-4 mb-6">
         <div className="flex gap-4">

@@ -35,35 +35,35 @@ const Footer = () => {
 
   return (
     <footer className="w-full bg-gray-800 text-white">
-      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-4 h-full flex flex-col justify-between py-6 sm:py-8">
-        <div className="flex flex-col lg:flex-row items-start gap-6 sm:gap-8 lg:gap-12">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-4 h-full flex flex-col justify-between py-8 sm:py-10 lg:py-8">
+        <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8 sm:gap-10 lg:gap-12 text-center lg:text-left">
           <div className="flex-shrink-0">
-            <Link href="/" className="w-[119px] h-[32px] relative">
-              <div className="w-[60px] h-[60px] sm:w-[70px] sm:h-[70px] lg:w-[80px] lg:h-[80px] relative">
+            <Link href="/" className="w-[119px] h-[32px] relative block">
+              <div className="w-[80px] h-[80px] relative mx-auto lg:mx-0">
                 <Image
                   src="/images/ic-footer-logo.png"
                   alt="logo"
                   fill
-                  className="brightness-0 invert"
+                  className="brightness-0 invert object-contain"
                 />
               </div>
             </Link>
           </div>
 
-          <div className="flex flex-col gap-4 sm:gap-6 lg:gap-8 flex-1 min-w-0">
-            <div className="flex flex-col gap-2">
-              <p className="text-gray-400 text-xs sm:text-sm max-w-full lg:max-w-[600px]">
+          <div className="flex flex-col gap-4 sm:gap-6 lg:gap-8 flex-1 min-w-0 w-full">
+            <div className="flex flex-col gap-2 items-center lg:items-start">
+              <p className="text-gray-400 text-sm max-w-full lg:max-w-[600px] leading-relaxed">
                 {footerMessage}
               </p>
-              <p className="text-gray-400 text-xs sm:text-sm max-w-full lg:max-w-[600px]">
+              <p className="text-gray-500 text-xs sm:text-sm max-w-full lg:max-w-[600px]">
                 © 2024 Palworld Community. All rights reserved.
               </p>
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-3 sm:gap-4 flex-shrink-0 w-full lg:w-auto">
+          <div className="flex flex-wrap justify-center lg:justify-start gap-3 sm:gap-4 flex-shrink-0 w-full lg:w-auto">
             {attachments.map((attachment) => (
-              <div key={attachment.id} className="w-[140px] h-[40px] sm:w-[160px] sm:h-[45px] lg:w-[190px] lg:h-[50px] relative">
+              <div key={attachment.id} className="w-[140px] h-[40px] sm:w-[160px] sm:h-[45px] lg:w-[190px] lg:h-[50px] relative grayscale hover:grayscale-0 transition-all duration-300">
                 <Image
                   src={`${API_BASE_URL}/attachments/${attachment.file_name}`}
                   alt={`footer image ${attachment.id}`}

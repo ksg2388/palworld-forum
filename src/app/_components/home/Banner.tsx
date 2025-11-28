@@ -80,12 +80,12 @@ const Banner = () => {
         .slick-prev,
         .slick-next {
           z-index: 10;
-          width: 24px;
-          height: 24px;
+          display: none !important;
         }
         @media (min-width: 640px) {
           .slick-prev,
           .slick-next {
+            display: block !important;
             width: 30px;
             height: 30px;
           }
@@ -127,10 +127,23 @@ const Banner = () => {
             bottom: 20px;
           }
         }
+        .slick-dots li {
+          margin: 0 2px;
+        }
         .slick-dots li button:before {
-          font-size: 10px;
+          font-size: 8px;
+          color: white;
+          opacity: 0.4;
+          transition: opacity 0.3s;
+        }
+        .slick-dots li.slick-active button:before {
+          opacity: 1;
+          color: white;
         }
         @media (min-width: 640px) {
+          .slick-dots li {
+            margin: 0 5px;
+          }
           .slick-dots li button:before {
             font-size: 12px;
           }

@@ -177,7 +177,7 @@ const Header = () => {
 
       {/* 모바일 메뉴 */}
       <div
-        className={`fixed top-0 left-0 h-full w-[280px] bg-gray-900 text-white z-50 transform transition-transform duration-300 ease-in-out lg:hidden shadow-2xl ${
+        className={`fixed top-0 left-0 h-full w-[280px] bg-gray-900/95 backdrop-blur-md text-white z-50 transform transition-transform duration-300 ease-in-out lg:hidden shadow-2xl border-r border-gray-800 ${
           isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -258,38 +258,38 @@ const Header = () => {
 
           {/* 모바일 네비게이션 메뉴 */}
           <nav className="flex flex-col flex-1 px-5 py-4 overflow-y-auto">
-            <div className="space-y-1">
+            <div className="space-y-2">
               <Link
                 href="/"
-                className="block py-3 text-[16px] font-medium text-white hover:text-gray-300 transition-colors rounded-lg hover:bg-gray-800 px-3"
+                className="block py-3.5 text-[16px] font-medium text-white hover:text-gray-200 transition-all rounded-xl hover:bg-gray-800/50 px-4 active:scale-98 active:bg-gray-800"
                 onClick={closeMobileMenu}
               >
                 Home
               </Link>
               <Link
                 href="/kofiqa"
-                className="block py-3 text-[16px] font-medium text-white hover:text-gray-300 transition-colors rounded-lg hover:bg-gray-800 px-3"
+                className="block py-3.5 text-[16px] font-medium text-white hover:text-gray-200 transition-all rounded-xl hover:bg-gray-800/50 px-4 active:scale-98 active:bg-gray-800"
                 onClick={closeMobileMenu}
               >
                 포럼 서버
               </Link>
               <Link
                 href="/community"
-                className="block py-3 text-[16px] font-medium text-white hover:text-gray-300 transition-colors rounded-lg hover:bg-gray-800 px-3"
+                className="block py-3.5 text-[16px] font-medium text-white hover:text-gray-200 transition-all rounded-xl hover:bg-gray-800/50 px-4 active:scale-98 active:bg-gray-800"
                 onClick={closeMobileMenu}
               >
                 통합게시판
               </Link>
               <Link
                 href="/support"
-                className="block py-3 text-[16px] font-medium text-white hover:text-gray-300 transition-colors rounded-lg hover:bg-gray-800 px-3"
+                className="block py-3.5 text-[16px] font-medium text-white hover:text-gray-200 transition-all rounded-xl hover:bg-gray-800/50 px-4 active:scale-98 active:bg-gray-800"
                 onClick={closeMobileMenu}
               >
                 1:1문의/신고
               </Link>
               <Link
                 href="/company"
-                className="block py-3 text-[16px] font-medium text-white hover:text-gray-300 transition-colors rounded-lg hover:bg-gray-800 px-3"
+                className="block py-3.5 text-[16px] font-medium text-white hover:text-gray-200 transition-all rounded-xl hover:bg-gray-800/50 px-4 active:scale-98 active:bg-gray-800"
                 onClick={closeMobileMenu}
               >
                 제휴업체
@@ -299,31 +299,31 @@ const Header = () => {
 
           {/* 사이드바 하단 인증 메뉴 */}
           {!isLoggedIn && (
-            <div className="px-5 py-4 border-t border-gray-800">
-              <div className="flex items-center justify-center gap-4">
+            <div className="px-5 py-6 border-t border-gray-800 bg-gray-900/50">
+              <div className="flex flex-col gap-3">
                 <Link
                   href="/login"
-                  className="text-[13px] text-gray-400 hover:text-white transition-colors"
+                  className="w-full py-3 text-[15px] font-medium text-white bg-gray-800 hover:bg-gray-700 active:bg-gray-600 rounded-xl text-center transition-all active:scale-[0.98] border border-gray-700"
                   onClick={closeMobileMenu}
                 >
                   로그인
                 </Link>
-                <div className="w-[1px] h-3 bg-gray-700" />
-                <Link
-                  href="/signup"
-                  className="text-[13px] text-gray-400 hover:text-white transition-colors"
-                  onClick={closeMobileMenu}
-                >
-                  회원가입
-                </Link>
-                <div className="w-[1px] h-3 bg-gray-700" />
-                <Link
-                  href="/find"
-                  className="text-[13px] text-gray-400 hover:text-white transition-colors"
-                  onClick={closeMobileMenu}
-                >
-                  비밀번호 찾기
-                </Link>
+                <div className="flex items-center gap-3">
+                  <Link
+                    href="/signup"
+                    className="flex-1 py-3 text-[14px] font-medium text-gray-300 hover:text-white bg-transparent hover:bg-gray-800 rounded-xl text-center transition-all active:scale-[0.98] border border-gray-800"
+                    onClick={closeMobileMenu}
+                  >
+                    회원가입
+                  </Link>
+                  <Link
+                    href="/find"
+                    className="flex-1 py-3 text-[14px] font-medium text-gray-400 hover:text-white bg-transparent hover:bg-gray-800 rounded-xl text-center transition-all active:scale-[0.98]"
+                    onClick={closeMobileMenu}
+                  >
+                    비밀번호 찾기
+                  </Link>
+                </div>
               </div>
             </div>
           )}

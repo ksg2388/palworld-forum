@@ -67,7 +67,7 @@ const Banner = () => {
                 src={`${API_BASE_URL}/attachments/${image.attachment?.file_name}`}
                 alt={`banner-${image.id}`}
                 fill
-                className="object-cover sm:object-contain cursor-pointer"
+                className="object-contain cursor-pointer"
                 sizes="100vw"
                 priority
               />

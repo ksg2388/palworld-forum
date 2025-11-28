@@ -59,7 +59,7 @@ const Header = () => {
           </div>
 
           {/* 로고 - 모바일 */}
-          <div className="lg:hidden absolute left-1/2 -translate-x-1/2 flex items-center justify-center">
+          <div className="lg:hidden absolute left-14 flex items-center">
             <Link href="/" className="flex flex-col items-center" onClick={closeMobileMenu}>
               <div className="w-[90px] h-[24px] relative">
                 <Image src="/images/logo-palworld.webp" alt="logo" fill className="object-contain" />

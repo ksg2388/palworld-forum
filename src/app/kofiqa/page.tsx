@@ -69,7 +69,8 @@ const KofiqaPage = () => {
   }, []);
 
   const scrollToSection = (ref: React.RefObject<HTMLDivElement | null>) => {
-    const headerOffset = typeof window !== "undefined" && window.innerWidth >= 1024 ? 180 : window.innerWidth >= 640 ? 150 : 140;
+    // 헤더 높이(60px/110px) + 네비게이션 바 높이(50px) + 여유분(10px)
+    const headerOffset = typeof window !== "undefined" && window.innerWidth >= 1024 ? 170 : 120;
     const elementPosition = ref.current?.getBoundingClientRect().top;
     const offsetPosition = elementPosition! + window.scrollY - headerOffset;
 
@@ -98,10 +99,10 @@ const KofiqaPage = () => {
         message="로그인이 필요합니다."
         onClose={handleLoginAlertClose}
       />
-      <div className="mt-[80px] lg:mt-[110px] w-full">
-      <div className="fixed top-[80px] lg:top-[110px] left-0 right-0 bg-white z-10 border-b shadow-sm">
-        <div className="max-w-[1200px] mx-auto overflow-x-auto">
-          <div className="flex items-center gap-0 font-semibold text-sm sm:text-base lg:text-[20px] min-w-max sm:min-w-0">
+      <div className="mt-[60px] lg:mt-[110px] w-full">
+      <div className="fixed top-[60px] lg:top-[110px] left-0 right-0 bg-white/90 backdrop-blur-md z-20 border-b border-gray-200/80 shadow-sm transition-all duration-300">
+        <div className="max-w-[1200px] mx-auto overflow-x-auto scrollbar-hide">
+          <div className="flex items-center gap-3 px-4 py-3 font-medium text-sm sm:text-base min-w-max sm:min-w-0">
             {tabs.map((tab, index) => (
               <button
                 key={tab}
@@ -121,7 +122,7 @@ const KofiqaPage = () => {
                       break;
                   }
                 }}
-                className="px-3 sm:px-4 lg:px-6 py-2 sm:py-2.5 lg:py-3 text-gray-700 hover:text-gray-900 transition-all duration-200 whitespace-nowrap"
+                className="px-4 py-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 active:bg-gray-300 active:scale-95 transition-all duration-200 whitespace-nowrap"
               >
                 {tab}
               </button>

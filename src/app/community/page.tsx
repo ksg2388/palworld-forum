@@ -273,7 +273,7 @@ const CommunityContent = () => {
         </div>
       </div>
 
-      <div className="w-full max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-0 pt-[130px] sm:pt-[150px] lg:pt-[170px] pb-[50px] min-h-[calc(100vh-132px)]">
+      <div className="w-full max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-0 pt-[140px] sm:pt-[150px] lg:pt-[170px] pb-[50px] min-h-[calc(100vh-132px)]">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 gap-3 sm:gap-4">
           <h1 className="text-xl sm:text-2xl font-bold">{tabs[currentTab]}</h1>
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">

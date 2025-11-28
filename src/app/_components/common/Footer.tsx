@@ -35,7 +35,7 @@ const Footer = () => {
 
   return (
     <footer className="w-full bg-gray-800 text-white border-t border-gray-700">
-      <div className="max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-4 h-full flex flex-col justify-between py-10 sm:py-12 lg:py-10">
+      <div className="max-w-[1200px] mx-auto px-5 sm:px-6 lg:px-4 h-full flex flex-col justify-between py-6 sm:py-12 lg:py-10">
         <div className="flex flex-col lg:flex-row items-start gap-6 sm:gap-10 lg:gap-12 text-left">
           <div className="flex-shrink-0">
             <Link href="/" className="block w-[50px] h-[50px] sm:w-[80px] sm:h-[80px] relative opacity-80 hover:opacity-100 transition-opacity">

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import { API_BASE_URL } from "@/config/api";
 import { useRouter } from "next/navigation";
 import useUserStore from "@/app/_store/userSotre";
@@ -68,6 +69,27 @@ const NoticesPage = () => {
   const [searchType, setSearchType] = useState("TITLE");
   const { user } = useUserStore();
   const limit = 10;
+
+  const getRoleImage = (role: string) => {
+    switch (role) {
+      case "ADMIN":
+        return "/images/admin.gif";
+      case "PARTNER":
+        return "/images/partner.gif";
+      case "NORMAL":
+        return "/images/normal.png";
+      case "LEGENDARY":
+        return "/images/legend.gif";
+      case "HEROIC":
+        return "/images/hero.png";
+      case "RARE":
+        return "/images/rare.png";
+      case "EXTRA_ORDINARY":
+        return "/images/uncommon.png";
+      default:
+        return "/images/normal.png";
+    }
+  };
 
   // 페이지네이션 로직 수정
   const handlePrevGroup = () => {
@@ -149,28 +171,75 @@ const NoticesPage = () => {
             <div
               key={notice.id}
               onClick={() => handleNoticeClick(notice.id)}
-              className="p-4 bg-white border border-gray-100 lg:border-0 lg:border-b lg:border-gray-200 rounded-xl lg:rounded-none shadow-sm lg:shadow-none hover:shadow-md lg:hover:bg-gray-50 transition-all cursor-pointer flex flex-col lg:block gap-2"
+              className="p-4 bg-white border border-gray-100 lg:border-0 lg:border-b lg:border-gray-200 rounded-xl lg:rounded-none shadow-sm lg:shadow-none hover:shadow-md lg:hover:bg-gray-50 transition-all cursor-pointer flex flex-col lg:block"
             >
-              <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-2 lg:gap-0">
-                <h2 className="text-[15px] lg:text-lg font-medium lg:font-semibold break-all line-clamp-2 lg:line-clamp-1">
+              {/* 모바일 뷰 */}
+              <div className="flex flex-col lg:hidden gap-1.5">
+                <div className="flex items-center">
+                  {notice.notice ? (
+                    <span className="inline-block px-2 py-0.5 bg-white border border-gray-200 text-gray-600 text-[11px] rounded-full font-medium shadow-sm">
+                      공지
+                    </span>
+                  ) : (
+                    <span className="text-xs text-gray-400 font-medium">#{notice.id}</span>
+                  )}
+                </div>
+
+                <span className="text-[16px] font-medium text-gray-900 line-clamp-2 leading-snug my-0.5">
+                  {notice.title}
+                </span>
+
+                <div className="flex items-center gap-1.5 mb-1">
+                  <Image
+                    src={getRoleImage(notice.member_role)}
+                    alt={notice.member_role}
+                    width={16}
+                    height={16}
+                    className="w-4 h-4 rounded"
+                    unoptimized
+                  />
+                  <span className="text-sm text-gray-700 font-medium">{notice.nickname}</span>
+                </div>
+                
+                <div className="flex items-center gap-3 text-xs text-gray-400 mt-1">
+                  <span>{new Date(notice.created_at).toLocaleDateString("ko-KR", { month: "2-digit", day: "2-digit" })}</span>
+                  
+                  <div className="flex items-center gap-1">
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    <span>{notice.hits}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 데스크톱 뷰 */}
+              <div className="hidden lg:flex justify-between items-center">
+                <h2 className="text-lg font-semibold">
                   {notice.notice && (
-                    <span className="inline-block px-2 py-0.5 lg:py-1 bg-gray-100 text-xs lg:text-sm rounded mr-2 align-middle">
+                    <span className="inline-block px-2 py-1 bg-gray-100 text-sm rounded mr-2">
                       공지
                     </span>
                   )}
                   {notice.title}
                 </h2>
-                <div className="flex items-center justify-between lg:justify-end gap-2 lg:gap-4 text-xs lg:text-sm text-gray-500 pt-2 border-t border-gray-50 lg:border-0 lg:pt-0 mt-1 lg:mt-0">
-                  <span className="font-medium text-gray-600 lg:text-gray-500">{notice.nickname}</span>
-                  <div className="flex items-center gap-2 lg:gap-4">
-                    <span className="flex items-center gap-1">
-                      <span className="lg:hidden">조회</span>
-                      {notice.hits}
-                    </span>
-                    <span>
-                      {new Date(notice.created_at).toLocaleDateString()}
-                    </span>
+                <div className="flex items-center gap-4 text-sm text-gray-500">
+                  <div className="flex items-center gap-1.5">
+                    <Image
+                      src={getRoleImage(notice.member_role)}
+                      alt={notice.member_role}
+                      width={16}
+                      height={16}
+                      className="w-4 h-4 rounded"
+                      unoptimized
+                    />
+                    <span>{notice.nickname}</span>
                   </div>
+                  <span>조회 {notice.hits}</span>
+                  <span>
+                    {new Date(notice.created_at).toLocaleDateString()}
+                  </span>
                 </div>
               </div>
             </div>

@@ -2,12 +2,14 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { API_BASE_URL } from "@/config/api";
 
 interface News {
   id: number;
   title: string;
   nickname: string;
+  member_role: string;
   created_at: string;
   hits: number;
 }
@@ -49,6 +51,27 @@ const PreviewNews = () => {
     )}.${String(date.getDate()).padStart(2, "0")}`;
   };
 
+  const getRoleImage = (role: string) => {
+    switch (role) {
+      case "ADMIN":
+        return "/images/admin.gif";
+      case "PARTNER":
+        return "/images/partner.gif";
+      case "NORMAL":
+        return "/images/normal.png";
+      case "LEGENDARY":
+        return "/images/legend.gif";
+      case "HEROIC":
+        return "/images/hero.png";
+      case "RARE":
+        return "/images/rare.png";
+      case "EXTRA_ORDINARY":
+        return "/images/uncommon.png";
+      default:
+        return "/images/normal.png";
+    }
+  };
+
   // news가 undefined일 경우를 대비해 기본값으로 빈 배열 사용
   return (
     <div className="space-y-3 sm:space-y-0 sm:border-t-2 sm:border-gray-800">
@@ -74,7 +97,15 @@ const PreviewNews = () => {
             </div>
             
             <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-2 text-xs sm:text-sm text-gray-500 pt-2 sm:pt-0 border-t border-gray-50 sm:border-0 mt-1 sm:mt-0">
-              <div className="flex items-center gap-2 sm:hidden">
+              <div className="flex items-center gap-1.5 sm:hidden">
+                <Image
+                  src={getRoleImage(item.member_role)}
+                  alt={item.member_role}
+                  width={14}
+                  height={14}
+                  className="w-3.5 h-3.5 rounded"
+                  unoptimized
+                />
                 <span className="font-medium text-gray-600">{item.nickname}</span>
               </div>
               <div className="flex items-center gap-1 sm:hidden">
@@ -83,7 +114,17 @@ const PreviewNews = () => {
               </div>
 
               {/* Desktop Layout */}
-              <span className="hidden sm:block min-w-[80px] text-center truncate">{item.nickname}</span>
+              <span className="hidden sm:flex min-w-[100px] items-center justify-center gap-1">
+                <Image
+                  src={getRoleImage(item.member_role)}
+                  alt={item.member_role}
+                  width={16}
+                  height={16}
+                  className="w-4 h-4 rounded"
+                  unoptimized
+                />
+                <span className="truncate">{item.nickname}</span>
+              </span>
               <span className="hidden sm:block min-w-[100px] text-center">
                 {formatDate(item.created_at)}
               </span>

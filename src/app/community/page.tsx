@@ -320,7 +320,7 @@ const CommunityContent = () => {
                     alt={post.member_role}
                     width={16}
                     height={16}
-                    className="w-4 h-4 rounded-full"
+                    className="w-4 h-4 rounded"
                     unoptimized
                   />
                   <span className="text-sm text-gray-700 font-medium">{post.nickname}</span>

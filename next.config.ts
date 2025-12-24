@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "i.namu.wiki",
       },
+      {
+        protocol: "https",
+        hostname: "backend.palworldkorea.co.kr",
+      },
     ],
   },
 };

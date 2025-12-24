@@ -4,9 +4,10 @@ export const makeAuthorizedRequest = async (
   url: string,
   options: RequestInit
 ) => {
+  let response: Response | null = null;
   try {
     const accessToken = useUserStore.getState().accessToken;
-    let response = await fetch(url, {
+    response = await fetch(url, {
       ...options,
       headers: {
         ...options.headers,
@@ -15,6 +16,13 @@ export const makeAuthorizedRequest = async (
     });
 
     if (response.status === 500) {
+      // 첫 번째 응답의 body를 명시적으로 소비하여 연결을 닫음
+      try {
+        await response.text();
+      } catch {
+        // body 읽기 실패는 무시
+      }
+
       try {
         await useUserStore.getState().refreshAccessToken();
         // 토큰 재발급 후 다시 원래 요청 실행
@@ -39,6 +47,14 @@ export const makeAuthorizedRequest = async (
 
     return response;
   } catch (error) {
+    // 에러 발생 시 응답 body가 있다면 소비하여 연결을 닫음
+    if (response && !response.bodyUsed) {
+      try {
+        await response.text();
+      } catch {
+        // body 읽기 실패는 무시
+      }
+    }
     throw error;
   }
 }; 

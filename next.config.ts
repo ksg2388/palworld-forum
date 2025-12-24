@@ -8,10 +8,6 @@ const nextConfig: NextConfig = {
         hostname: "i.namu.wiki",
       },
     ],
-    domains: ["backend.palworldkorea.co.kr"],
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
   },
 };
 

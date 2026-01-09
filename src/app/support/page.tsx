@@ -65,7 +65,7 @@ const SupportPage = () => {
       });
 
       if (response.ok) {
-        alert(
+        toast.success(
           "문의가 정상적으로 접수되었습니다. 최대한 빠른 시일 내에 답변 드리도록 하겠습니다."
         );
         // 폼 초기화
@@ -75,7 +75,10 @@ const SupportPage = () => {
         setSelectedFiles([]);
         setPreviews([]);
       } else {
-        alert("문의 접수 중 오류가 발생했습니다. 다시 시도해주세요.");
+        const errorData = await response.json().catch(() => ({}));
+        toast.error(
+          errorData.message || "문의 접수 중 오류가 발생했습니다. 다시 시도해주세요."
+        );
       }
     } catch (error) {
       console.error("문의 접수 중 오류 발생:", error);

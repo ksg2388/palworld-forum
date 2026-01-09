@@ -35,6 +35,20 @@ const SupportPage = () => {
   };
 
   const handleSubmit = async () => {
+    // 유효성 검사
+    if (!email.trim()) {
+      toast.error("이메일을 입력해주세요.");
+      return;
+    }
+    if (!title.trim()) {
+      toast.error("제목을 입력해주세요.");
+      return;
+    }
+    if (!content.trim()) {
+      toast.error("내용을 입력해주세요.");
+      return;
+    }
+
     try {
       const formData = new FormData();
       formData.append("title", title);
@@ -64,7 +78,8 @@ const SupportPage = () => {
         alert("문의 접수 중 오류가 발생했습니다. 다시 시도해주세요.");
       }
     } catch (error) {
-      alert("문의 접수 중 오류가 발생했습니다. 다시 시도해주세요.");
+      console.error("문의 접수 중 오류 발생:", error);
+      toast.error("문의 접수 중 오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
 

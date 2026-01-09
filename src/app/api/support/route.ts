@@ -19,6 +19,17 @@ export async function POST(request: Request) {
       },
     });
 
+    // 첨부파일을 Buffer로 변환
+    const attachments = await Promise.all(
+      files.map(async (file: File) => {
+        const arrayBuffer = await file.arrayBuffer();
+        return {
+          filename: file.name,
+          content: Buffer.from(arrayBuffer),
+        };
+      })
+    );
+
     // 관리자에게 이메일 전송
     await transporter.sendMail({
       from: userEmail,
@@ -29,10 +40,7 @@ export async function POST(request: Request) {
         제목: ${title}
         내용: ${content}
       `,
-      attachments: files.map((file: any) => ({
-        filename: file.name,
-        content: file,
-      })),
+      attachments,
     });
 
     return NextResponse.json({ message: "success" }, { status: 200 });

@@ -23,11 +23,6 @@ interface LoginSuccessResponse {
   }
 }
 
-interface LoginErrorResponse {
-  http_status: string;
-  message: string;
-}
-
 const LoginPage = () => {
   const router = useRouter();
   const login = useUserStore((state) => state.login);
@@ -67,10 +62,10 @@ const LoginPage = () => {
 
       const data = await response.json();
 
-      if (!response.ok) {
+      // HTTP 상태 코드 또는 응답 body의 http_status로 에러 체크
+      if (!response.ok || data.http_status !== "OK") {
         // 서버에서 반환한 에러 메시지 사용
-        const errorData = data as LoginErrorResponse;
-        setError(errorData.message || "로그인에 실패했습니다.");
+        setError(data.message || "로그인에 실패했습니다.");
         return;
       }
 

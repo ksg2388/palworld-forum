@@ -6,21 +6,26 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { TUser } from "../types/common/common.types";
 import { API_ENDPOINTS } from "@/config/api";
-import { API_BASE_URL } from "@/config/api"; 
+import { API_BASE_URL } from "@/config/api";
 import useUserStore from "../_store/userSotre";
 
-interface LoginResponse {
+interface LoginSuccessResponse {
   http_status: string;
   message: string;
   data: {
     email: string;
-    nickname: string; 
+    nickname: string;
     member_role: string;
     token: {
       refresh_token: string;
       access_token: string;
     }
   }
+}
+
+interface LoginErrorResponse {
+  http_status: string;
+  message: string;
 }
 
 const LoginPage = () => {
@@ -60,19 +65,25 @@ const LoginPage = () => {
         body: JSON.stringify(formData),
       });
 
-      const data: LoginResponse = await response.json();
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "로그인에 실패했습니다.");
+        // 서버에서 반환한 에러 메시지 사용
+        const errorData = data as LoginErrorResponse;
+        setError(errorData.message || "로그인에 실패했습니다.");
+        return;
       }
+
+      // 성공 응답 처리
+      const successData = data as LoginSuccessResponse;
 
       // Zustand store에 유저 정보와 토큰 저장
       const user: TUser = {
-        email: data.data.email,
-        nickname: data.data.nickname,
-        member_role: data.data.member_role
+        email: successData.data.email,
+        nickname: successData.data.nickname,
+        member_role: successData.data.member_role
       };
-      login(user, data.data.token.access_token, data.data.token.refresh_token);
+      login(user, successData.data.token.access_token, successData.data.token.refresh_token);
 
       // 홈페이지로 리다이렉트
       router.push("/");

@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# .omc 폴더 및 하위 모든 내용 무시
+.omc/

@@ -31,29 +31,33 @@ const CustomAlert = ({
         <p className="text-center text-gray-800 mb-6 whitespace-pre-wrap">
           {formattedMessage}
         </p>
-        <div className="flex flex-wrap justify-center gap-3">
+        <div className="flex flex-col items-center gap-3">
+          {(additionalButton || secondAdditionalButton) && (
+            <div className="flex justify-center gap-3">
+              {additionalButton && (
+                <button
+                  onClick={additionalButton.onClick}
+                  className="px-4 py-2 bg-gray-800 text-white text-sm rounded hover:bg-gray-900 whitespace-nowrap"
+                >
+                  {additionalButton.text}
+                </button>
+              )}
+              {secondAdditionalButton && (
+                <button
+                  onClick={secondAdditionalButton.onClick}
+                  className="px-4 py-2 bg-gray-800 text-white text-sm rounded hover:bg-gray-900 whitespace-nowrap"
+                >
+                  {secondAdditionalButton.text}
+                </button>
+              )}
+            </div>
+          )}
           <button
             onClick={onClose}
             className="px-4 py-2 bg-gray-800 text-white text-sm rounded hover:bg-gray-900 whitespace-nowrap"
           >
             확인
           </button>
-          {additionalButton && (
-            <button
-              onClick={additionalButton.onClick}
-              className="px-4 py-2 bg-gray-800 text-white text-sm rounded hover:bg-gray-900 whitespace-nowrap"
-            >
-              {additionalButton.text}
-            </button>
-          )}
-          {secondAdditionalButton && (
-            <button
-              onClick={secondAdditionalButton.onClick}
-              className="px-4 py-2 bg-gray-800 text-white text-sm rounded hover:bg-gray-900 whitespace-nowrap"
-            >
-              {secondAdditionalButton.text}
-            </button>
-          )}
         </div>
       </div>
     </div>

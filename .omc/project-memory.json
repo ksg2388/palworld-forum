@@ -1,0 +1,130 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1778648200595,
+  "projectRoot": "/Users/gimsang-geun/Desktop/ksg/palworld-forum",
+  "techStack": {
+    "languages": [
+      {
+        "name": "JavaScript/TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "package.json"
+        ]
+      },
+      {
+        "name": "TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "tsconfig.json"
+        ]
+      }
+    ],
+    "frameworks": [
+      {
+        "name": "next",
+        "version": "16.0.8",
+        "category": "fullstack"
+      },
+      {
+        "name": "react",
+        "version": "19.2.1",
+        "category": "frontend"
+      },
+      {
+        "name": "react-dom",
+        "version": "19.2.1",
+        "category": "frontend"
+      }
+    ],
+    "packageManager": "pnpm",
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": "pnpm build",
+    "testCommand": null,
+    "lintCommand": "pnpm lint",
+    "devCommand": "pnpm dev",
+    "scripts": {
+      "dev": "next dev --turbopack",
+      "build": "next build",
+      "start": "next start",
+      "lint": "next lint"
+    }
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "public",
+      "src"
+    ],
+    "gitBranches": {
+      "defaultBranch": "master",
+      "branchingStrategy": null
+    }
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "public": {
+      "path": "public",
+      "purpose": "Public files",
+      "fileCount": 3,
+      "lastAccessed": 1778648200581,
+      "keyFiles": [
+        "favicon.png",
+        "robots.txt",
+        "sitemap.xml"
+      ]
+    },
+    "src": {
+      "path": "src",
+      "purpose": "Source code",
+      "fileCount": 0,
+      "lastAccessed": 1778648200583,
+      "keyFiles": []
+    },
+    "src/app": {
+      "path": "src/app",
+      "purpose": "Application code",
+      "fileCount": 4,
+      "lastAccessed": 1778648200590,
+      "keyFiles": [
+        "globals.css",
+        "layout.tsx",
+        "page.tsx"
+      ]
+    },
+    "src/config": {
+      "path": "src/config",
+      "purpose": "Configuration files",
+      "fileCount": 1,
+      "lastAccessed": 1778648200590,
+      "keyFiles": [
+        "api.ts"
+      ]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "src/app/_components/common/CustomAlert.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1778648551507,
+      "type": "file"
+    },
+    {
+      "path": "src/app/kofiqa/apply/page.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1778648564847,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}

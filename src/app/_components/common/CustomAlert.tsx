@@ -10,6 +10,7 @@ interface CustomAlertProps {
   message: string;
   onClose: () => void;
   additionalButton?: AdditionalButtonProps;
+  secondAdditionalButton?: AdditionalButtonProps;
 }
 
 const CustomAlert = ({
@@ -17,6 +18,7 @@ const CustomAlert = ({
   message,
   onClose,
   additionalButton,
+  secondAdditionalButton,
 }: CustomAlertProps) => {
   if (!isOpen) return null;
 
@@ -42,6 +44,14 @@ const CustomAlert = ({
               className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-900"
             >
               {additionalButton.text}
+            </button>
+          )}
+          {secondAdditionalButton && (
+            <button
+              onClick={secondAdditionalButton.onClick}
+              className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-900"
+            >
+              {secondAdditionalButton.text}
             </button>
           )}
         </div>

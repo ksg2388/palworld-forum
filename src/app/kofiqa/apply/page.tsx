@@ -73,6 +73,10 @@ const ApplyPage = () => {
     window.open(chatLink, "_blank");
   };
 
+  const handleSteamAuthClick = () => {
+    window.open("https://auth.palworldkorea.co.kr", "_blank");
+  };
+
   return (
     <div className="mt-[80px] lg:mt-[110px] max-w-[1200px] mx-auto p-8">
       <CustomAlert
@@ -82,6 +86,10 @@ const ApplyPage = () => {
         additionalButton={{
           text: "오픈채팅 바로가기",
           onClick: handleChatLinkClick,
+        }}
+        secondAdditionalButton={{
+          text: "steam 인증",
+          onClick: handleSteamAuthClick,
         }}
       />
       <div className="bg-white border border-gray-200 p-6 rounded-lg">
